@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 		uglify: {
 			dist: {
 				files: {
-					'build/defiant.min.js': 'src/*.js'
+					'dist/defiant.min.js': 'src/*.js'
 				},
 				options: {
 					banner: '/* Javascript by Hakan Bilgin (c) 2013-2014 */'

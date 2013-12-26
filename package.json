@@ -1,0 +1,27 @@
+{
+  "name": "defiant",
+  "version": "0.8.1",
+  "description": "defiant.js ==========",
+  "author": {
+    "name": "Hakan Bilgin",
+    "email": "hbi@longscript.com",
+    "url": "https://github.com/hbi99"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hbi99/defiant.js.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hbi99/defiant.js/issues"
+  },
+  "homepage": "http://www.defiantjs.com",
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.1.2",
+    "grunt-contrib-watch": "~0.3.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2"
+  }
+}

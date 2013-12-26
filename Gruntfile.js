@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 					'build/defiant.min.js': 'src/*.js'
 				},
 				options: {
-					banner: '/* This is minified */'
+					banner: '/* Javascript by Hakan Bilgin (c) 2013-2014 */'
 				}
 			}
 		}

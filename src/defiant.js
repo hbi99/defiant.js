@@ -9,27 +9,30 @@
 		xml_decl: '<?xml version="1.0" encoding="utf-8"?>',
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
-				doc       = JSON.toXML(data),
 				span      = document.createElement('span'),
+				opt       = {match: '/'},
 				scripts,
-				temp,
-				fragment;
-			if (!this.xsl_template) {
-				var scr = document.getElementsByTagName('script'),
-					str = '',
-					i   = 0,
-					il  = scr.length;
-				for (; i<il; i++) {
-					if (scr[i].type === 'defiant/xsl-template') str += scr[i].innerHTML;
-				}
-				str = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:defiant="defiant-custom-namespace">'+
-									str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>'
-				this.xsl_template = this.xmlFromString(str);
+				temp;
+			// handle arguments
+			switch (typeof(template)) {
+				case 'object':
+					this.extend(opt, template);
+					if (!opt.data) opt.data = data;
+					break;
+				case 'string':
+					opt.template = template;
+					opt.data = data;
+					break;
+				default:
+					throw 'error';
 			}
-			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ template +'"]'),
-			temp.setAttribute('match', '/');
+			opt.data = JSON.toXML(opt.data);
+
+			if (!this.xsl_template) this.gather_templates();
+			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ opt.template +'"]'),
+			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
-			span.appendChild(processor.transformToFragment(doc, document));
+			span.appendChild(processor.transformToFragment(opt.data, document));
 			temp.removeAttribute('match');
 
 			if (this.is_safari) {
@@ -38,17 +41,17 @@
 			}
 			return span.innerHTML;
 		},
-		xsl_support: function() {
-			var support = false;
-			if (document.recalc) {
-				support = true; // IE 5+
-			} else if (window.XMLHttpRequest !== undefined && window.XSLTProcessor !== undefined) {
-				// Mozilla 0.9.4+, Opera 9+
-				var processor = new XSLTProcessor();
-				support = (typeof(processor.transformDocument) === 'function') ?
-					(window.XMLSerializer !== undefined) : true
+		gather_templates: function() {
+			var scripts   = document.getElementsByTagName('script'),
+				temp_type = 'defiant/xsl-template',
+				temp_str  = '',
+				i         = 0,
+				il        = scripts.length;
+			for (; i<il; i++) {
+				if (scripts[i].type === temp_type) temp_str += scripts[i].innerHTML;
 			}
-			return support;
+			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+
+					'xmlns:defiant="defiant-custom-namespace">'+ temp_str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
 			var parser,
@@ -65,6 +68,16 @@
 				xmlDoc.loadXML(str);
 			}
 			return xmlDoc;
+		},
+		extend: function(safe, deposit) {
+			for (var content in deposit) {
+				if (!safe[content] || typeof(deposit[content]) !== 'object') {
+					safe[content] = deposit[content];
+				} else {
+					this.extend(safe[content], deposit[content]);
+				}
+			}
+			return safe;
 		}
 	};
 
@@ -180,7 +193,7 @@
 						for (var key in this) {
 							delete this[key];
 						}
-						interpreter.extend(this, dep);
+						Defiant.extend(this, dep);
 					},
 					to_xml: function(tree) {
 						var str = this.hash_to_xml(null, tree).replace(/<\d{1,}>|<\/\d{1,}>/g, '');
@@ -219,16 +232,6 @@
 						return String(text) .replace(/</g, '&lt;')
 											.replace(/>/g, '&gt;')
 											.replace(/"/g, '&quot;');
-					},
-					extend: function(safe, deposit) {
-						for (var content in deposit) {
-							if (!safe[content] || typeof(deposit[content]) !== 'object') {
-								safe[content] = deposit[content];
-							} else {
-								this.extend(safe[content], deposit[content]);
-							}
-						}
-						return safe;
 					}
 				},
 				xdoc = interpreter.to_xml.call(interpreter, tree);

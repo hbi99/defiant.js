@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js - Advanced demo</title>
+<script type="text/javascript" src="../res/js/defiant.js"></script>
+<!--
+<script type="text/javascript" src="https://raw.github.com/hbi99/defiant.js/master/dist/defiant.min.js"></script>
+-->
+</head>
+<body>
+
+<!-- Defiant template -->
+<script type="defiant/xsl-template">
+
+<xsl:template name="tree">
+    <h1>Tree</h1>
+    <xsl:call-template name="tree-walker"/>
+</xsl:template>
+
+</script>
+
+<script type="defiant/xsl-template">
+
+<xsl:template name="tree-walker">
+    <xsl:param name="indent" />
+    <xsl:for-each select="./*">
+        <xsl:sort order="descending" select="count(./*)"/>
+        <div class="tree-item">
+            <xsl:value-of select="$indent"/> <xsl:value-of select="@name"/>
+            <xsl:if test="count(./*) > 0">
+                <div class="item-children">
+                    <xsl:call-template name="tree-walker">
+                        <xsl:with-param name="indent"><xsl:value-of select="$indent"/>&#160;&#160;</xsl:with-param>
+                    </xsl:call-template>
+                </div>
+            </xsl:if>
+        </div>
+    </xsl:for-each>
+</xsl:template>
+
+</script>
+
+<!-- Output element -->
+<pre id="output"></pre>
+
+<script type="text/javascript">
+    var obj = {
+        "item": [{
+            "@name": "content",
+            "item": [{
+                    "@name": "js",
+                    "item": { "@name": "defiant.js" }
+                },
+                {
+                    "@name": "css",
+                    "item": [{ "@name": "style.css" },
+                             { "@name": "style.less" }]
+                },
+                {
+                    "@name": "image",
+                    "item": [{ "@name": "logo.png" },
+                             { "@name": "sprite.png" }]
+                }
+            ]},
+            { "@name": "readme.txt" },
+            { "@name": "config.php" },
+            { "@name": "index.htm" }
+        ]},
+        htm = Defiant.render('tree', obj);
+    document.getElementById('output').innerHTML = htm;
+    
+    console.log( JSON.toXML( obj ).xml );
+  
+</script>
+
+</body>
+</html>

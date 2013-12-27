@@ -9,27 +9,33 @@
 		xml_decl: '<?xml version="1.0" encoding="utf-8"?>',
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
-				xml       = JSON.toXML(data),
+				doc       = JSON.toXML(data),
 				span      = document.createElement('span'),
-				scripts;
+				scripts,
+				temp,
+				fragment;
 			if (!this.xsl_template) {
-				var xTemp = document.getElementById('defiant_xsl'),
-					str   = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:defiant="defiant-custom-namespace">'+
-									xTemp.innerHTML.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>';
+				var scr = document.getElementsByTagName('script'),
+					str = '',
+					i   = 0,
+					il  = scr.length;
+				for (; i<il; i++) {
+					if (scr[i].type === 'defiant/xsl-template') str += scr[i].innerHTML;
+				}
+				str = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:defiant="defiant-custom-namespace">'+
+									str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>'
 				this.xsl_template = this.xmlFromString(str);
 			}
-			var temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ template +'"]'),
-				fragment;
+			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ template +'"]'),
 			temp.setAttribute('match', '/');
 			processor.importStylesheet(this.xsl_template);
-			span.appendChild(processor.transformToFragment(xml, document));
+			span.appendChild(processor.transformToFragment(doc, document));
 			temp.removeAttribute('match');
 
 			if (this.is_safari) {
 				scripts = span.getElementsByTagName('script');
 				for (var i=0, il=scripts.length; i<il; i++) scripts[i].defer = true;
 			}
-
 			return span.innerHTML;
 		},
 		xsl_support: function() {
@@ -210,8 +216,7 @@
 												 : '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
 					},
 					escape_xml: function(text) {
-						return String(text) //.replace(/&/g, '&amp;')
-											.replace(/</g, '&lt;')
+						return String(text) .replace(/</g, '&lt;')
 											.replace(/>/g, '&gt;')
 											.replace(/"/g, '&quot;');
 					},
@@ -319,3 +324,15 @@
 	window.Defiant = Defiant;
 
 })(window, document);
+
+// check if jQuery is present
+if (typeof(jQuery) !== 'undefined') {
+	(function ( $ ) {
+
+		$.fn.defiant = function(template, xpath) {
+			this.html( Defiant.render(template, xpath) );
+			return this;
+		};
+
+	}(jQuery));
+}

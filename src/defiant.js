@@ -6,6 +6,7 @@
 
 	var Defiant = {
 		is_safari: navigator.userAgent.match(/safari/i) !== null,
+		namespace: 'xmlns:defiant="defiant-custom-namespace"',
 		xml_decl: '<?xml version="1.0" encoding="utf-8"?>',
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
@@ -50,8 +51,7 @@
 			for (; i<il; i++) {
 				if (scripts[i].type === temp_type) temp_str += scripts[i].innerHTML;
 			}
-			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+
-					'xmlns:defiant="defiant-custom-namespace">'+ temp_str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
+			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ temp_str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
 			var parser,
@@ -120,7 +120,7 @@
 						attr,
 						val,
 						is_array;
-					if (leaf.getAttribute && leaf.getAttribute('defiant_type') === 'array') {
+					if (leaf.getAttribute && leaf.getAttribute('defiant:type') === 'array') {
 						obj = [];
 						leaf.removeAttribute('type');
 					}
@@ -201,8 +201,9 @@
 	}
 	if (!JSON.toXML) {
 		JSON.toXML = function(tree) {
-			var interpreter = {
-					array_flag: 'defiant_type="array"',
+			var ns_defiant,
+				interpreter = {
+					array_flag: 'defiant:type="array"',
 					repl: function(dep) {
 						for (var key in this) {
 							delete this[key];
@@ -237,7 +238,10 @@
 								case (type === 'object'):
 									val_is_array = val.constructor === Array;
 									parsed = this.hash_to_xml(n, val, val_is_array);
-									if (tree_is_array) parsed = '<i '+ (val_is_array ? this.array_flag : '') +'>'+ parsed +'</i>';
+									if (tree_is_array) {
+										ns_defiant = true;
+										parsed = '<i '+ (val_is_array ? this.array_flag : '') +'>'+ parsed +'</i>';
+									}
 									elem.push( parsed );
 									break;
 								default:
@@ -245,8 +249,13 @@
 									else elem.push( this.scalar_to_xml(n, val, tree_is_array) );
 							}
 						}
+						if (!name) {
+							name = 'data';
+							if (ns_defiant || tree_is_array) attr.push(Defiant.namespace);
+						}
+						// mark node as array type
 						if (tree_is_array) attr.push(this.array_flag);
-						if (!name) name = 'data';
+
 						return is_array ? elem.join('')
 										: '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 					},

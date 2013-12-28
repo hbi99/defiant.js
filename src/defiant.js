@@ -118,24 +118,33 @@
 			var interpreter = function(leaf) {
 					var obj = {},
 						attr,
-						val;
+						val,
+						is_array;
+					if (leaf.getAttribute && leaf.getAttribute('defiant_type') === 'array') {
+						obj = [];
+						leaf.removeAttribute('type');
+					}
 					if (typeof(leaf) === 'string') {
 						leaf = Defiant.xmlFromString(leaf);
 					}
-					if (leaf.nodeType == 1) {
-						attr = leaf.attributes;
-						if (attr.length > 0) {
-							for (var j=0, jl=attr.length, a; j<jl; j++) {
-								a = attr.item(j);
-								val = a.nodeValue;
-								obj['@'+ a.nodeName] = (val == +val)? +val : val ;
+					switch (leaf.nodeType) {
+						case 1:
+							attr = leaf.attributes;
+							if (attr.length > 0) {
+								for (var j=0, jl=attr.length, a; j<jl; j++) {
+									a = attr.item(j);
+									val = a.nodeValue;
+									obj['@'+ a.nodeName] = (val == +val)? +val : val ;
+								}
 							}
-						}
-					} else if (leaf.nodeType == 3) {
-						val = leaf.nodeValue;
-						obj = (val == +val)? +val : val ;
+							break;
+						case 3:
+							val = leaf.nodeValue;
+							obj = (val == +val)? +val : val ;
+							break;
 					}
 					if (leaf.hasChildNodes()) {
+						is_array = obj.constructor === Array;
 						for(var i=0, il=leaf.childNodes.length; i<il; i++) {
 							var item     = leaf.childNodes.item(i),
 								nodeName = item.nodeName,
@@ -146,7 +155,8 @@
 									if (JSON.stringify(obj) === '{}') return (val == +val)? +val : val ;
 									obj[nodeName] = val;
 								}
-								obj[nodeName] = interpreter(item);
+								if (is_array) obj.push(interpreter(item));
+								else obj[nodeName] = interpreter(item);
 							} else {
 								if (typeof(obj[nodeName].push) == 'undefined') {
 									var old = obj[nodeName];
@@ -156,10 +166,13 @@
 								obj[nodeName].push(interpreter(item));
 							}
 						}
+					} else {
+						obj = null;
 					}
 					return obj;
 				},
-				ret = interpreter(this);
+				node = (this.nodeType === 9) ? this.documentElement : this,
+				ret = interpreter(node);
 			return stringify ? JSON.stringify(ret, null, '\t') : ret;
 		};
 	}
@@ -189,6 +202,7 @@
 	if (!JSON.toXML) {
 		JSON.toXML = function(tree) {
 			var interpreter = {
+					array_flag: 'defiant_type="array"',
 					repl: function(dep) {
 						for (var key in this) {
 							delete this[key];
@@ -201,30 +215,43 @@
 					},
 					hash_to_xml: function(name, tree, is_array) {
 						var elem = [],
-							attr = [];
-						for (var key in tree) {
-							var val     = tree[key],
-								type    = typeof(val),
-								n       = is_array ? name : key,
-								is_attr = n.slice(0,1) === '@';
+							attr = [],
+							tree_is_array = tree.constructor === Array,
+							val_is_array,
+							is_attr,
+							parsed,
+							type,
+							key,
+							val,
+							n;
+						for (key in tree) {
+							val     = tree[key],
+							type    = typeof(val),
+							n       = is_array ? name : key,
+							is_attr = n.slice(0,1) === '@';
 							if (is_attr) n = n.slice(1);
 							switch (true) {
 								case (typeof(val) === 'undefined' || val == null):
-									elem.push( '<'+ n +' />' );
+									elem.push( '<'+ ( tree_is_array ? 'i' : n) +' />' );
 									break;
 								case (type === 'object'):
-									elem.push( this.hash_to_xml(n, val, val.constructor == Array) );
+									val_is_array = val.constructor === Array;
+									parsed = this.hash_to_xml(n, val, val_is_array);
+									if (tree_is_array) parsed = '<i '+ (val_is_array ? this.array_flag : '') +'>'+ parsed +'</i>';
+									elem.push( parsed );
 									break;
 								default:
-									if (is_attr) attr.push( n +'="'+ val +'"' );
-									else  elem.push( this.scalar_to_xml(n, val) );
+									if (is_attr) attr.push( n +'="'+ this.escape_xml(val) +'"' );
+									else elem.push( this.scalar_to_xml(n, val, tree_is_array) );
 							}
 						}
+						if (tree_is_array) attr.push(this.array_flag);
 						if (!name) name = 'data';
 						return is_array ? elem.join('')
 										: '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 					},
-					scalar_to_xml: function(name, text) {
+					scalar_to_xml: function(name, text, is_array) {
+						if (is_array) name = 'i';
 						return (name === '#text')? this.escape_xml(text)
 												 : '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
 					},
@@ -245,7 +272,7 @@
 		 * separated from main branch.
 		 */
 		JSON.search = function(tree, xpath, single) {
-			if (tree.constructor !== Object) throw 'object is not valid JSON';
+			//if (tree.constructor !== Object) throw 'object is not valid JSON';
 			var trc = single === null ? [] : false,
 				doc = JSON.toXML(tree),
 				res = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),

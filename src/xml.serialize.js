@@ -28,7 +28,7 @@ if (!Node.text) {
 	Node.prototype.__defineGetter__('text', function() {
 		return this.textContent;
 	});
-    Node.prototype.__defineSetter__('text', function(s) {
-    	this.textContent = s;
-    });
+	Node.prototype.__defineSetter__('text', function(s) {
+		this.textContent = s;
+	});
 }

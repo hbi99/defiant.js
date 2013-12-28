@@ -26,13 +26,13 @@ if (!JSON.toXML) {
 						val,
 						n;
 					for (key in tree) {
-						val     = tree[key],
-						type    = typeof(val),
-						n       = is_array ? name : key,
+						val     = tree[key];
+						type    = typeof(val);
+						n       = is_array ? name : key;
 						is_attr = n.slice(0,1) === '@';
 						if (is_attr) n = n.slice(1);
 						switch (true) {
-							case (typeof(val) === 'undefined' || val == null):
+							case (typeof(val) === 'undefined' || val === null):
 								elem.push( '<'+ ( tree_is_array ? 'i' : n) +' />' );
 								break;
 							case (type === 'object'):
@@ -61,8 +61,8 @@ if (!JSON.toXML) {
 				},
 				scalar_to_xml: function(name, text, is_array) {
 					if (is_array) name = 'i';
-					return (name === '#text')? this.escape_xml(text)
-											 : '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
+					return (name === '#text') ? this.escape_xml(text)
+												: '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
 				},
 				escape_xml: function(text) {
 					return String(text) .replace(/</g, '&lt;')

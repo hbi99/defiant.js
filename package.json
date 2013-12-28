@@ -1,26 +1,27 @@
 {
-    "name": "defiant",
-    "version": "0.8.2",
-    "description": "Smart templating with XSLT and XPath.",
-    "author": {
-        "name": "Hakan Bilgin",
-        "email": "hbi@longscript.com",
-        "url": "https://github.com/hbi99"
-    },
-    "license": {
-        "type": "MIT",
-        "url": "http://mit-license.org/"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/hbi99/defiant.js.git"
-    },
-    "bugs": {
-        "url": "https://github.com/hbi99/defiant.js/issues"
-    },
-    "homepage": "http://www.defiantjs.com",
-    "devDependencies": {
-        "grunt": "~0.4.2",
-        "grunt-contrib-concat": "~0.3.0"
-    }
+  "name": "defiant",
+  "version": "0.8.2",
+  "description": "Smart templating with XSLT and XPath.",
+  "author": {
+    "name": "Hakan Bilgin",
+    "email": "hbi@longscript.com",
+    "url": "https://github.com/hbi99"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "http://mit-license.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hbi99/defiant.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hbi99/defiant.js/issues"
+  },
+  "homepage": "http://www.defiantjs.com",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-jshint": "~0.8.0"
+  }
 }

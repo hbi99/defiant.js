@@ -6,8 +6,8 @@ if (!window.JSON) {
 			if (vContent instanceof Object) {
 				var sOutput = "";
 				if (vContent.constructor === Array) {
-		  			for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
-		  			return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
+					for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
+					return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
 				}
 				if (vContent.toString !== Object.prototype.toString) {
 					return "\"" + vContent.toString().replace(/"/g, "\\$&") + "\"";
@@ -17,7 +17,7 @@ if (!window.JSON) {
 				}
 				return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
 			}
-	  		return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
+			return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
 		}
 	};
 }

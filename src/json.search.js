@@ -29,7 +29,7 @@ if (!JSON.search) {
 			// find out index - speeds up search later and finds
 			// correct matches if xpath contains positon(), last(), etc
 			node_index = 0;
-			while (node = node.previousSibling) node_index++;
+			while ((node = node.previousSibling)) node_index++;
 			// reset node
 			node = res[i];
 			while (node !== doc.documentElement) {

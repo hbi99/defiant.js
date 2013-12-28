@@ -4,7 +4,7 @@ if (!Document.selectNodes) {
 		if (!XNode) XNode = this;
 		this.ns = this.createNSResolver(this.documentElement);
 		this.qI = this.evaluate(XPath, XNode, this.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-		var res = []
+		var res = [],
 			i   = 0,
 			il  = res.length;
 		for (; i<il; i++) {

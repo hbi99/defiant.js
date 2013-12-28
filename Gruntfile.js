@@ -33,6 +33,13 @@ module.exports = function (grunt) {
 			]
 		},
 
+		// concat this version
+		jshint: {
+			files: {
+				src: '<%= meta.source %>'
+			}
+		},
+
 		// concatenation source files
 		concat: {
 			options: {
@@ -73,6 +80,7 @@ module.exports = function (grunt) {
 
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
@@ -85,4 +93,9 @@ module.exports = function (grunt) {
 		'concat:latest',
     	'uglify:latest'
 	]);
+
+	grunt.registerTask('test', [
+		'jshint'
+	]);
+
 };

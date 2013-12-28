@@ -1,10 +1,10 @@
 
-// extending
+// extending STRING
 if (!String.prototype.fill) {
 	String.prototype.fill = function(i,c) {
 		var str = this;
 		c = c || ' ';
-		for (; str.length<i; str+=c){};
+		for (; str.length<i; str+=c){}
 		return str;
 	};
 }

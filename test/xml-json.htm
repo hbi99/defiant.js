@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js</title>
+<style type="text/css">
+
+body {
+	background: #ddd;
+}
+
+.arrow {
+	background: rgba(30,100,200,0.15);
+	position: absolute;
+	width: 100px;
+	height: 30px;
+	z-index: 2;
+}
+.arrow:after {
+	content: '';
+	position: absolute;
+	top: -15px;
+	left: 100%;
+	width: 0;
+	height: 0;
+	border-top: 30px solid transparent;
+	border-bottom: 30px solid transparent;
+	border-left: 30px solid rgba(30,100,200,0.15);
+}
+.json-to-xml {
+	top: 12%;
+	left: 45%;
+}
+.xml-to-json {
+	top: 42%;
+	left: 38%;
+	width: 250px;
+	-webkit-transform: rotate( 135deg );
+	-moz-transform:    rotate( 135deg );
+	transform:         rotate( 135deg );
+}
+.back-json-xml {
+	top: 72%;
+	left: 45%;
+}
+
+pre {
+	background: #fff;
+	margin: 0px;
+	position: absolute;
+	top: 1%;
+	bottom: 1%;
+	width: 48.75%;
+	height: 48.5%;
+	border: #ccc 1px solid;
+	border-radius: 5px;
+	font-size: 1.35em;
+	line-height: 1.25em;
+	overflow: auto;
+}
+
+#j-output {
+	color: #933;
+	left: 0.75%;
+}
+#rj-output {
+	color: #f00;
+	top: 50.25%;
+}
+#x-output {
+	color: #888;
+	right: 0.75%;
+}
+#rx-output {
+	color: #933;
+	right: 0.75%;
+	top: 50.25%;
+}
+
+</style>
+<!--
+<script type="text/javascript" src="/res/js/defiant.js"></script>
+-->
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectNodes.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectSingleNode.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
+</head>
+<body>
+
+<span class="arrow json-to-xml"></span>
+<span class="arrow xml-to-json"></span>
+<span class="arrow back-json-xml"></span>
+
+<pre id="x-output"></pre>
+<pre id="j-output"></pre>
+<pre id="rx-output"></pre>
+<pre id="rj-output"></pre>
+
+<script type="text/javascript">
+
+// development flag
+Defiant.env = 'development';
+
+var s = ''+
+	//	'<data>'+
+	//	'<data xmlns:d="defiant-namespace">'+
+		'<data xmlns:d="defiant-namespace">'+
+		'	<item>'+
+		'		<banan>1</banan>'+
+		'		<banan>2</banan>'+
+		'	</item>'+
+	//	'	<banan>3</banan>'+
+	//	'	<cage/>'+
+	//	'	<banan id="a">4</banan>'+
+
+		'	<zoo>'+
+		'		<banana d:type="Number">41</banana>'+
+		'		<zebra d:type="Boolean">true</zebra>'+
+		'		<monkey id="122" d:id="Number" d:type="Boolean">false</monkey>'+
+		'		<lion id="2">Mufasa</lion>'+
+		'	</zoo>'+
+
+	//	'	<visitor category="VIP">Peter</visitor>'+
+	//	'	<visitor>Gina</visitor>'+
+	//	'	<visitor>Zack</visitor>'+
+	//	'	<item d:type="Boolean">true</item>'+
+	//	'	<item d:type="Boolean">false</item>'+
+	//	'	<item>hakan</item>'+
+		'</data>',
+
+	doc = Defiant.xmlFromString(s)
+	, json = doc.toJSON()
+	, d2 = JSON.toXML(json)
+	, j2 = d2.toJSON()
+	;
+
+
+var xEl     = document.getElementById('x-output'),
+	jEl     = document.getElementById('j-output'),
+	rxEl    = document.getElementById('rx-output'),
+	rjEl    = document.getElementById('rj-output');
+
+xEl.innerHTML  = doc.xml.replace(/</g, '&lt;')
+					   .replace(/>/g, '&gt;');
+
+jEl.innerHTML  = JSON.stringify( json, null, '\t' )
+					.replace(/\t/g, String().fill(Defiant.tabsize));
+
+rxEl.innerHTML = d2.xml.replace(/</g, '&lt;')
+					   .replace(/>/g, '&gt;');
+
+rjEl.innerHTML = JSON.stringify( j2, null, '\t' )
+					.replace(/\t/g, String().fill(Defiant.tabsize));
+
+</script>
+
+</body>
+</html>

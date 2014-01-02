@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js</title>
+<style type="text/css">
+
+body {
+	background: #ddd;
+}
+
+.arrow {
+	background: rgba(30,100,200,0.15);
+	position: absolute;
+	width: 100px;
+	height: 30px;
+	z-index: 2;
+}
+.arrow:after {
+	content: '';
+	position: absolute;
+	top: -15px;
+	left: 100%;
+	width: 0;
+	height: 0;
+	border-top: 30px solid transparent;
+	border-bottom: 30px solid transparent;
+	border-left: 30px solid rgba(30,100,200,0.15);
+}
+.json-to-xml {
+	top: 42%;
+	left: 45%;
+}
+
+pre {
+	background: #fff;
+	margin: 0px;
+	position: absolute;
+	top: 1%;
+	bottom: 1%;
+	width: 48.75%;
+	border: #ccc 1px solid;
+	border-radius: 5px;
+	font-size: 1.35em;
+	line-height: 1.25em;
+	overflow: auto;
+}
+
+#j-output {
+	color: #933;
+	left: 0.75%;
+}
+#x-output {
+	color: #888;
+	right: 0.75%;
+}
+
+</style>
+<!--
+<script type="text/javascript" src="/res/js/defiant.js"></script>
+-->
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectNodes.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectSingleNode.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
+</head>
+<body>
+
+<span class="arrow json-to-xml"></span>
+
+<pre id="x-output"></pre>
+<pre id="j-output"></pre>
+
+
+<script type="text/javascript">
+
+// development flag
+Defiant.env = 'development';
+
+//var json = [ {"a": 1}, [3], "@a", 2 ],
+//var json = [ [1, 2, 3], '1', 2 ],
+//var json = {"arr": [{"@a": false, "a": []}]},
+//var json = {"a": "banan", "b": [{"c":{"c":[4,[2,2],"test",{"b":"blue"}]}},1,2]},
+//var json = {"a": {"@b": 2, "#text": "hakan"}, "b": [1,2,3], "c": 3},
+//var json = [1,"2",{"a": "Hakan", "b": 2}],
+//var json = [1,"2",true,false,NaN],
+//var json = {"test": [1,2,3,"B"]},
+/*
+var json = [
+		[
+			{
+				"channel":"d5f06780",
+				"ticker": {
+					"high": {
+						"value":"837.00000",
+						"bert":null,
+						"currency":true
+					},
+					"item":"BTC",
+				},
+				"stamp": [
+					1386261,
+					1388155
+				]
+			}
+		],
+		"13881572356888224",
+		{"test": "123"}
+	],
+*/
+/*
+var json = {"test": [
+	{
+		"id": "0002",
+		"type": "donut",
+		"name": "Raised",
+		"ppu": 0.55
+	},
+	{
+		"id": "0003",
+		"type": "donut",
+	//	"name": "Old Fashioned",
+		"ppu": 0.55
+	}
+]},
+*/
+/**/
+var json = [
+	[
+		{
+			"channel":"d5f06780-30a8-4a48-a2f8-7ed181b4a13f",
+			"channel_name":"ticker.BTCUSD",
+			"op":"private",
+			"origin":"broadcast",
+			"private":"ticker",
+			"ticker": {
+				"high": {
+					"value":["817.00000","137.00000","837.00000"],
+					"value_int":"83700000",
+					"display":"$837.00000",
+					"display_short":"$837.00",
+					"currency":"USD"
+				},
+				"item":"BTC",
+				"now":"1388157235621270"
+			},
+			"stamp":1388157235621615
+		}
+	],
+	"13881572356888224",
+	"d5f06780-30a8-4a48-a2f8-7ed181b4a13f"
+],
+
+//var json = {"test": [ [ [ [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}] ] ] ]},
+//var json = {"test": [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}]},
+//var json = [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}],
+	json_str = JSON.stringify( json, null, '\t' )
+	, doc    = JSON.toXML(json)
+	, j2     = doc.toJSON()
+	, res;
+
+var xEl  = document.getElementById('x-output'),
+	jEl  = document.getElementById('j-output');
+
+xEl.innerHTML  = doc.xml.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
+
+
+
+//res = JSON.search(json, '//*[category="reference"]/author');
+//res = JSON.search(json, '//bicycle');
+//res = JSON.search(json, '//wheels');
+//res = JSON.search(json, '//*[wheels=4]');
+//res = JSON.search(json, '//book[1]');
+res = JSON.search(json, '//value[1]');
+console.log( 'RES', res );
+
+//res = JSON.search(json, '//bicycle/@price');
+//console.log( 'RES', res );
+
+</script>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

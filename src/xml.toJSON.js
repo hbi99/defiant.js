@@ -29,7 +29,10 @@ if (!Node.toJSON) {
 						}
 						break;
 					case 3:
-						throw( 'ERROR! '+ leaf.nodeName );
+						type = leaf.parentNode.getAttribute('d:type');
+						childVal = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+						obj = childVal;
+						break;
 				}
 				if (leaf.hasChildNodes()) {
 					for(var i=0, il=leaf.childNodes.length; i<il; i++) {

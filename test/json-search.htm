@@ -144,7 +144,7 @@ var json = [
 					"value_int":"83700000",
 					"display":"$837.00000",
 					"display_short":"$837.00",
-					"currency":"USD"
+					"@currency":"USD"
 				},
 				"item":"BTC",
 				"now":"1388157235621270"
@@ -177,7 +177,7 @@ jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 //res = JSON.search(json, '//wheels');
 //res = JSON.search(json, '//*[wheels=4]');
 //res = JSON.search(json, '//book[1]');
-res = JSON.search(json, '//value[1]');
+res = JSON.search(json, '//@currency');
 console.log( 'RES', res );
 
 //res = JSON.search(json, '//bicycle/@price');

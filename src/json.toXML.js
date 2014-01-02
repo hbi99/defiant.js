@@ -33,17 +33,17 @@ if (!JSON.toXML) {
 
 					for (key in tree) {
 						val     = tree[key];
-						if (val == null || val.toString() === 'NaN') val = null;
+						if (val === null || val.toString() === 'NaN') val = null;
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
 						cname   = (cname == +cname) ? 'item' : cname;
-						constr  = val == null ? null : val.constructor;
+						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {
 							attr.push( cname.slice(1) +'="'+ this.escape_xml(val) +'"' );
 							if (constr.name !== 'String') attr.push( 'd:'+ cname.slice(1) +'="'+ constr.name +'"' );
-						} else if (val == null) {
+						} else if (val === null) {
 							elem.push( this.scalar_to_xml( cname, val ) );
 						} else {
 							switch (constr) {
@@ -91,8 +91,8 @@ if (!JSON.toXML) {
 						attr,
 						constr;
 
-					if (val == null || val.toString() === 'NaN') val = null;
-					if (val == null) return '<'+ name +' d:constr="null"/>';
+					if (val === null || val.toString() === 'NaN') val = null;
+					if (val === null) return '<'+ name +' d:constr="null"/>';
 					if (override) return this.hash_to_xml( name, val, true );
 
 					constr = val.constructor;

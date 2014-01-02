@@ -30,7 +30,6 @@ if (!Node.toJSON) {
 						break;
 					case 3:
 						throw( 'ERROR! '+ leaf.nodeName );
-						break;
 				}
 				if (leaf.hasChildNodes()) {
 					for(var i=0, il=leaf.childNodes.length; i<il; i++) {

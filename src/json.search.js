@@ -52,7 +52,7 @@ if (!JSON.search) {
 
 		if (single) res = [res];
 		//console.log( 'x-RES:', res );
-		for (var i=0, il=res.length; i<il; i++) {
+		for (i=0, il=ret.length; i<il; i++) {
 			map  = [];
 			node = res[i];
 			while (node !== doc.documentElement) {

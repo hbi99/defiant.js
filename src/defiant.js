@@ -30,6 +30,9 @@
 			opt.data = JSON.toXML(opt.data);
 
 			if (!this.xsl_template) this.gather_templates();
+
+			console.log( this.xsl_template.xml );
+			
 			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ opt.template +'"]');
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);

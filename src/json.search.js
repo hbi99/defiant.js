@@ -1,85 +1,79 @@
 
 if (!JSON.search) {
-	/* TODO:
-	 * tracing matching lines should be
-	 * separated from main branch.
-	 */
 	JSON.search = function(tree, xpath, single) {
-		//if (tree.constructor !== Object) throw 'object is not valid JSON';
-		var trc = single === null ? [] : false,
-			doc = JSON.toXML(tree),
+		'use strict';
+		
+		var doc = JSON.toXML(tree),
 			res = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
 			ret = [],
 			map,
 			node,
-			node_index,
 			map_index,
-			char_index,
-			line_index,
-			line_len,
 			item_map,
-			current;
+			current,
+			is_attr,
+			do_search = function(current) {
+				if (map_index === ret[i].length) return current;
+				
+				switch (current.constructor) {
+					case Array:
+						for (var jl = current.length, j = 0, check; j<jl; j++) {
+							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
+								if (map_index < ret[i].length) {
+									map_index++;
+									item_map = ret[i][map_index];
+									return do_search( current[j] );
+								}
+							}
+						}
+						if (j === jl) {
+							if (item_map.val === JSON.stringify(current, null, '\t')) {
+								map_index++;
+								item_map = ret[i][map_index];
+
+								for (j=0; j<jl; j++) {
+									check = do_search( current[j] );
+									if (check) return check;
+								}
+							}
+							return current;
+						}
+						break;
+					default:
+						current = current[item_map.key];
+						if (typeof(current) !== 'object') return current;
+						if (current.constructor === Object) {
+							map_index++;
+							item_map = ret[i][map_index];
+						}
+				}
+				return do_search( current );
+			};
+
 		if (single) res = [res];
-		//console.log( res );
+		//console.log( 'x-RES:', res );
 		for (var i=0, il=res.length; i<il; i++) {
 			map  = [];
 			node = res[i];
-			// can't access "root"
-			if (node === node.ownerDocument.documentElement) continue;
-			// find out index - speeds up search later and finds
-			// correct matches if xpath contains positon(), last(), etc
-			node_index = 0;
-			while ((node = node.previousSibling)) node_index++;
-			// reset node
-			node = res[i];
 			while (node !== doc.documentElement) {
+				is_attr = node.nodeType === 2;
 				map.push({
 					node : node,
-					key  : node.nodeName,
-					val  : (node.nodeType === 2) ? node.value : node.toJSON(true),
-					index: node_index
+					key  : (is_attr ? '@' : '') + node.nodeName,
+					val  : is_attr ? node.value : node.toJSON(true)
 				});
-				node = (node.nodeType === 2) ? node.ownerElement : node.parentNode;
+				node = is_attr ? node.ownerElement : node.parentNode;
 			}
 			ret.push(map.reverse());
 		}
-		for (i=0, il=ret.length; i<il; i++) {
-			current   = tree;
-			map_index = 0;
-			line_index = 0;
-			char_index = 0;
-			while (map_index < ret[i].length) {
-				item_map = ret[i][map_index];
-				current  = current[ item_map.key ];
-				if (trc && map_index < ret[i].length-1) {
-					var t1 = item_map.val.replace(/\t/g, ''),
-						t2 = ret[i][map_index+1].val.replace(/\t/g, ''),
-						cI = t1.indexOf(t2);
-					char_index += cI;
-				}
-				if (typeof(current) === 'object' && current.constructor == Array) {
-					for (var j=item_map.index, jl=current.length; j<jl; j++) {
-						if (item_map.val === JSON.stringify(current[j], null, '\t') ) {
-							current = current[j];
-							break;
-						}
-					}
-				}
-				map_index++;
-			}
-			if (trc) {
-				line_index = (char_index)? ret[i][0].val.replace(/\t/g, '').slice(0,char_index).match(/\n/g).length : 0;
-				line_len = item_map.val.match(/\n/g);
-				trc.push([line_index+2, (line_len === null ? 0 : line_len.length)]);
-			}
-			switch (item_map.node.nodeType) {
-				case 2: ret[i] = item_map.node.value; break;
-				case 3: ret[i] = item_map.node.text; break;
-				default: ret[i] = current || item_map.val;
-			}
+		//console.log( 'j-RES:', ret );
+		for (var i=0, il=ret.length; i<il; i++) {
+			map_index  = 0;
+			item_map = ret[i][map_index];
+			
+			ret[i] = do_search(tree);
 		}
-		if (trc) this.trace = trc;
-		else delete this.trace;
+		
 		return ret;
 	};
 }

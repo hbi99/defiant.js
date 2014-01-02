@@ -3,9 +3,11 @@
 	'use strict';
 
 	var Defiant = {
-		is_safari: navigator.userAgent.match(/safari/i) !== null,
-		namespace: 'xmlns:defiant="defiant-custom-namespace"',
-		xml_decl: '<?xml version="1.0" encoding="utf-8"?>',
+		env       : 'production',
+		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
+		namespace : 'xmlns:d="defiant-namespace"',
+		tabsize   : 4,
+		is_safari : navigator.userAgent.match(/safari/i) !== null,
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -54,7 +56,7 @@
 		xmlFromString: function(str) {
 			var parser,
 				xmlDoc;
-			str = str.replace(/> {1,}</g, '><');
+			str = str.replace(/>\s{1,}</g, '><');
 			if (str.match(/<\?xml/) === null) str = this.xml_decl + str;
 			if (window.DOMParser) {
 				parser = new DOMParser();

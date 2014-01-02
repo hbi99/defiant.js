@@ -1,64 +1,96 @@
 
 if (!Node.toJSON) {
+
 	Node.prototype.toJSON = function(stringify) {
-		var interpreter = function(leaf) {
+		'use strict';
+
+		var interpret = function(leaf) {
 				var obj = {},
 					attr,
-					val,
-					is_array;
-				if (leaf.getAttribute && leaf.getAttribute('defiant:type') === 'array') {
-					obj = [];
-					leaf.removeAttribute('type');
-				}
-				if (typeof(leaf) === 'string') {
-					leaf = Defiant.xmlFromString(leaf);
-				}
+					type,
+					item,
+					childName,
+					cConstr,
+					childVal;
+
 				switch (leaf.nodeType) {
 					case 1:
+						type = leaf.getAttribute('d:constr');
+						if (type === 'Array') obj = [];
+
 						attr = leaf.attributes;
-						if (attr.length > 0) {
-							for (var j=0, jl=attr.length, a; j<jl; j++) {
-								a = attr.item(j);
-								val = a.nodeValue;
-								obj['@'+ a.nodeName] = (val == +val)? +val : val ;
-							}
+						for (var j=0, jl=attr.length, a; j<jl; j++) {
+							a = attr.item(j);
+							if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
+
+							type = leaf.getAttribute('d:'+ a.nodeName);
+							childVal = (type) ? window[ type ]( a.nodeValue === 'false' ? '' : a.nodeValue ) : a.nodeValue;
+							obj['@'+ a.nodeName] = childVal;
 						}
 						break;
 					case 3:
-						val = leaf.nodeValue;
-						obj = (val == +val)? +val : val ;
+						throw( 'ERROR! '+ leaf.nodeName );
 						break;
 				}
 				if (leaf.hasChildNodes()) {
-					is_array = obj.constructor === Array;
 					for(var i=0, il=leaf.childNodes.length; i<il; i++) {
-						var item     = leaf.childNodes.item(i),
-							nodeName = item.nodeName,
-							children = item.childNodes;
-						if (typeof(obj[nodeName]) == 'undefined') {
-							if (nodeName === '#text') {
-								val = item.nodeValue;
-								if (JSON.stringify(obj) === '{}') return (val == +val)? +val : val ;
-								obj[nodeName] = val;
-							}
-							if (is_array) obj.push(interpreter(item));
-							else obj[nodeName] = interpreter(item);
+						item      = leaf.childNodes.item(i);
+						childName = item.nodeName;
+						attr      = leaf.attributes;
+
+						if (childName === '#text') {
+							cConstr = leaf.getAttribute('d:constr');
+							childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+							if (!cConstr && !attr.length) obj = childVal;
+							else if (cConstr && attr.length === 1) obj = window[cConstr](childVal);
+							else obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
 						} else {
-							if (typeof(obj[nodeName].push) == 'undefined') {
-								var old = obj[nodeName];
-								obj[nodeName] = [];
-								obj[nodeName].push(old);
+							if (obj[childName]) {
+								
+								if (obj[childName].push) obj[childName].push( interpret(item) );
+								else obj[childName] = [obj[childName], interpret(item)];
+								continue;
 							}
-							obj[nodeName].push(interpreter(item));
+							cConstr = item.getAttribute('d:constr');
+							switch (cConstr) {
+								case 'null':
+									if (obj.push) obj.push(null);
+									else obj[childName] = null;
+									break;
+								case 'Array':
+									if (item.parentNode.firstChild === item &&
+										item.getAttribute('d:constr') === 'Array' && childName !== 'item') {
+										obj[childName] = [interpret(item)];
+									}
+									else if (obj.push) obj.push( interpret(item) );
+									else obj[childName] = interpret(item);
+									break;
+								case 'String':
+								case 'Number':
+								case 'Boolean':
+									childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+									if (obj.push) obj.push( window[cConstr](childVal) );
+									else obj[childName] = interpret(item);
+									break;
+								default:
+									if (obj.push) obj.push( interpret( item ) );
+									else obj[childName] = interpret( item );
+							}
 						}
 					}
-				} else {
-					obj = null;
 				}
 				return obj;
 			},
 			node = (this.nodeType === 9) ? this.documentElement : this,
-			ret = interpreter(node);
+			ret = interpret(node),
+			rn  = ret[node.nodeName];
+
+		// exclude root, if "this" is root node
+		if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {
+			ret = rn;
+		}
 		return stringify ? JSON.stringify(ret, null, '\t') : ret;
 	};
 }

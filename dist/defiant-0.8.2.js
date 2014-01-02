@@ -36,7 +36,7 @@
 			opt.data = JSON.toXML(opt.data);
 
 			if (!this.xsl_template) this.gather_templates();
-			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ opt.template +'"]'),
+			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ opt.template +'"]');
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -92,12 +92,12 @@
 })(window, document);
 
 
-// extending
+// extending STRING
 if (!String.prototype.fill) {
 	String.prototype.fill = function(i,c) {
 		var str = this;
 		c = c || ' ';
-		for (; str.length<i; str+=c){};
+		for (; str.length<i; str+=c){}
 		return str;
 	};
 }
@@ -114,7 +114,7 @@ if (!Document.selectNodes) {
 		if (!XNode) XNode = this;
 		this.ns = this.createNSResolver(this.documentElement);
 		this.qI = this.evaluate(XPath, XNode, this.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-		var res = []
+		var res = [],
 			i   = 0,
 			il  = res.length;
 		for (; i<il; i++) {
@@ -175,9 +175,9 @@ if (!Node.text) {
 	Node.prototype.__defineGetter__('text', function() {
 		return this.textContent;
 	});
-    Node.prototype.__defineSetter__('text', function(s) {
-    	this.textContent = s;
-    });
+	Node.prototype.__defineSetter__('text', function(s) {
+		this.textContent = s;
+	});
 }
 
 
@@ -252,8 +252,8 @@ if (!window.JSON) {
 			if (vContent instanceof Object) {
 				var sOutput = "";
 				if (vContent.constructor === Array) {
-		  			for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
-		  			return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
+					for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
+					return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
 				}
 				if (vContent.toString !== Object.prototype.toString) {
 					return "\"" + vContent.toString().replace(/"/g, "\\$&") + "\"";
@@ -263,7 +263,7 @@ if (!window.JSON) {
 				}
 				return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
 			}
-	  		return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
+			return typeof vContent === "string" ? "\"" + vContent.replace(/"/g, "\\$&") + "\"" : String(vContent);
 		}
 	};
 }
@@ -296,13 +296,13 @@ if (!JSON.toXML) {
 						val,
 						n;
 					for (key in tree) {
-						val     = tree[key],
-						type    = typeof(val),
-						n       = is_array ? name : key,
+						val     = tree[key];
+						type    = typeof(val);
+						n       = is_array ? name : key;
 						is_attr = n.slice(0,1) === '@';
 						if (is_attr) n = n.slice(1);
 						switch (true) {
-							case (typeof(val) === 'undefined' || val == null):
+							case (typeof(val) === 'undefined' || val === null):
 								elem.push( '<'+ ( tree_is_array ? 'i' : n) +' />' );
 								break;
 							case (type === 'object'):
@@ -331,8 +331,8 @@ if (!JSON.toXML) {
 				},
 				scalar_to_xml: function(name, text, is_array) {
 					if (is_array) name = 'i';
-					return (name === '#text')? this.escape_xml(text)
-											 : '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
+					return (name === '#text') ? this.escape_xml(text)
+												: '<' + name + '>' + this.escape_xml(text) + '</' + name + '>';
 				},
 				escape_xml: function(text) {
 					return String(text) .replace(/</g, '&lt;')
@@ -377,7 +377,7 @@ if (!JSON.search) {
 			// find out index - speeds up search later and finds
 			// correct matches if xpath contains positon(), last(), etc
 			node_index = 0;
-			while (node = node.previousSibling) node_index++;
+			while ((node = node.previousSibling)) node_index++;
 			// reset node
 			node = res[i];
 			while (node !== doc.documentElement) {

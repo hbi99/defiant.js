@@ -1,26 +1,32 @@
 
 if (!Node.xml) {
 	Node.prototype.__defineGetter__('xml',  function() {
-		var ser    = new XMLSerializer(),
-			str    = ser.serializeToString(this).replace(/(>)\s*(<)(\/*)/g, '$1\n$2$3'),
+		var tabs = Defiant.tabsize,
+			decl = Defiant.xml_decl.toLowerCase(),
+			ser  = new XMLSerializer(),
+			xstr = ser.serializeToString(this);
+		if (Defiant.env !== 'development') {
+			// if environment is not development, remove defiant related info
+			xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
+		}
+		var str    = xstr.trim().replace(/(>)\s*(<)(\/*)/g, '$1\n$2$3'),
 			lines  = str.split('\n'),
 			indent = -1,
-			s      = '',
 			i      = 0,
 			il     = lines.length,
 			start,
 			end;
 		for (; i<il; i++) {
-			if (lines[i].toLowerCase() === Defiant.xml_decl.toLowerCase()) continue;
+			if (i === 0 && lines[i].toLowerCase() === decl) continue;
 			start = lines[i].match(/<[^\/]+>/g) !== null;
 			end   = lines[i].match(/<\/\w+>/g) !== null;
 			if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
 			if (start) indent++;
-			lines[i] = s.fill(indent, '\t') + lines[i];
+			lines[i] = String().fill(indent, '\t') + lines[i];
 			if (start && end) indent--;
 			if (!start && end) indent--;
 		}
-		return lines.join('\n').replace(/\t/g, s.fill(4, ' '));
+		return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
 	});
 }
 

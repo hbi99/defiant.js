@@ -1,6 +1,6 @@
 {
   "name": "defiant",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",
@@ -19,9 +19,11 @@
     "url": "https://github.com/hbi99/defiant.js/issues"
   },
   "homepage": "http://www.defiantjs.com",
+  "main": "./lib/defiant",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-jshint": "~0.8.0"
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-nodeunit": "~0.2.2"
   }
 }

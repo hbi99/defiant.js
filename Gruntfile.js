@@ -74,28 +74,29 @@ module.exports = function (grunt) {
 				src: ['<%= concat.latest.dest %>'],
 				dest: 'dist/defiant-latest.min.js'
 			}
-		}
+		},
 
-		// uglifying concatenated file
+		// test tasks
+		nodeunit: {
+			all: ['test/*']
+		}
 
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
 	grunt.registerTask('default', [
 		'concat:stable',
-    	'uglify:stable'
-	]);
-
-	grunt.registerTask('latest', [
+    	'uglify:stable',
 		'concat:latest',
     	'uglify:latest'
 	]);
 
 	grunt.registerTask('test', [
-		'jshint'
+		'nodeunit'
 	]);
 
 };

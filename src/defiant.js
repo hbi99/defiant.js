@@ -44,15 +44,14 @@
 			return span.innerHTML;
 		},
 		gather_templates: function() {
-			var scripts   = document.getElementsByTagName('script'),
-				temp_type = 'defiant/xsl-template',
-				temp_str  = '',
-				i         = 0,
-				il        = scripts.length;
+			var scripts = document.getElementsByTagName('script'),
+				str     = '',
+				i       = 0,
+				il      = scripts.length;
 			for (; i<il; i++) {
-				if (scripts[i].type === temp_type) temp_str += scripts[i].innerHTML;
+				if (scripts[i].type === 'defiant/xsl-template') str += scripts[i].innerHTML;
 			}
-			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ temp_str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
+			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
 			var parser,

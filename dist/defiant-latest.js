@@ -2,7 +2,7 @@
  * Defiant.js v0.8.4 
  * Smart templating with XSLT and XPath. 
  * http://defiantjs.com 
- * 
+ *  
  * Copyright (c) 2013-2014, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the MIT License 
  */ 

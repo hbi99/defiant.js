@@ -28,7 +28,7 @@
             <xsl:if test="count(./*) > 0">
                 <div class="item-children">
                     <xsl:call-template name="tree-walker">
-                        <xsl:with-param name="indent"><xsl:value-of select="$indent"/>&#160;&#160;</xsl:with-param>
+                      <xsl:with-param name="indent"><xsl:value-of select="$indent"/>&#160;&#160;</xsl:with-param>
                     </xsl:call-template>
                 </div>
             </xsl:if>

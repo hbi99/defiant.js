@@ -95,8 +95,6 @@ module.exports = function (grunt) {
     	'uglify:latest'
 	]);
 
-	grunt.registerTask('test', [
-		'nodeunit'
-	]);
+	grunt.registerTask('test', [ 'nodeunit' ]);
 
 };

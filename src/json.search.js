@@ -18,20 +18,34 @@ if (!JSON.search) {
 			 * tracing matching lines should be
 			 * separated from this code
 			 */
-			trc = (Defiant.trace)? [] : false,
+			trc   = (Defiant.trace)? [] : false,
+			troot = JSON.stringify( tree, null, '\t' ),
 			char_index,
 			line_index,
 			line_len,
 			trace_map,
 			do_trace = function() {
+				var t1, t2, cI;
+
 				if (trace_map.indexOf( map_index ) > -1) return;
 				trace_map.push( map_index );
-				if (map_index < ret[i].length-1) {
-					var t1 = item_map.val.replace(/\t/g, ''),
-						t2 = ret[i][map_index+1].val.replace(/\t/g, ''),
-						cI = t1.indexOf(t2);
-					char_index += cI;
+
+				if (ret[i].length === 1) {
+					line_index = -1;
+					t1 = troot;
+					t2 = item_map.val;
 				}
+				if (map_index < ret[i].length-1) {
+					t1 = item_map.val;
+					t2 = ret[i][map_index+1].val;
+				} else if (!t2) {
+					return;
+				}
+
+				t1 = t1.replace(/\t/g, '');
+				t2 = t2.replace(/\t/g, '');
+				cI = t1.indexOf(t2);
+				char_index += cI;
 			},
 			do_search = function(current) {
 				if (map_index === ret[i].length) return current;
@@ -97,7 +111,7 @@ if (!JSON.search) {
 			ret.push(map.reverse());
 		}
 		//console.log( 'j-RES:', ret );
-		for (var i=0, il=ret.length; i<il; i++) {
+		for (var i=0, il=ret.length, t; i<il; i++) {
 			line_index = 0;
 			char_index = 0;
 			trace_map = [];
@@ -106,7 +120,8 @@ if (!JSON.search) {
 			item_map   = ret[i][map_index];
 			found      = do_search(tree);
 			if (trc) {
-				line_index = (char_index)? ret[i][0].val.replace(/\t/g, '').slice(0,char_index).match(/\n/g).length : 0;
+				t = (ret[i].length === 1)? troot : ret[i][0].val;
+				line_index += (char_index)? t.replace(/\t/g, '').slice(0,char_index).match(/\n/g).length : 0;
 				line_len = ret[i][ map_index-1 ].val.match(/\n/g);
 				trc.push([line_index+2, (line_len === null ? 0 : line_len.length)]);
 			}

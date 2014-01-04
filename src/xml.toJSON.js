@@ -93,6 +93,7 @@ if (!Node.toJSON) {
 		if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {
 			ret = rn;
 		}
-		return stringify ? JSON.stringify(ret, null, '\t') : ret;
+		if (stringify && stringify.toString() === 'true') stringify = '\t';
+		return stringify ? JSON.stringify(ret, null, stringify) : ret;
 	};
 }

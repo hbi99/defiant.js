@@ -28,6 +28,7 @@ module.exports = function (grunt) {
 						'src/json.js',
 						'src/json.toXML.js',
 						'src/json.search.js',
+						'src/json.mtrace.js',
 						// add jQuery plugin
 						'src/jquery-plugin.js'
 			]

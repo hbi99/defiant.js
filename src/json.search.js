@@ -3,62 +3,26 @@ if (!JSON.search) {
 	JSON.search = function(tree, xpath, single) {
 		'use strict';
 		
-		var doc = JSON.toXML(tree),
-			od  = doc.documentElement,
-			res = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
-			ret = [],
-			found,
+		var doc  = JSON.toXML(tree),
+			od   = doc.documentElement,
+			xres = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
+			jres = [],
+			ret  = [],
 			map,
 			node,
 			map_index,
 			item_map,
 			current,
 			is_attr,
-			/* TODO:
-			 * tracing matching lines should be
-			 * separated from this code
-			 */
-			trc   = (Defiant.trace)? [] : false,
-			troot = JSON.stringify( tree, null, '\t' ),
-			char_index,
-			line_index,
-			line_len,
-			trace_map,
-			do_trace = function() {
-				var t1, t2, cI;
-
-				if (trace_map.indexOf( map_index ) > -1) return;
-				trace_map.push( map_index );
-
-				if (ret[i].length === 1) {
-					line_index = -1;
-					t1 = troot;
-					t2 = item_map.val;
-				}
-				if (map_index < ret[i].length-1) {
-					t1 = item_map.val;
-					t2 = ret[i][map_index+1].val;
-				} else if (!t2) {
-					return;
-				}
-
-				t1 = t1.replace(/\t/g, '');
-				t2 = t2.replace(/\t/g, '');
-				cI = t1.indexOf(t2);
-				char_index += cI;
-			},
 			do_search = function(current) {
-				if (map_index === ret[i].length) return current;
-
+				if (map_index === jres[i].length) return current;
 				switch (current.constructor) {
 					case Array:
-						if (trc) do_trace();
-
 						for (var jl = current.length, j = 0, check; j<jl; j++) {
 							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
-								if (map_index < ret[i].length) {
+								if (map_index < jres[i].length) {
 									map_index++;
-									item_map = ret[i][map_index];
+									item_map = jres[i][map_index];
 									return do_search( current[j] );
 								}
 							}
@@ -66,7 +30,7 @@ if (!JSON.search) {
 						if (j === jl) {
 							if (item_map.val === JSON.stringify(current, null, '\t')) {
 								map_index++;
-								item_map = ret[i][map_index];
+								item_map = jres[i][map_index];
 
 								for (j=0; j<jl; j++) {
 									check = do_search( current[j] );
@@ -77,59 +41,47 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						if (trc) do_trace();
-
 						current = current[item_map.key];
 						if (typeof(current) !== 'object') {
 							map_index++;
-							item_map = ret[i][map_index];
+							item_map = jres[i][map_index];
 							return current;
 						}
 						if (current.constructor === Object) {
 							map_index++;
-							item_map = ret[i][map_index];
+							item_map = jres[i][map_index];
 						}
 				}
 				return do_search( current );
 			};
-		if (single) res = [res];
-		//console.log( 'x-RES:', res );
-		for (i=0, il=res.length; i<il; i++) {
+
+		if (single) xres = [xres];
+		//console.log( 'x-RES:', xres );
+		for (i=0, il=xres.length; i<il; i++) {
 			map  = [];
-			node = res[i];
-			// can't access "root"
+			node = xres[i];
+			// can't access json "root"
 			if (node === od) continue;
-			while (node !== doc.documentElement) {
+			while (node !== od) {
 				is_attr = node.nodeType === 2;
 				map.push({
 					node : node,
 					key  : (is_attr ? '@' : '') + node.nodeName,
-					val  : is_attr ? node.value : node.toJSON(true)
+					val  : is_attr ? node.value : node.toJSON('\t')
 				});
 				node = is_attr ? node.ownerElement : node.parentNode;
 			}
-			ret.push(map.reverse());
+			jres.push(map.reverse());
 		}
-		//console.log( 'j-RES:', ret );
-		for (var i=0, il=ret.length, t; i<il; i++) {
-			line_index = 0;
-			char_index = 0;
-			trace_map = [];
-
+		//console.log( 'j-RES:', jres );
+		for (var i=0, il=jres.length; i<il; i++) {
 			map_index  = 0;
-			item_map   = ret[i][map_index];
-			found      = do_search(tree);
-			if (trc) {
-				t = (ret[i].length === 1)? troot : ret[i][0].val;
-				line_index += (char_index)? t.replace(/\t/g, '').slice(0,char_index).match(/\n/g).length : 0;
-				line_len = ret[i][ map_index-1 ].val.match(/\n/g);
-				trc.push([line_index+2, (line_len === null ? 0 : line_len.length)]);
-			}
-			ret[i] = found;
+			item_map   = jres[i][map_index];
+			ret.push( do_search(tree) );
 		}
-		// if tracing flag; add trace info to JSON-object
-		if (trc) this.trace = trc;
-		else delete this.trace;
+		// if tracing is enabled
+		this.trace = JSON.search.trace ? JSON.mtrace(tree, jres) : false;
+		//console.log( 'RES:', ret );
 		return ret;
 	};
 }

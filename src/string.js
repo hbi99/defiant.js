@@ -14,3 +14,18 @@ if (!String.prototype.trim) {
 		return this.replace(/^\s+|\s+$/gm, '');
 	};
 }
+
+/* temporary (!?)
+ * - used to visual matching of search results
+ */
+if (!String.prototype.count_nl) {
+	String.prototype.count_nl = function () {
+		var m = this.match(/\n/g);
+		return m ? m.length : 0;
+	};
+}
+if (!String.prototype.notabs) {
+	String.prototype.notabs = function () {
+		return this.replace(/\t/g, '');
+	};
+}

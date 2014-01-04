@@ -78,6 +78,50 @@
 				}
 			}
 			return safe;
+		},
+		result: function() {
+			var Q = function(found) {
+				var coll = Object.create(Array.prototype);
+				for (var method in Q.prototype) {
+					if (Q.prototype.hasOwnProperty(method)) {
+						coll[method] = Q.prototype[method];
+					}
+				}
+				for (var i=0, il=found.length; i<il; i++) {
+					coll.push(found[i]);
+				}
+				return coll;
+			};
+			Q.prototype = {
+				toArray: function() {
+					return Array.prototype.slice.call(this, 0);
+				},
+				sum: function(key) {
+					var i = 0,
+						il = this.length,
+						sum = 0;
+					for (; i<il; i++) {
+						sum += +this[i][key];
+					}
+					return sum;
+				},
+				avg: function(key) {
+					return this.sum(key) / this.length;
+				},
+				min: function(key, method) {
+					var i = 0,
+						il = this.length,
+						arr = [];
+					for (; i<il; i++) {
+						arr.push(this[i][key]);
+					}
+					return Math[ method || 'min' ].apply(null, arr);
+				},
+				max: function(key) {
+					return this.min(key, 'max');
+				}
+			};
+			return new Q(arguments[0]);
 		}
 	};
 

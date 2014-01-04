@@ -81,7 +81,8 @@ if (!JSON.search) {
 		}
 		// if tracing is enabled
 		this.trace = JSON.search.trace ? JSON.mtrace(tree, jres) : false;
+
 		//console.log( 'RES:', ret );
-		return ret;
+		return Defiant.result(ret);
 	};
 }

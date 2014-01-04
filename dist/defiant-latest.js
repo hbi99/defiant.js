@@ -127,6 +127,36 @@
 				},
 				max: function(key) {
 					return this.min(key, 'max');
+				},
+				add: function(key, val, operator) {
+					var i = 0,
+						il = this.length;
+					for (; i<il; i++) {
+						switch (operator) {
+							case 'divide':   this[i][key] /= +val; break;
+							case 'multiply': this[i][key] *= +val; break;
+							case 'subtract': this[i][key] -= +val; break;
+							default: this[i][key] += +val;
+						}
+					}
+					return this;
+				},
+				subtract: function(key, val) {
+					return this.add(key, val, 'subtract');
+				},
+				divide: function(key, val) {
+					return this.add(key, val, 'divide');
+				},
+				multiply: function(key, val) {
+					return this.add(key, val, 'multiply');
+				},
+				each: function(fn) {
+					var i = 0,
+						il = this.length;
+					for (; i<il; i++) {
+						fn(this[i]);
+					}
+					return this;
 				}
 			};
 			return new Q(arguments[0]);

@@ -77,7 +77,7 @@ if (!JSON.toXML) {
 					}
 					
 					if (!name) {
-						name = 'data';
+						name = 'd:data';
 						attr.push(Defiant.namespace);
 						if (is_array) attr.push('d:constr="Array"');
 					}

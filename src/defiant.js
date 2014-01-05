@@ -122,13 +122,15 @@
 				},
 				add: function(key, val, operator) {
 					var i = 0,
-						il = this.length;
+						il = this.length,
+						is_string = typeof(val) === 'string';
+
 					for (; i<il; i++) {
 						switch (operator) {
-							case 'divide':   this[i][key] /= +val; break;
-							case 'multiply': this[i][key] *= +val; break;
-							case 'subtract': this[i][key] -= +val; break;
-							default: this[i][key] += +val;
+							case 'divide':   this[i][key] /= (is_string) ? this[i][val] : +val; break;
+							case 'multiply': this[i][key] *= (is_string) ? this[i][val] : +val; break;
+							case 'subtract': this[i][key] -= (is_string) ? this[i][val] : +val; break;
+							default: this[i][key] += (is_string) ? this[i][val] : +val;
 						}
 					}
 					return this;

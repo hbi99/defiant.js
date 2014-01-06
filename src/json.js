@@ -1,5 +1,5 @@
 
-if (!window.JSON) {
+if (typeof(JSON) === 'undefined') {
 	window.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
 		stringify: function (vContent) {

@@ -14,8 +14,10 @@ if (!Document.selectNodes) {
 	};
 }
 
-if (!Node.selectNodes) {
-	Node.prototype.selectNodes = function(XPath) {
-		return this.ownerDocument.selectNodes(XPath, this);
+if (!Document.selectSingleNode) {
+	Document.prototype.selectSingleNode = function(XPath, XNode) {
+		if (!XNode) XNode = this;
+		this.xI = this.selectNodes(XPath, XNode);
+		return (this.xI.length > 0)? this.xI[0] : null;
 	};
 }

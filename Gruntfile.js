@@ -21,9 +21,6 @@ module.exports = function (grunt) {
 						'src/string.js',
 						// extend node object
 						'src/xml.selectNodes.js',
-						'src/xml.selectSingleNode.js',
-						'src/xml.serialize.js',
-						'src/xml.toJSON.js',
 						// extend json object
 						'src/json.js',
 						'src/json.toXML.js',
@@ -56,6 +53,11 @@ module.exports = function (grunt) {
 			latest: {
 				src: '<%= meta.source %>',
 				dest: 'dist/defiant-latest.js'
+			},
+			// concat Node version
+			nodelib: {
+				src: '<%= meta.source %>',
+				dest: 'lib/defiant.js'
 			}
 		},
 
@@ -93,8 +95,11 @@ module.exports = function (grunt) {
 		'concat:stable',
     	'uglify:stable',
 		'concat:latest',
-    	'uglify:latest'
+    	'uglify:latest',
+    	'concat:nodelib'
 	]);
+
+	grunt.registerTask('lib', [ 'concat:nodelib' ]);
 
 	grunt.registerTask('test', [ 'nodeunit' ]);
 

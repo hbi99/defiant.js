@@ -65,9 +65,6 @@ pre {
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
 <script type="text/javascript" src="/defiant.js/src/xml.selectNodes.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.selectSingleNode.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
 </head>
 <body>
 
@@ -161,13 +158,14 @@ var json = [
 //var json = [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}],
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
-	, j2     = doc.toJSON()
+	, j2     = Defiant.nodeToJSON(doc)
 	, res;
 
 var xEl  = document.getElementById('x-output'),
-	jEl  = document.getElementById('j-output');
+	jEl  = document.getElementById('j-output'),
+	str  = Defiant.prettyPrint(doc);
 
-xEl.innerHTML  = doc.xml.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
 

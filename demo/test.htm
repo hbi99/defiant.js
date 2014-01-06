@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js - Sum, Avg</title>
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectNodes.js"></script>
+</head>
+<body>
+
+
+<script type="text/javascript">
+
+    var tmp = {
+        "blue": "#00f",
+        "red": "#f00"
+    },
+    xtmp = JSON.toXML(tmp);
+
+    console.log( Defiant.prettyPrint(xtmp) )
+
+    var t = Defiant.xmlFromString('<data>\n\t<i id="1"/>\n</data>');
+  
+</script>
+
+</body>
+</html>

@@ -67,7 +67,7 @@ if (!JSON.search) {
 				map.push({
 					node : node,
 					key  : (is_attr ? '@' : '') + node.nodeName,
-					val  : is_attr ? node.value : node.toJSON('\t')
+					val  : is_attr ? node.value : Defiant.nodeToJSON(node, '\t')
 				});
 				node = is_attr ? node.ownerElement : node.parentNode;
 			}

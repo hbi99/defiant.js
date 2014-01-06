@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <title>Defiant.js - Advanced demo</title>
-<script type="text/javascript" src="../dist/defiant-latest.min.js"></script>
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.selectNodes.js"></script>
 </head>
 <body>
 
@@ -64,10 +69,13 @@
             { "@name": "config.php" },
             { "@name": "index.htm" }
         ]},
-        htm = Defiant.render('tree', obj);
+        htm = Defiant.render('tree', obj),
+        str;
     document.getElementById('output').innerHTML = htm;
     
-    console.log( JSON.toXML( obj ).xml );
+    str = Defiant.prettyPrint( JSON.toXML( obj ) );
+
+    console.log( str );
   
 </script>
 

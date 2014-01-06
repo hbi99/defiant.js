@@ -112,7 +112,7 @@ if (!JSON.toXML) {
 			},
 			doc = interpreter.to_xml.call(interpreter, tree);
 
-		interpreter.repl.call(tree, doc.documentElement.toJSON());
+		interpreter.repl.call(tree, Defiant.nodeToJSON(doc.documentElement));
 
 		return doc;
 	};

@@ -1,5 +1,17 @@
 
-(function(window, document, undefined) {
+if (typeof module === "undefined") {
+	module = { exports: undefined };
+} else {
+	var dom = require('xmldom');
+
+	this.Document      = Document      = dom.DOMImplementation;
+	this.DOMParser     = DOMParser     = dom.DOMParser;
+	this.XMLSerializer = XMLSerializer = dom.XMLSerializer;
+
+	document = new Document().createDocument(null, null, null);
+}
+
+module.exports = Defiant = (function(window, undefined) {
 	'use strict';
 
 	var Defiant = {
@@ -7,7 +19,8 @@
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
-		is_safari : navigator.userAgent.match(/safari/i) !== null,
+		is_safari : typeof navigator !== 'undefined'? navigator.userAgent.match(/safari/i) !== null
+													: false,
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -69,15 +82,136 @@
 			}
 			return xmlDoc;
 		},
-		extend: function(safe, deposit) {
-			for (var content in deposit) {
-				if (!safe[content] || typeof(deposit[content]) !== 'object') {
-					safe[content] = deposit[content];
+		extend: function(src, dest) {
+			for (var content in dest) {
+				if (!src[content] || typeof(dest[content]) !== 'object') {
+					src[content] = dest[content];
 				} else {
-					this.extend(safe[content], deposit[content]);
+					this.extend(src[content], dest[content]);
 				}
 			}
-			return safe;
+			return src;
+		},
+		prettyPrint: function(node) {
+			var tabs = this.tabsize,
+				decl = this.xml_decl.toLowerCase(),
+				ser  = new XMLSerializer(),
+				xstr = ser.serializeToString(node);
+			if (this.env !== 'development') {
+				// if environment is not development, remove defiant related info
+				xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
+			}
+			var str    = xstr.trim().replace(/(>)\s*(<)(\/*)/g, '$1\n$2$3'),
+				lines  = str.split('\n'),
+				indent = -1,
+				i      = 0,
+				il     = lines.length,
+				start,
+				end;
+			for (; i<il; i++) {
+				if (i === 0 && lines[i].toLowerCase() === decl) continue;
+				start = lines[i].match(/<[^\/]+>/g) !== null;
+				end   = lines[i].match(/<\/[\w\:]+>/g) !== null;
+				if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
+				if (start) indent++;
+				lines[i] = String().fill(indent, '\t') + lines[i];
+				if (start && end) indent--;
+				if (!start && end) indent--;
+			}
+			return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
+		},
+		nodeToJSON: function(node, stringify) {
+			var interpret = function(leaf) {
+					var obj = {},
+						attr,
+						type,
+						item,
+						childName,
+						cConstr,
+						childVal;
+
+					switch (leaf.nodeType) {
+						case 1:
+							type = leaf.getAttribute('d:constr');
+							if (type === 'Array') obj = [];
+
+							attr = leaf.attributes;
+							for (var j=0, jl=attr.length, a; j<jl; j++) {
+								a = attr.item(j);
+								if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
+
+								type = leaf.getAttribute('d:'+ a.nodeName);
+								childVal = (type) ? window[ type ]( a.nodeValue === 'false' ? '' : a.nodeValue ) : a.nodeValue;
+								obj['@'+ a.nodeName] = childVal;
+							}
+							break;
+						case 3:
+							type = leaf.parentNode.getAttribute('d:type');
+							childVal = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+							obj = childVal;
+							break;
+					}
+					if (leaf.hasChildNodes()) {
+						for(var i=0, il=leaf.childNodes.length; i<il; i++) {
+							item      = leaf.childNodes.item(i);
+							childName = item.nodeName;
+							attr      = leaf.attributes;
+
+							if (childName === '#text') {
+								cConstr = leaf.getAttribute('d:constr');
+								childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+								if (!cConstr && !attr.length) obj = childVal;
+								else if (cConstr && attr.length === 1) obj = window[cConstr](childVal);
+								else obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+							} else {
+								if (obj[childName]) {
+									
+									if (obj[childName].push) obj[childName].push( interpret(item) );
+									else obj[childName] = [obj[childName], interpret(item)];
+									continue;
+								}
+								cConstr = item.getAttribute('d:constr');
+								switch (cConstr) {
+									case 'null':
+										if (obj.push) obj.push(null);
+										else obj[childName] = null;
+										break;
+									case 'Array':
+										if (item.parentNode.firstChild === item &&
+											item.getAttribute('d:constr') === 'Array' && childName !== 'item') {
+											obj[childName] = [interpret(item)];
+										}
+										else if (obj.push) obj.push( interpret(item) );
+										else obj[childName] = interpret(item);
+										break;
+									case 'String':
+									case 'Number':
+									case 'Boolean':
+										childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+										if (obj.push) obj.push( window[cConstr](childVal) );
+										else obj[childName] = interpret(item);
+										break;
+									default:
+										if (obj.push) obj.push( interpret( item ) );
+										else obj[childName] = interpret( item );
+								}
+							}
+						}
+					}
+					return obj;
+				},
+				node = (node.nodeType === 9) ? node.documentElement : node,
+				ret = interpret(node),
+				rn  = ret[node.nodeName];
+
+			// exclude root, if "node" is root node
+			if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {
+				ret = rn;
+			}
+			if (stringify && stringify.toString() === 'true') stringify = '\t';
+			return stringify ? JSON.stringify(ret, null, stringify) : ret;
 		},
 		result: function() {
 			var Q = function(found) {
@@ -157,6 +291,6 @@
 		}
 	};
 
-	window.Defiant = Defiant;
+	return Defiant;
 
-})(window, document);
+})(this);

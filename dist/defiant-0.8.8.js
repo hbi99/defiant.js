@@ -77,7 +77,7 @@ module.exports = Defiant = (function(window, undefined) {
 		xmlFromString: function(str) {
 			var parser,
 				xmlDoc;
-			str = str.replace(/>\s{1,}</g, '><');
+			//str = str.replace(/>\s{1,}</g, '><');
 			if (str.match(/<\?xml/) === null) str = this.xml_decl + str;
 			if (window.DOMParser) {
 				parser = new DOMParser();
@@ -127,6 +127,23 @@ module.exports = Defiant = (function(window, undefined) {
 				if (!start && end) indent--;
 			}
 			return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
+		},
+		selectNodes: function(node, XPath, XNode) {
+			if (!XNode) XNode = node;
+			node.ns = node.createNSResolver(node.documentElement);
+			node.qI = node.evaluate(XPath, XNode, node.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var res = [],
+				i   = 0,
+				il  = node.qI.snapshotLength;
+			for (; i<il; i++) {
+				res.push( node.qI.snapshotItem(i) );
+			}
+			return res;
+		},
+		selectSingleNode: function(node, XPath, XNode) {
+			if (!XNode) XNode = node;
+			node.xI = node.selectNodes(XPath, XNode);
+			return (node.xI.length > 0)? node.xI[0] : null;
 		},
 		nodeToJSON: function(node, stringify) {
 			var interpret = function(leaf) {
@@ -336,30 +353,6 @@ if (!String.prototype.notabs) {
 }
 
 
-if (!Document.selectNodes) {
-	Document.prototype.selectNodes = function(XPath, XNode) {
-		if (!XNode) XNode = this;
-		this.ns = this.createNSResolver(this.documentElement);
-		this.qI = this.evaluate(XPath, XNode, this.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-		var res = [],
-			i   = 0,
-			il  = this.qI.snapshotLength;
-		for (; i<il; i++) {
-			res.push( this.qI.snapshotItem(i) );
-		}
-		return res;
-	};
-}
-
-if (!Document.selectSingleNode) {
-	Document.prototype.selectSingleNode = function(XPath, XNode) {
-		if (!XNode) XNode = this;
-		this.xI = this.selectNodes(XPath, XNode);
-		return (this.xI.length > 0)? this.xI[0] : null;
-	};
-}
-
-
 if (typeof(JSON) === 'undefined') {
 	window.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
@@ -510,7 +503,7 @@ if (!JSON.search) {
 		
 		var doc  = JSON.toXML(tree),
 			od   = doc.documentElement,
-			xres = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
+			xres = Defiant[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
 			jres = [],
 			ret  = [],
 			map,

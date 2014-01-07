@@ -44,7 +44,7 @@ module.exports = Defiant = (function(window, undefined) {
 
 			if (!this.xsl_template) this.gather_templates();
 
-			temp = this.xsl_template.selectSingleNode('//xsl:template[@name="'+ opt.template +'"]');
+			temp = this.selectSingleNode(this.xsl_template, '//xsl:template[@name="'+ opt.template +'"]');
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -69,7 +69,7 @@ module.exports = Defiant = (function(window, undefined) {
 		xmlFromString: function(str) {
 			var parser,
 				xmlDoc;
-			str = str.replace(/>\s{1,}</g, '><');
+			//str = str.replace(/>\s{1,}</g, '><');
 			if (str.match(/<\?xml/) === null) str = this.xml_decl + str;
 			if (window.DOMParser) {
 				parser = new DOMParser();
@@ -119,6 +119,23 @@ module.exports = Defiant = (function(window, undefined) {
 				if (!start && end) indent--;
 			}
 			return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
+		},
+		selectNodes: function(node, XPath, XNode) {
+			if (!XNode) XNode = node;
+			node.ns = node.createNSResolver(node.documentElement);
+			node.qI = node.evaluate(XPath, XNode, node.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+			var res = [],
+				i   = 0,
+				il  = node.qI.snapshotLength;
+			for (; i<il; i++) {
+				res.push( node.qI.snapshotItem(i) );
+			}
+			return res;
+		},
+		selectSingleNode: function(node, XPath, XNode) {
+			if (!XNode) XNode = node;
+			node.xI = this.selectNodes(node, XPath, XNode);
+			return (node.xI.length > 0)? node.xI[0] : null;
 		},
 		nodeToJSON: function(node, stringify) {
 			var interpret = function(leaf) {

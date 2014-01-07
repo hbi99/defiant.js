@@ -19,8 +19,6 @@ module.exports = function (grunt) {
 						'src/defiant.js',
 						// extend string object
 						'src/string.js',
-						// extend node object
-						'src/xml.selectNodes.js',
 						// extend json object
 						'src/json.js',
 						'src/json.toXML.js',

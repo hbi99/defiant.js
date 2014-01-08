@@ -21,7 +21,7 @@
   "homepage": "http://www.defiantjs.com",
   "main": "./lib/defiant",
   "dependencies": {
-    "xmldom": "0.1.17"
+    "libxmljs": "0.8.1"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

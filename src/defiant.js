@@ -259,6 +259,16 @@ module.exports = Defiant = (function(window, undefined) {
 				avg: function(key) {
 					return this.sum(key) / this.length;
 				},
+				sortAsc: function(key) {
+					return this.sort(function(a,b) {
+						return a[key] - b[key];
+					});
+				},
+				sortDesc: function(key) {
+					return this.sort(function(a,b) {
+						return b[key] - a[key];
+					});
+				},
 				min: function(key, method) {
 					var i = 0,
 						il = this.length,

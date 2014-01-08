@@ -41,22 +41,16 @@ suite('Defiant', function() {
 		var obj = { "i": [ { "@id": "1", "#text": "3" }, { "@id": "2" } ] },
 			str = '<?xml version="1.0" encoding="utf-8"?>\n<d:data>\n    <i id="1">3</i>\n    <i id="2"/>\n</d:data>',
 			doc = JSON.toXML( obj );
-
-
 		assert.equal( str, Defiant.prettyPrint( doc ) );
 	});
 
-	/*
 	// testing transforming JSON object
 	test('Testing JSON.toXML', function() {
 		var obj = { "i": [ { "@id": "1", "#text": "3" }, { "@id": "2" } ] },
 			res = JSON.search( obj, '//i' );
-
 		console.log( res );
-
 		//assert.equal( str, Defiant.prettyPrint( doc ) );
 	});
-	*/
 
 });
 

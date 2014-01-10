@@ -61,19 +61,19 @@ pre {
 
 #j-output {
 	color: #933;
-	left: 0.75%;
+	right: 0.75%;
 }
 #rj-output {
 	color: #f00;
+	right: 0.75%;
 	top: 50.25%;
 }
 #x-output {
 	color: #888;
-	right: 0.75%;
+	left: 0.75%;
 }
 #rx-output {
 	color: #933;
-	right: 0.75%;
 	top: 50.25%;
 }
 
@@ -86,6 +86,8 @@ pre {
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
 </head>
 <body>
 
@@ -106,21 +108,21 @@ Defiant.env = 'development';
 var s = ''+
 	//	'<data>'+
 	//	'<data xmlns:d="defiant-namespace">'+
-		'<data xmlns:d="defiant-namespace">'+
-		'	<item>'+
-		'		<banan>1</banan>'+
-		'		<banan>2</banan>'+
-		'	</item>'+
+		'<d:data xmlns:d="defiant-namespace">'+
+		'	<book d:constr="Array">'+
+        '        <item d:constr="Number">3</item>'+
+        '        <item d:constr="Number">2</item>'+
+        '    </book>'+
 	//	'	<banan>3</banan>'+
 	//	'	<cage/>'+
 	//	'	<banan id="a">4</banan>'+
 
-		'	<zoo>'+
-		'		<banana d:type="Number">41</banana>'+
-		'		<zebra d:type="Boolean">true</zebra>'+
-		'		<monkey id="122" d:id="Number" d:type="Boolean">false</monkey>'+
-		'		<lion id="2">Mufasa</lion>'+
-		'	</zoo>'+
+	//	'	<zoo>'+
+	//	'		<banana d:type="Number">41</banana>'+
+	//	'		<zebra d:type="Boolean">true</zebra>'+
+	//	'		<monkey id="122" d:id="Number" d:type="Boolean">false</monkey>'+
+	//	'		<lion id="2">Mufasa</lion>'+
+	//	'	</zoo>'+
 
 	//	'	<visitor category="VIP">Peter</visitor>'+
 	//	'	<visitor>Gina</visitor>'+
@@ -128,12 +130,12 @@ var s = ''+
 	//	'	<item d:type="Boolean">true</item>'+
 	//	'	<item d:type="Boolean">false</item>'+
 	//	'	<item>hakan</item>'+
-		'</data>',
+		'</d:data>',
 
 	doc = Defiant.xmlFromString(s)
-	, json = Defiant.nodeToJSON(doc)
+	, json = doc.toJSON()
 	, d2 = JSON.toXML(json)
-	, j2 = Defiant.nodeToJSON(d2)
+	, j2 = d2.toJSON()
 	, str;
 
 

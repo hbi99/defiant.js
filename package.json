@@ -20,9 +20,7 @@
   },
   "homepage": "http://www.defiantjs.com",
   "main": "./lib/defiant",
-  "dependencies": {
-    "libxmljs": "0.8.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-concat": "~0.3.0",

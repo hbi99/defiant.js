@@ -8,7 +8,7 @@ if (!JSON.toXML) {
 		'use strict';
 
 		var interpreter = {
-				repl: function(dep) {
+				replace: function(dep) {
 					for (var key in this) {
 						delete this[key];
 					}
@@ -112,7 +112,7 @@ if (!JSON.toXML) {
 			},
 			doc = interpreter.to_xml.call(interpreter, tree);
 
-		interpreter.repl.call(tree, Defiant.nodeToJSON(doc.documentElement));
+		interpreter.replace.call(tree, doc.documentElement.toJSON());
 
 		return doc;
 	};

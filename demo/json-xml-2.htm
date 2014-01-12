@@ -61,19 +61,19 @@ pre {
 
 #j-output {
 	color: #933;
-	right: 0.75%;
+	left: 0.75%;
 }
 #rj-output {
 	color: #f00;
-	right: 0.75%;
 	top: 50.25%;
 }
 #x-output {
 	color: #888;
-	left: 0.75%;
+	right: 0.75%;
 }
 #rx-output {
 	color: #933;
+	right: 0.75%;
 	top: 50.25%;
 }
 
@@ -98,63 +98,47 @@ pre {
 <pre id="rx-output"></pre>
 <pre id="rj-output"></pre>
 
+
 <script type="text/javascript">
 
 // development flag
 Defiant.env = 'development';
 
-var s = ''+
-	//	'<data>'+
-	//	'<data xmlns:d="defiant-namespace">'+
-		'<d:data xmlns:d="defiant-namespace">'+
-		'	<book d:constr="Array">'+
-        '        <item d:constr="Number">3</item>'+
-        '        <item d:constr="Number">2</item>'+
-        '    </book>'+
-	//	'	<banan>3</banan>'+
-	//	'	<cage/>'+
-	//	'	<banan id="a">4</banan>'+
+var json = {
+		"2-f": {
+			"a": true,
+			"b": 123,
+			"2-d": ["white", "teal"]
+		},
+		"d2": ["red", "blue"],
+		"4": 4
+	},
+	json_str = JSON.stringify( json, null, '\t' )
+	, doc    = JSON.toXML(json)
+	, j2     = doc.toJSON()
+	, j2s
+	, d2
+	;
 
-	//	'	<zoo>'+
-	//	'		<banana d:type="Number">41</banana>'+
-	//	'		<zebra d:type="Boolean">true</zebra>'+
-	//	'		<monkey id="122" d:id="Number" d:type="Boolean">false</monkey>'+
-	//	'		<lion id="2">Mufasa</lion>'+
-	//	'	</zoo>'+
+var xEl  = document.getElementById('x-output'),
+	jEl  = document.getElementById('j-output'),
+	rxEl = document.getElementById('rx-output'),
+	rjEl = document.getElementById('rj-output'),
+	str  = Defiant.prettyPrint(doc);
 
-	//	'	<visitor category="VIP">Peter</visitor>'+
-	//	'	<visitor>Gina</visitor>'+
-	//	'	<visitor>Zack</visitor>'+
-	//	'	<item d:type="Boolean">true</item>'+
-	//	'	<item d:type="Boolean">false</item>'+
-	//	'	<item>hakan</item>'+
-		'</d:data>',
-
-	doc = Defiant.xmlFromString(s)
-	, json = doc.toJSON()
-	, d2 = JSON.toXML(json)
-	, j2 = d2.toJSON()
-	, str;
-
-
-var xEl     = document.getElementById('x-output'),
-	jEl     = document.getElementById('j-output'),
-	rxEl    = document.getElementById('rx-output'),
-	rjEl    = document.getElementById('rj-output');
-
-str = Defiant.prettyPrint(doc);
 xEl.innerHTML  = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
-jEl.innerHTML  = JSON.stringify( json, null, '\t' )
-					.replace(/\t/g, String().fill(Defiant.tabsize));
+jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
+/**/
+j2s = JSON.stringify( j2, null, '\t' );
+rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
+
+d2 = JSON.toXML(j2);
 str = Defiant.prettyPrint(d2);
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
-
-rjEl.innerHTML = JSON.stringify( j2, null, '\t' )
-					.replace(/\t/g, String().fill(Defiant.tabsize));
 
 </script>
 

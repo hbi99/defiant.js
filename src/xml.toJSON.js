@@ -40,6 +40,9 @@ if (!Node.toJSON) {
 						childName = item.nodeName;
 						attr      = leaf.attributes;
 
+						if (childName === 'd:name') {
+							childName = item.getAttribute('d:name');
+						}
 						if (childName === '#text') {
 							cConstr = leaf.getAttribute('d:constr');
 							childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
@@ -48,10 +51,12 @@ if (!Node.toJSON) {
 							else if (cConstr && attr.length === 1) obj = window[cConstr](childVal);
 							else if (!leaf.hasChildNodes()) {
 								obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+							} else {
+								if (attr.length < 3) obj = (cConstr)? window[cConstr](childVal) : childVal;
+								else obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
 							}
 						} else {
 							if (obj[childName]) {
-								
 								if (obj[childName].push) obj[childName].push( interpret(item) );
 								else obj[childName] = [obj[childName], interpret(item)];
 								continue;

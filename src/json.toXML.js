@@ -1,9 +1,5 @@
 
 if (!JSON.toXML) {
-
-	// TODO:
-	// handle keys that starts with an integer
-
 	JSON.toXML = function(tree) {
 		'use strict';
 
@@ -37,7 +33,7 @@ if (!JSON.toXML) {
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
-						cname   = (cname == +cname) ? 'item' : cname;
+						//cname   = (cname == +cname) ? 'd:item' : cname;
 						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {
@@ -81,6 +77,10 @@ if (!JSON.toXML) {
 						attr.push(Defiant.namespace);
 						if (is_array) attr.push('d:constr="Array"');
 					}
+					if (name.match(/^(?!xml)[a-z_][\w\d.:]*$/i) === null) {
+						attr.push( 'd:name="'+ name +'"' );
+						name = 'd:name';
+					}
 
 					if (array_child) return elem.join('');
 
@@ -88,19 +88,27 @@ if (!JSON.toXML) {
 				},
 				scalar_to_xml: function(name, val, override) {
 					var text,
-						attr,
+						attr = '',
 						constr;
+
+					// chech whether the nodename is valid
+					if (name.match(/^(?!xml)[a-z_][\w\d.:]*$/i) === null) {
+						attr += ' d:name="'+ name +'"';
+						name = 'd:name';
+						override = false;
+					}
 
 					if (val === null || val.toString() === 'NaN') val = null;
 					if (val === null) return '<'+ name +' d:constr="null"/>';
 					if (override) return this.hash_to_xml( name, val, true );
 
 					constr = val.constructor;
-					text = (constr === Array)   ? this.hash_to_xml( 'item', val, true )
+					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
-					attr = ' d:constr="'+ (constr.name) +'"';
-					if ( (constr.name) === 'String' ) attr = '';
+					if ( (constr.name) !== 'String' ) {
+						attr += ' d:constr="'+ (constr.name) +'"';
+					}
 
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},
@@ -113,7 +121,6 @@ if (!JSON.toXML) {
 			doc = interpreter.to_xml.call(interpreter, tree);
 
 		interpreter.replace.call(tree, doc.documentElement.toJSON());
-
 		return doc;
 	};
 }

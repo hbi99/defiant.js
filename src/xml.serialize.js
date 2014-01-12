@@ -29,7 +29,7 @@ if (!Node.xml) {
 		return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
 	});
 }
-
+/*
 if (!Node.text) {
 	Node.prototype.__defineGetter__('text', function() {
 		return this.textContent;
@@ -38,3 +38,4 @@ if (!Node.text) {
 		this.textContent = s;
 	});
 }
+*/

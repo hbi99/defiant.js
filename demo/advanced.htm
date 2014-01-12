@@ -74,7 +74,7 @@
         str;
     document.getElementById('output').innerHTML = htm;
     
-    str = Defiant.prettyPrint( JSON.toXML( obj ) );
+    str = JSON.toXML( obj ).xml;
 
     console.log( str );
   

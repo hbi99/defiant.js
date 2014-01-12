@@ -162,7 +162,7 @@ var json = [
 
 var xEl  = document.getElementById('x-output'),
 	jEl  = document.getElementById('j-output'),
-	str  = Defiant.prettyPrint(doc);
+	str  = doc.xml;
 
 xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));

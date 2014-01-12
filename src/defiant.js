@@ -38,7 +38,7 @@ module.exports = Defiant = (function(window, undefined) {
 
 			if (!this.xsl_template) this.gather_templates();
 
-			temp = this.selectSingleNode(this.xsl_template, '//xsl:template[@name="'+ opt.template +'"]');
+			temp = this.xsl_template.selectSingleNode( '//xsl:template[@name="'+ opt.template +'"]');
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -85,58 +85,6 @@ module.exports = Defiant = (function(window, undefined) {
 				}
 			}
 			return src;
-		},
-		prettyPrint: function(node) {
-			var tabs = this.tabsize,
-				decl = this.xml_decl.toLowerCase(),
-				ser  = new XMLSerializer(),
-				xstr = ser.serializeToString(node);
-			if (this.env !== 'development') {
-				// if environment is not development, remove defiant related info
-				xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
-			}
-			var str    = xstr.trim().replace(/(>)\s*(<)(\/*)/g, '$1\n$2$3'),
-				lines  = str.split('\n'),
-				indent = -1,
-				i      = 0,
-				il     = lines.length,
-				start,
-				end;
-			for (; i<il; i++) {
-				if (i === 0 && lines[i].toLowerCase() === decl) {
-					lines[i] = decl;
-					continue;
-				}
-				start = lines[i].match(/<[^\/]+>/g) !== null;
-				end   = lines[i].match(/<\/[\w\:]+>/g) !== null;
-				if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
-				if (start) indent++;
-				lines[i] = String().fill(indent, '\t') + lines[i];
-				if (start && end) indent--;
-				if (!start && end) indent--;
-			}
-			return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
-		},
-		selectNodes: function(node, XPath, XNode) {
-			if (!XNode) XNode = node;
-			if (node.get) {
-
-				return 1;
-			}
-			node.ns = node.createNSResolver(node.documentElement);
-			node.qI = node.evaluate(XPath, XNode, node.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			var res = [],
-				i   = 0,
-				il  = node.qI.snapshotLength;
-			for (; i<il; i++) {
-				res.push( node.qI.snapshotItem(i) );
-			}
-			return res;
-		},
-		selectSingleNode: function(node, XPath, XNode) {
-			if (!XNode) XNode = node;
-			node.xI = this.selectNodes(node, XPath, XNode);
-			return (node.xI.length > 0)? node.xI[0] : null;
 		},
 		result: function() {
 			var Q = function(found) {

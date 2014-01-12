@@ -142,14 +142,14 @@ var xEl     = document.getElementById('x-output'),
 	rxEl    = document.getElementById('rx-output'),
 	rjEl    = document.getElementById('rj-output');
 
-str = Defiant.prettyPrint(doc);
+str = doc.xml;
 xEl.innerHTML  = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
 jEl.innerHTML  = JSON.stringify( json, null, '\t' )
 					.replace(/\t/g, String().fill(Defiant.tabsize));
 
-str = Defiant.prettyPrint(d2);
+str = d2.xml;
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 

@@ -5,7 +5,7 @@ if (!JSON.search) {
 		
 		var doc  = JSON.toXML(tree),
 			od   = doc.documentElement,
-			xres = Defiant[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
+			xres = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
 			jres = [],
 			ret  = [],
 			map,

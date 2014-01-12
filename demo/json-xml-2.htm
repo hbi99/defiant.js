@@ -104,31 +104,15 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-var json = [
-		[
-			{
-				"channel":"d5f06780-30a8-4a48-a2f8-7ed181b4a13f",
-				"channel_name":"ticker.BTCUSD",
-				"op":"private",
-				"origin":"broadcast",
-				"private":"ticker",
-				"ticker": {
-					"high": {
-						"value":["817.00000","137.00000","837.00000"],
-						"value_int":"83700000",
-						"display":"$837.00000",
-						"display_short":"$837.00",
-						"@currency":"USD"
-					},
-					"item":"BTC",
-					"now":"1388157235621270"
-				},
-				"stamp":1388157235621615
-			}
-		],
-		"13881572356888224",
-		"d5f06780-30a8-4a48-a2f8-7ed181b4a13f"
-	],
+var json = {
+		"2-f": {
+			"a": true,
+			"b": 123,
+			"2-d": ["white", "teal"]
+		},
+		"d2": ["red", "blue"],
+		"4": 4
+	},
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = doc.toJSON()

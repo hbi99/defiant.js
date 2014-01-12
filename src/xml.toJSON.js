@@ -69,7 +69,7 @@ if (!Node.toJSON) {
 									break;
 								case 'Array':
 									if (item.parentNode.firstChild === item &&
-										item.getAttribute('d:constr') === 'Array' && childName !== 'item') {
+										item.getAttribute('d:constr') === 'Array' && childName !== 'd:item') {
 										obj[childName] = [interpret(item)];
 									}
 									else if (obj.push) obj.push( interpret(item) );

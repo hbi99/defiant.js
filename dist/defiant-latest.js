@@ -277,7 +277,7 @@ if (!JSON.toXML) {
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
-						//cname   = (cname == +cname) ? 'd:item' : cname;
+						cname   = (cname == +cname) ? 'd:item' : cname;
 						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {

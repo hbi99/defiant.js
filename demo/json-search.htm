@@ -157,7 +157,7 @@ var json = [
 //var json = [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}],
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
-	, j2     = Defiant.nodeToJSON(doc)
+	, j2     = doc.toJSON()
 	, res;
 
 var xEl  = document.getElementById('x-output'),

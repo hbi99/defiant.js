@@ -104,17 +104,26 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-//var json = [ [ { "stamp": 1388157235621615 } ] ],
-var json = {
+var json;
+json = [ [ { "stamp": 1388157235621615,
+		"2": {
+			"a": true,
+			"b": 123
+		},
+		"d2": ["red", "blue"],
+		"4.2": 4 } ] ];
+/*
+	json = {
 		"2-f": {
 			"a": true,
 			"b": 123,
 			"2-d": ["white", "teal"]
 		},
 		"d2": ["red", "blue"],
-		"4": 4
-	},
-	json_str = JSON.stringify( json, null, '\t' )
+		"4.2": 4
+	};
+	*/
+var json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = doc.toJSON()
 	, j2s
@@ -140,6 +149,10 @@ d2 = JSON.toXML(j2);
 str = d2.xml;
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
+
+var res = JSON.search( json, '//*[a]' );
+
+console.log( res );
 
 </script>
 

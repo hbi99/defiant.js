@@ -343,7 +343,7 @@ if (!JSON.toXML) {
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
-						cname   = (!array_child && cname == +cname) ? 'd:item' : cname;
+						if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
 						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {
@@ -481,7 +481,9 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						key = jres[i][map_index].node.getAttribute('d:name');
+						is_attr = jres[i][map_index].node.nodeType;
+						key = (is_attr === 1)? jres[i][map_index].node.getAttribute('d:name') : false;
+						//key = jres[i][map_index].node.getAttribute('d:name');
 						key = key || item_map.key;
 						current = current[key];
 						if (typeof(current) !== 'object') {

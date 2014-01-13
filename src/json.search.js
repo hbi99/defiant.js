@@ -43,7 +43,8 @@ if (!JSON.search) {
 						break;
 					default:
 						is_attr = jres[i][map_index].node.nodeType;
-						key = is_attr ? false : jres[i][map_index].node.getAttribute('d:name');
+						key = (is_attr === 1)? jres[i][map_index].node.getAttribute('d:name') : false;
+						//key = jres[i][map_index].node.getAttribute('d:name');
 						key = key || item_map.key;
 						current = current[key];
 						if (typeof(current) !== 'object') {

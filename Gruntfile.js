@@ -24,6 +24,10 @@ module.exports = function (grunt) {
 						'src/json.toXML.js',
 						'src/json.search.js',
 						'src/json.mtrace.js',
+						// extend node object
+						'src/xml.select.js',
+						'src/xml.serialize.js',
+						'src/xml.toJSON.js',
 						// add jQuery plugin
 						'src/jquery-plugin.js'
 			]
@@ -90,6 +94,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
 	grunt.registerTask('default', [
+		'jshint',
 		'concat:stable',
     	'uglify:stable',
 		'concat:latest',

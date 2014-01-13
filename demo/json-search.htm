@@ -142,7 +142,7 @@ var json = [
 						"display_short":"$837.00",
 						"@currency":"USD"
 					},
-					"item":"BTC",
+					"2item":"BTC",
 					"now":"1388157235621270"
 				},
 				"stamp":1388157235621615
@@ -151,10 +151,6 @@ var json = [
 		"13881572356888224",
 		"d5f06780-30a8-4a48-a2f8-7ed181b4a13f"
 	],
-
-//var json = {"test": [ [ [ [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}] ] ] ]},
-//var json = {"test": [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}]},
-//var json = [{"name": "Cookie", "category": "Sweet"},{"type": "Donut"}],
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = doc.toJSON()
@@ -169,16 +165,8 @@ jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
 
 
-//res = JSON.search(json, '//*[category="reference"]/author');
-//res = JSON.search(json, '//bicycle');
-//res = JSON.search(json, '//wheels');
-//res = JSON.search(json, '//*[wheels=4]');
-//res = JSON.search(json, '//book[1]');
-res = JSON.search(json, '//high');
-console.log( 'RES', res[0] );
-
-//res = JSON.search(json, '//bicycle/@price');
-//console.log( 'RES', res );
+res = JSON.search(json, '//*[@d:name="2item"]');
+console.log( 'RES', res );
 
 </script>
 

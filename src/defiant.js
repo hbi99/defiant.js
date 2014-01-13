@@ -88,21 +88,14 @@ module.exports = Defiant = (function(window, undefined) {
 		},
 		result: function() {
 			var Q = function(found) {
-				var coll = Object.create(Array.prototype);
 				for (var method in Q.prototype) {
 					if (Q.prototype.hasOwnProperty(method)) {
-						coll[method] = Q.prototype[method];
+						found[method] = Q.prototype[method];
 					}
 				}
-				for (var i=0, il=found.length; i<il; i++) {
-					coll.push(found[i]);
-				}
-				return coll;
+				return found;
 			};
 			Q.prototype = {
-				toArray: function() {
-					return Array.prototype.slice.call(this, 0);
-				},
 				sum: function(key) {
 					var i = 0,
 						il = this.length,

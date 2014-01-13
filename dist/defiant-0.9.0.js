@@ -96,21 +96,14 @@ module.exports = Defiant = (function(window, undefined) {
 		},
 		result: function() {
 			var Q = function(found) {
-				var coll = Object.create(Array.prototype);
 				for (var method in Q.prototype) {
 					if (Q.prototype.hasOwnProperty(method)) {
-						coll[method] = Q.prototype[method];
+						found[method] = Q.prototype[method];
 					}
 				}
-				for (var i=0, il=found.length; i<il; i++) {
-					coll.push(found[i]);
-				}
-				return coll;
+				return found;
 			};
 			Q.prototype = {
-				toArray: function() {
-					return Array.prototype.slice.call(this, 0);
-				},
 				sum: function(key) {
 					var i = 0,
 						il = this.length,
@@ -218,7 +211,6 @@ if (!String.prototype.notabs) {
 	};
 }
 
-
 if (typeof(JSON) === 'undefined') {
 	window.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
@@ -241,7 +233,7 @@ if (typeof(JSON) === 'undefined') {
 		}
 	};
 }
-
+/* jshint ignore:end */
 
 if (!JSON.toXML) {
 	JSON.toXML = function(tree) {
@@ -277,7 +269,7 @@ if (!JSON.toXML) {
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
-						cname   = (cname == +cname) ? 'd:item' : cname;
+						cname   = (!array_child && cname == +cname) ? 'd:item' : cname;
 						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {
@@ -302,8 +294,10 @@ if (!JSON.toXML) {
 										elem.push( this.scalar_to_xml( cname, val, val_is_array ) );
 										break;
 									}
+									/* falls through */
 								case String:
 									if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+									/* falls through */
 								case Number:
 								case Boolean:
 									if (cname === '#text' && constr.name !== 'String') attr.push('d:constr="'+ constr.name +'"');
@@ -385,11 +379,12 @@ if (!JSON.search) {
 			item_map,
 			current,
 			is_attr,
+			key,
 			do_search = function(current) {
 				if (map_index === jres[i].length) return current;
 				switch (current.constructor) {
 					case Array:
-						for (var jl = current.length, j = 0, check; j<jl; j++) {
+						for (var j=0, jl=current.length, check; j<jl; j++) {
 							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
 								if (map_index < jres[i].length) {
 									map_index++;
@@ -412,7 +407,9 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						current = current[item_map.key];
+						key = jres[i][map_index].node.getAttribute('d:name');
+						key = key || item_map.key;
+						current = current[key];
 						if (typeof(current) !== 'object') {
 							map_index++;
 							item_map = jres[i][map_index];
@@ -500,6 +497,188 @@ if (!JSON.mtrace) {
 	};
 }
 
+
+if (!Document.selectNodes) {
+	Document.prototype.selectNodes = function(XPath, XNode) {
+		if (!XNode) XNode = this;
+		this.ns = this.createNSResolver(this.documentElement);
+		this.qI = this.evaluate(XPath, XNode, this.ns, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+		var res = [],
+			i   = 0,
+			il  = this.qI.snapshotLength;
+		for (; i<il; i++) {
+			res.push( this.qI.snapshotItem(i) );
+		}
+		return res;
+	};
+}
+
+if (!Document.selectSingleNode) {
+	Document.prototype.selectSingleNode = function(XPath, XNode) {
+		if (!XNode) XNode = this;
+		this.xI = this.selectNodes(XPath, XNode);
+		return (this.xI.length > 0)? this.xI[0] : null;
+	};
+}
+
+if (!Node.selectNodes) {
+	Node.prototype.selectNodes = function(XPath) {
+		return this.ownerDocument.selectNodes(XPath, this);
+	};
+}
+if (!Node.selectSingleNode) {
+	Node.prototype.selectSingleNode = function(XPath) {
+		return this.ownerDocument.selectSingleNode(XPath, this);
+	};
+}
+
+
+if (!Node.xml) {
+	Node.prototype.__defineGetter__('xml',  function() {
+		var tabs = Defiant.tabsize,
+			decl = Defiant.xml_decl.toLowerCase(),
+			ser  = new XMLSerializer(),
+			xstr = ser.serializeToString(this);
+		if (Defiant.env !== 'development') {
+			// if environment is not development, remove defiant related info
+			xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
+		}
+		var str    = xstr.trim().replace(/(>)\s*(<)(\/*)/g, '$1\n$2$3'),
+			lines  = str.split('\n'),
+			indent = -1,
+			i      = 0,
+			il     = lines.length,
+			start,
+			end;
+		for (; i<il; i++) {
+			if (i === 0 && lines[i].toLowerCase() === decl) continue;
+			start = lines[i].match(/<[^\/]+>/g) !== null;
+			end   = lines[i].match(/<\/[\w\:]+>/g) !== null;
+			if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
+			if (start) indent++;
+			lines[i] = String().fill(indent, '\t') + lines[i];
+			if (start && end) indent--;
+			if (!start && end) indent--;
+		}
+		return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
+	});
+}
+/*
+if (!Node.text) {
+	Node.prototype.__defineGetter__('text', function() {
+		return this.textContent;
+	});
+	Node.prototype.__defineSetter__('text', function(s) {
+		this.textContent = s;
+	});
+}
+*/
+
+if (!Node.toJSON) {
+
+	Node.prototype.toJSON = function(stringify) {
+		'use strict';
+
+		var interpret = function(leaf) {
+				var obj = {},
+					attr,
+					type,
+					item,
+					childName,
+					cConstr,
+					childVal;
+
+				switch (leaf.nodeType) {
+					case 1:
+						type = leaf.getAttribute('d:constr');
+						if (type === 'Array') obj = [];
+
+						attr = leaf.attributes;
+						for (var j=0, jl=attr.length, a; j<jl; j++) {
+							a = attr.item(j);
+							if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
+
+							type = leaf.getAttribute('d:'+ a.nodeName);
+							childVal = (type) ? window[ type ]( a.nodeValue === 'false' ? '' : a.nodeValue ) : a.nodeValue;
+							obj['@'+ a.nodeName] = childVal;
+						}
+						break;
+					case 3:
+						type = leaf.parentNode.getAttribute('d:type');
+						childVal = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+						obj = childVal;
+						break;
+				}
+				if (leaf.hasChildNodes()) {
+					for(var i=0, il=leaf.childNodes.length; i<il; i++) {
+						item      = leaf.childNodes.item(i);
+						childName = item.nodeName;
+						attr      = leaf.attributes;
+
+						if (childName === 'd:name') {
+							childName = item.getAttribute('d:name');
+						}
+						if (childName === '#text') {
+							cConstr = leaf.getAttribute('d:constr');
+							childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+							if (!cConstr && !attr.length) obj = childVal;
+							else if (cConstr && attr.length === 1) obj = window[cConstr](childVal);
+							else if (!leaf.hasChildNodes()) {
+								obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+							} else {
+								if (attr.length < 3) obj = (cConstr)? window[cConstr](childVal) : childVal;
+								else obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+							}
+						} else {
+							if (obj[childName]) {
+								if (obj[childName].push) obj[childName].push( interpret(item) );
+								else obj[childName] = [obj[childName], interpret(item)];
+								continue;
+							}
+							cConstr = item.getAttribute('d:constr');
+							switch (cConstr) {
+								case 'null':
+									if (obj.push) obj.push(null);
+									else obj[childName] = null;
+									break;
+								case 'Array':
+									if (item.parentNode.firstChild === item &&
+										item.getAttribute('d:constr') === 'Array' && childName !== 'd:item') {
+										obj[childName] = [interpret(item)];
+									}
+									else if (obj.push) obj.push( interpret(item) );
+									else obj[childName] = interpret(item);
+									break;
+								case 'String':
+								case 'Number':
+								case 'Boolean':
+									childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+
+									if (obj.push) obj.push( window[cConstr](childVal) );
+									else obj[childName] = interpret(item);
+									break;
+								default:
+									if (obj.push) obj.push( interpret( item ) );
+									else obj[childName] = interpret( item );
+							}
+						}
+					}
+				}
+				return obj;
+			},
+			node = (this.nodeType === 9) ? this.documentElement : this,
+			ret = interpret(node),
+			rn  = ret[node.nodeName];
+
+		// exclude root, if "this" is root node
+		if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {
+			ret = rn;
+		}
+		if (stringify && stringify.toString() === 'true') stringify = '\t';
+		return stringify ? JSON.stringify(ret, null, stringify) : ret;
+	};
+}
 
 // check if jQuery is present
 if (typeof(jQuery) !== 'undefined') {

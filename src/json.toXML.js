@@ -33,7 +33,7 @@ if (!JSON.toXML) {
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
-						//cname   = (cname == +cname) ? 'd:item' : cname;
+						cname   = (!array_child && cname == +cname) ? 'd:item' : cname;
 						constr  = val === null ? null : val.constructor;
 
 						if (is_attr) {
@@ -58,8 +58,10 @@ if (!JSON.toXML) {
 										elem.push( this.scalar_to_xml( cname, val, val_is_array ) );
 										break;
 									}
+									/* falls through */
 								case String:
 									if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+									/* falls through */
 								case Number:
 								case Boolean:
 									if (cname === '#text' && constr.name !== 'String') attr.push('d:constr="'+ constr.name +'"');

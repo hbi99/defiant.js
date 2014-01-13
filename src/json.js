@@ -1,4 +1,4 @@
-
+/* jshint ignore:start */
 if (typeof(JSON) === 'undefined') {
 	window.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
@@ -21,3 +21,4 @@ if (typeof(JSON) === 'undefined') {
 		}
 	};
 }
+/* jshint ignore:end */

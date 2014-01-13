@@ -14,11 +14,12 @@ if (!JSON.search) {
 			item_map,
 			current,
 			is_attr,
+			key,
 			do_search = function(current) {
 				if (map_index === jres[i].length) return current;
 				switch (current.constructor) {
 					case Array:
-						for (var jl = current.length, j = 0, check; j<jl; j++) {
+						for (var j=0, jl=current.length, check; j<jl; j++) {
 							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
 								if (map_index < jres[i].length) {
 									map_index++;
@@ -41,7 +42,9 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						current = current[item_map.key];
+						key = jres[i][map_index].node.getAttribute('d:name');
+						key = key || item_map.key;
+						current = current[key];
 						if (typeof(current) !== 'object') {
 							map_index++;
 							item_map = jres[i][map_index];

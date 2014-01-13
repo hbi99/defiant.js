@@ -165,7 +165,7 @@ module.exports = Defiant = (function(window, undefined) {
 			};
 			return new Q(arguments[0]);
 		},
-		ajax: function(url) {
+		ajax: function(url, callback) {
 			var that = Defiant.ajax;
 			for (var method in ajax.prototype) {
 				if (ajax.prototype.hasOwnProperty(method)) {
@@ -173,7 +173,7 @@ module.exports = Defiant = (function(window, undefined) {
 				}
 			}
 			that.queue = new Queue(that);
-			return that.load(url);
+			return that.load(url, callback);
 		}
 	};
 
@@ -185,7 +185,7 @@ module.exports = Defiant = (function(window, undefined) {
 			this.queue.flush();
 			return this;
 		},
-		load: function(url) {
+		load: function(url, cb) {
 			var self = this,
 				fn = function() {
 					var headLoc = document.getElementsByTagName("head").item(0),
@@ -194,9 +194,13 @@ module.exports = Defiant = (function(window, undefined) {
 					scriptObj.setAttribute("charset", "utf-8");
 					scriptObj.setAttribute("src", url +'&callback=Defiant.ajax.callback');
 					headLoc.appendChild(scriptObj);
+				},
+				f2 = function() {
+					cb(this.data);
 				};
 			fn._paused = true;
 			this.queue.add(fn);
+			if (cb) this.queue.add(f2);
 			return this;
 		},
 		each: function(fn) {

@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js</title>
+<style type="text/css">
+
+body {
+	background: #ddd;
+}
+
+.arrow {
+	background: rgba(30,100,200,0.15);
+	position: absolute;
+	width: 100px;
+	height: 30px;
+	z-index: 2;
+}
+.arrow:after {
+	content: '';
+	position: absolute;
+	top: -15px;
+	left: 100%;
+	width: 0;
+	height: 0;
+	border-top: 30px solid transparent;
+	border-bottom: 30px solid transparent;
+	border-left: 30px solid rgba(30,100,200,0.15);
+}
+.json-to-xml {
+	top: 42%;
+	left: 45%;
+}
+
+pre {
+	background: #fff;
+	margin: 0px;
+	position: absolute;
+	top: 1%;
+	bottom: 1%;
+	width: 48.75%;
+	border: #ccc 1px solid;
+	border-radius: 5px;
+	font-size: 1.35em;
+	line-height: 1.25em;
+	overflow: auto;
+}
+
+#j-output {
+	color: #933;
+	left: 0.75%;
+}
+#x-output {
+	color: #888;
+	right: 0.75%;
+}
+
+</style>
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.select.js"></script>
+<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
+</head>
+<body>
+
+<span class="arrow json-to-xml"></span>
+
+<pre id="x-output"></pre>
+<pre id="j-output"></pre>
+
+
+<script type="text/javascript">
+
+// development flag
+Defiant.env = 'development';
+
+var url = 'https://www.googleapis.com/freebase/v1/search?indent=true&filter=%28all+name%3A%22Blade+Runner%22%29&output=%28disambiguator%29';
+	
+	Defiant.ajax(url)
+		.search('//*[name="Musical Track"]')
+		.each(function(item) {
+			console.log( item );
+		});
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "defiant",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",

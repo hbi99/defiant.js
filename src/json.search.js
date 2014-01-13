@@ -42,7 +42,8 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						key = jres[i][map_index].node.getAttribute('d:name');
+						is_attr = jres[i][map_index].node.nodeType;
+						key = is_attr ? false : jres[i][map_index].node.getAttribute('d:name');
 						key = key || item_map.key;
 						current = current[key];
 						if (typeof(current) !== 'object') {

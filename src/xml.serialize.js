@@ -18,7 +18,8 @@ if (!Node.xml) {
 			end;
 		for (; i<il; i++) {
 			if (i === 0 && lines[i].toLowerCase() === decl) continue;
-			start = lines[i].match(/<[^\/]+>/g) !== null;
+			start = lines[i].match(/<[A-Za-z_\:]+.*?>/g) !== null;
+			//start = lines[i].match(/<[^\/]+>/g) !== null;
 			end   = lines[i].match(/<\/[\w\:]+>/g) !== null;
 			if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
 			if (start) indent++;

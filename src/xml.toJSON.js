@@ -68,6 +68,7 @@ if (!Node.toJSON) {
 									else obj[childName] = null;
 									break;
 								case 'Array':
+										console.log(leaf);
 									if (item.parentNode.firstChild === item &&
 										item.getAttribute('d:constr') === 'Array' && childName !== 'd:item') {
 										obj[childName] = [interpret(item)];

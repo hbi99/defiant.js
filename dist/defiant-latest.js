@@ -665,9 +665,9 @@ if (!Node.toJSON) {
 					attr,
 					type,
 					item,
-					childName,
+					cname,
 					cConstr,
-					childVal;
+					cval;
 
 				switch (leaf.nodeType) {
 					case 1:
@@ -680,69 +680,71 @@ if (!Node.toJSON) {
 							if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
 
 							type = leaf.getAttribute('d:'+ a.nodeName);
-							childVal = (type) ? window[ type ]( a.nodeValue === 'false' ? '' : a.nodeValue ) : a.nodeValue;
-							obj['@'+ a.nodeName] = childVal;
+							cval = (type) ? window[ type ]( a.nodeValue === 'false' ? '' : a.nodeValue ) : a.nodeValue;
+							obj['@'+ a.nodeName] = cval;
 						}
 						break;
 					case 3:
 						type = leaf.parentNode.getAttribute('d:type');
-						childVal = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
-						obj = childVal;
+						cval = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+						obj = cval;
 						break;
 				}
 				if (leaf.hasChildNodes()) {
 					for(var i=0, il=leaf.childNodes.length; i<il; i++) {
-						item      = leaf.childNodes.item(i);
-						childName = item.nodeName;
-						attr      = leaf.attributes;
+						item  = leaf.childNodes.item(i);
+						cname = item.nodeName;
+						attr  = leaf.attributes;
 
-						if (childName === 'd:name') {
-							childName = item.getAttribute('d:name');
+						if (cname === 'd:name') {
+							cname = item.getAttribute('d:name');
 						}
-						if (childName === '#text') {
+						if (cname === '#text') {
 							cConstr = leaf.getAttribute('d:constr');
-							childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+							cval = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
 
-							if (!cConstr && !attr.length) obj = childVal;
-							else if (cConstr && attr.length === 1) obj = window[cConstr](childVal);
+							if (!cConstr && !attr.length) obj = cval;
+							else if (cConstr && attr.length === 1) obj = window[cConstr](cval);
 							else if (!leaf.hasChildNodes()) {
-								obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+								obj[cname] = (cConstr)? window[cConstr](cval) : cval;
 							} else {
-								if (attr.length < 3) obj = (cConstr)? window[cConstr](childVal) : childVal;
-								else obj[childName] = (cConstr)? window[cConstr](childVal) : childVal;
+								if (attr.length < 3) obj = (cConstr)? window[cConstr](cval) : cval;
+								else obj[cname] = (cConstr)? window[cConstr](cval) : cval;
 							}
 						} else {
-							if (obj[childName]) {
-								if (obj[childName].push) obj[childName].push( interpret(item) );
-								else obj[childName] = [obj[childName], interpret(item)];
+							if (obj[cname]) {
+								if (obj[cname].push) obj[cname].push( interpret(item) );
+								else obj[cname] = [obj[cname], interpret(item)];
 								continue;
 							}
 							cConstr = item.getAttribute('d:constr');
 							switch (cConstr) {
 								case 'null':
 									if (obj.push) obj.push(null);
-									else obj[childName] = null;
+									else obj[cname] = null;
 									break;
 								case 'Array':
-										console.log(leaf);
-									if (item.parentNode.firstChild === item &&
-										item.getAttribute('d:constr') === 'Array' && childName !== 'd:item') {
-										obj[childName] = [interpret(item)];
+									if (item.parentNode.firstChild === item && cConstr === 'Array' && cname !== 'd:item') {
+										//if (cname === 'd:item') obj[cname] = [interpret(item)];
+										//else
+											obj[cname] = interpret(item);
 									}
 									else if (obj.push) obj.push( interpret(item) );
-									else obj[childName] = interpret(item);
+									else obj[cname] = interpret(item);
 									break;
 								case 'String':
 								case 'Number':
 								case 'Boolean':
-									childVal = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
+									cval = cConstr === 'Boolean' && item.textContent === 'false' ? '' : item.textContent;
 
-									if (obj.push) obj.push( window[cConstr](childVal) );
-									else obj[childName] = interpret(item);
+									if (obj.push) obj.push( window[cConstr](cval) );
+									else obj[cname] = interpret(item);
 									break;
 								default:
-									if (obj.push) obj.push( interpret( item ) );
-									else obj[childName] = interpret( item );
+									if (obj.push) {
+										obj.push( interpret( item ) );
+									}
+									else obj[cname] = interpret( item );
 							}
 						}
 					}

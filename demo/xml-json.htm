@@ -107,10 +107,18 @@ var s = ''+
 	//	'<data>'+
 	//	'<data xmlns:d="defiant-namespace">'+
 		'<d:data xmlns:d="defiant-namespace">'+
-		'	<book d:constr="Array">'+
-        '        <item d:constr="Number">3</item>'+
-        '        <item d:constr="Number">2</item>'+
-        '    </book>'+
+		'    <disambiguator>'+
+		'        <d:name d:name="category./music/album/release_type" d:constr="Array">'+
+		'            <d:item>'+
+		'                <mid>/m/02lx2r</mid>'+
+		'                <name>Album</name>'+
+		'            </d:item>'+
+		'            <d:item>'+
+		'                <mid>/m</mid>'+
+		'                <name>Album2</name>'+
+		'            </d:item>'+
+		'        </d:name>'+
+		'    </disambiguator>'+
 	//	'	<banan>3</banan>'+
 	//	'	<cage/>'+
 	//	'	<banan id="a">4</banan>'+
@@ -148,7 +156,7 @@ xEl.innerHTML  = str.replace(/</g, '&lt;')
 
 jEl.innerHTML  = JSON.stringify( json, null, '\t' )
 					.replace(/\t/g, String().fill(Defiant.tabsize));
-
+/**/
 str = d2.xml;
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');

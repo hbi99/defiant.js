@@ -105,15 +105,13 @@ pre {
 Defiant.env = 'development';
 
 var json;
-json = {"disambiguator": {
-          "category./music/album/release_type": [
-            {
-              "mid": "/m/02lx2r",
-              "name": "Album"
-            }
-          ]
-      }
-     };
+json = [ { "stamp": 1388157235621615,
+		"2": {
+			"a": true,
+			"b": 123
+		},
+		"d2": ["red", "blue"],
+		"4.2": 4 }, [1,2,3] ];
 /*
 	json = {
 		"2-f": {
@@ -143,19 +141,19 @@ xEl.innerHTML  = str.replace(/</g, '&lt;')
 
 jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
-
+/**/
 j2s = JSON.stringify( j2, null, '\t' );
 rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
-/*
+
 d2 = JSON.toXML(j2);
 str = d2.xml;
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
-var res = JSON.search( json, '//*[a]' );
+var res = JSON.search( json, '//a' );
 
 console.log( res );
-*/
+
 </script>
 
 </body>

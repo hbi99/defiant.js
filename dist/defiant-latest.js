@@ -632,7 +632,8 @@ if (!Node.xml) {
 			end;
 		for (; i<il; i++) {
 			if (i === 0 && lines[i].toLowerCase() === decl) continue;
-			start = lines[i].match(/<[^\/]+>/g) !== null;
+			start = lines[i].match(/<[A-Za-z_\:]+.*?>/g) !== null;
+			//start = lines[i].match(/<[^\/]+>/g) !== null;
 			end   = lines[i].match(/<\/[\w\:]+>/g) !== null;
 			if (lines[i].match(/<.*?\/>/g) !== null) start = end = true;
 			if (start) indent++;
@@ -723,6 +724,7 @@ if (!Node.toJSON) {
 									else obj[childName] = null;
 									break;
 								case 'Array':
+										console.log(leaf);
 									if (item.parentNode.firstChild === item &&
 										item.getAttribute('d:constr') === 'Array' && childName !== 'd:item') {
 										obj[childName] = [interpret(item)];

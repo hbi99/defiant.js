@@ -1,6 +1,20 @@
 
 if (typeof module === "undefined") {
-	module = { exports: undefined };
+	var module = { exports: undefined };
+
+	// IE polyfill
+	if (window.ActiveXObject !== undefined) {
+		var XSLTProcessor = function() {};
+		XSLTProcessor.prototype = {
+			importStylesheet: function(xsldoc) {
+				this.xsldoc = xsldoc;
+			},
+			transformToFragment: function(data, doc) {
+				return data.transformNode(this.xsldoc);
+			}
+		};
+	}
+
 } else {
 	// Node env adaptation goes here...
 }
@@ -13,8 +27,7 @@ module.exports = Defiant = (function(window, undefined) {
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
-		is_safari : typeof navigator !== 'undefined'? navigator.userAgent.match(/safari/i) !== null
-													: false,
+		is_safari : (typeof navigator !== 'undefined')? navigator.userAgent.match(/safari/i) !== null : false,
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -64,7 +77,7 @@ module.exports = Defiant = (function(window, undefined) {
 			var parser,
 				xmlDoc;
 			str = str.replace(/>\s{1,}</g, '><');
-			if (str.match(/<\?xml/) === null) str = this.xml_decl + str;
+			if (str.trim().match(/<\?xml/) === null) str = this.xml_decl + str;
 			if (window.DOMParser) {
 				parser = new DOMParser();
 				xmlDoc = parser.parseFromString(str, 'text/xml');
@@ -177,6 +190,7 @@ module.exports = Defiant = (function(window, undefined) {
 		}
 	};
 
+	// extending Defiant.ajax with function chaining
 	var ajax = function(url) {};
 	ajax.prototype = {
 		callback: function(data) {
@@ -222,6 +236,7 @@ module.exports = Defiant = (function(window, undefined) {
 		}
 	};
 
+	// implementing function chaining
 	function Queue(owner) {
 		this._methods = [];
 		this._owner = owner;

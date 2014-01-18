@@ -30,13 +30,3 @@ if (!Node.xml) {
 		return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
 	});
 }
-/*
-if (!Node.text) {
-	Node.prototype.__defineGetter__('text', function() {
-		return this.textContent;
-	});
-	Node.prototype.__defineSetter__('text', function(s) {
-		this.textContent = s;
-	});
-}
-*/

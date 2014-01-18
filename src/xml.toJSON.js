@@ -1,6 +1,5 @@
 
 if (!Node.toJSON) {
-
 	Node.prototype.toJSON = function(stringify) {
 		'use strict';
 

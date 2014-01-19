@@ -25,20 +25,30 @@ if (!JSON.toXML) {
 						type,
 						is_attr,
 						cname,
-						constr;
+						constr,
+						cnName;
 
 					for (key in tree) {
 						val     = tree[key];
-						if (val === null || val.toString() === 'NaN') val = null;
+						if (val === null || val === undefined || val.toString() === 'NaN') val = null;
 
 						is_attr = key.slice(0,1) === '@';
 						cname   = array_child ? name : key;
 						if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
-						constr  = val === null ? null : val.constructor;
+						if (val === null) {
+							constr  = null;
+							cnName  = false;
+						//} else if (cname === 'getName') {
+						//	console.log(val);
+						//	continue;
+						} else {
+							constr  = val.constructor;
+							cnName  = (constr.name !== undefined)? constr.name : constr.getName();	
+						}
 
 						if (is_attr) {
 							attr.push( cname.slice(1) +'="'+ this.escape_xml(val) +'"' );
-							if (constr.name !== 'String') attr.push( 'd:'+ cname.slice(1) +'="'+ constr.name +'"' );
+							if (cnName !== 'String') attr.push( 'd:'+ cname.slice(1) +'="'+ cnName +'"' );
 						} else if (val === null) {
 							elem.push( this.scalar_to_xml( cname, val ) );
 						} else {
@@ -64,16 +74,17 @@ if (!JSON.toXML) {
 									/* falls through */
 								case Number:
 								case Boolean:
-									if (cname === '#text' && constr.name !== 'String') attr.push('d:constr="'+ constr.name +'"');
+									if (cname === '#text' && cnName !== 'String') attr.push('d:constr="'+ cnName+'"');
 									elem.push( this.scalar_to_xml( cname, val ) );
+									break;
+								case Function:
 									break;
 								default:
 									//console.log( val.constructor, key, val );
-									throw 'ERROR! '+ key;
+									//throw 'ERROR! '+ key;
 							}
 						}
 					}
-					
 					if (!name) {
 						name = 'd:data';
 						attr.push(Defiant.namespace);
@@ -83,7 +94,6 @@ if (!JSON.toXML) {
 						attr.push( 'd:name="'+ name +'"' );
 						name = 'd:name';
 					}
-
 					if (array_child) return elem.join('');
 
 					return '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
@@ -91,7 +101,8 @@ if (!JSON.toXML) {
 				scalar_to_xml: function(name, val, override) {
 					var text,
 						attr = '',
-						constr;
+						constr,
+						cnName;
 
 					// chech whether the nodename is valid
 					if (name.match(/^(?!xml)[a-z_][\w\d.:]*$/i) === null) {
@@ -99,17 +110,17 @@ if (!JSON.toXML) {
 						name = 'd:name';
 						override = false;
 					}
-
 					if (val === null || val.toString() === 'NaN') val = null;
 					if (val === null) return '<'+ name +' d:constr="null"/>';
 					if (override) return this.hash_to_xml( name, val, true );
 
 					constr = val.constructor;
+					cnName = constr.name || constr.getName();
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
-					if ( (constr.name) !== 'String' ) {
-						attr += ' d:constr="'+ (constr.name) +'"';
+					if ( (cnName) !== 'String' ) {
+						attr += ' d:constr="'+ (cnName) +'"';
 					}
 
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
@@ -122,7 +133,7 @@ if (!JSON.toXML) {
 			},
 			doc = interpreter.to_xml.call(interpreter, tree);
 
-		interpreter.replace.call(tree, doc.documentElement.toJSON());
+		interpreter.replace.call(tree, Defiant.node.toJSON(doc.documentElement));
 		return doc;
 	};
 }

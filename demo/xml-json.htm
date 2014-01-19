@@ -79,13 +79,14 @@ pre {
 
 </style>
 <script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
 <script type="text/javascript" src="/defiant.js/src/string.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
 </head>
 <body>
 
@@ -139,9 +140,9 @@ var s = ''+
 		'</d:data>',
 
 	doc = Defiant.xmlFromString(s)
-	, json = doc.toJSON()
+	, json = Defiant.node.toJSON(doc)
 	, d2 = JSON.toXML(json)
-	, j2 = d2.toJSON()
+	, j2 = Defiant.node.toJSON(d2)
 	, str;
 
 
@@ -150,14 +151,14 @@ var xEl     = document.getElementById('x-output'),
 	rxEl    = document.getElementById('rx-output'),
 	rjEl    = document.getElementById('rj-output');
 
-str = doc.xml;
+str = Defiant.node.prettyPrint(doc);
 xEl.innerHTML  = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
 jEl.innerHTML  = JSON.stringify( json, null, '\t' )
 					.replace(/\t/g, String().fill(Defiant.tabsize));
 /**/
-str = d2.xml;
+str = Defiant.node.prettyPrint(d2);
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 

@@ -17,6 +17,8 @@ module.exports = function (grunt) {
 						' */ \n',
 			source    : [
 						'src/defiant.js',
+						// IE polyfills
+						'src/ie.polyfill.js',
 						// extend string object
 						'src/string.js',
 						// extend json object
@@ -25,9 +27,9 @@ module.exports = function (grunt) {
 						'src/json.search.js',
 						'src/json.mtrace.js',
 						// extend node object
-						'src/xml.select.js',
-						'src/xml.serialize.js',
-						'src/xml.toJSON.js',
+						'src/node.select.js',
+						'src/node.serialize.js',
+						'src/node.toJSON.js',
 						// add jQuery plugin
 						'src/jquery-plugin.js'
 			]

@@ -2,15 +2,16 @@
 if (window.ActiveXObject !== undefined) {
 
 	if (typeof(DOMParser) === 'undefined') {
-		var DOMParser = function() {}
+		var DOMParser = function() {};
 		DOMParser.prototype.parseFromString = function(str, contentType) {
+			var xmldata;
 			if(typeof(ActiveXObject) != 'undefined') {
-				var xmldata = new ActiveXObject('MSXML.DomDocument');
+				xmldata = new ActiveXObject('MSXML.DomDocument');
 				xmldata.async = false;
 				xmldata.loadXML(str);
 				return xmldata;
 			} else if(typeof(XMLHttpRequest) != 'undefined') {
-				var xmldata = new XMLHttpRequest();
+				xmldata = new XMLHttpRequest();
 				if(!contentType) {
 					contentType = 'application/xml';
 				}
@@ -21,7 +22,7 @@ if (window.ActiveXObject !== undefined) {
 				xmldata.send(null);
 				return xmldata.responseXML;
 			}
-		}
+		};
 	}
 
 	if (typeof(XMLSerializer) === 'undefined') {

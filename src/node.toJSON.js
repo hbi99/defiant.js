@@ -1,5 +1,5 @@
 
-Defiant.node.toJSON = function(node, stringify) {
+Defiant.node.toJSON = function(xnode, stringify) {
 	'use strict';
 
 	var interpret = function(leaf) {
@@ -100,7 +100,7 @@ Defiant.node.toJSON = function(node, stringify) {
 			}
 			return obj;
 		},
-		node = (node.nodeType === 9) ? node.documentElement : node,
+		node = (xnode.nodeType === 9) ? xnode.documentElement : xnode,
 		ret = interpret(node),
 		rn  = ret[node.nodeName];
 

@@ -54,9 +54,8 @@ pre {
 	height: 48.5%;
 	border: #ccc 1px solid;
 	border-radius: 5px;
-	font-size: 1.35em;
-	line-height: 1.25em;
 	overflow: auto;
+	font-size: 1em;
 }
 
 #j-output {
@@ -79,13 +78,14 @@ pre {
 
 </style>
 <script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
 <script type="text/javascript" src="/defiant.js/src/string.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/xml.serialize.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
 </head>
 <body>
 
@@ -104,90 +104,55 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-//var json = [ {"a": 1}, [3], "@a", 2 ],
-//var json = [ [1, 2, 3], '1', 2 ],
-//var json = {"arr": [{"@a": false, "a": []}]},
-//var json = {"a": "banan", "b": [{"c":{"c":[4,[2,2],"test",{"b":"blue"}]}},1,2]},
-//var json = [ {"count": [[[1,2,3]]]} ],
-//var json = [1,"1","d",[1]],
-/**/
-var json = {
-	"mall": {
-		"store": {
-			"book": [
-					[3,2],
-					{
-						"@price": 12.99,
-						"title": "Sword of Honour",
-						"category": "fiction",
-						"author": "Evelyn Waugh"
-					},
-					{
-						"@price": 8.99,
-						"title": "Moby Dick",
-						"category": "fiction",
-						"author": "Herman Melville",
-						"isbn": "0-553-21311-3"
-					}
-				
-			]
-		}
-	}
-},
-
-//var json = [1,"2",{"a": "Hakan", "b": 2}],
-//var json = [1,"2",true,false,NaN],
-//var json = {"test": [1,2,3,"B"]},
-/*
-var json = [
-		[
-			{
-				"channel":"d5f06780",
-				"ticker": {
-					"high": {
-						"value":"837.00000",
-						"bert":null,
-						"currency":true
-					},
-					"item":"BTC",
-				},
-				"stamp": [
-					1386261,
-					1388165,
-					3562186,
-					1388155
+var is_ie = navigator.userAgent.match(/msie (\d)/i),
+	json = {
+		"mall": {
+			"store": {
+				"book": [
+						[3,2,4],
+						{
+							"@price": 12.99,
+							"title": "Sword of Honour",
+							"category": "fiction",
+							"author": "Evelyn Waugh"
+						},
+						{
+							"@price": 8.99,
+							"title": "Moby Dick",
+							"category": "fiction",
+							"author": "Herman Melville",
+							"isbn": "0-553-21311-3"
+						}
+					
 				]
 			}
-		],
-		"13881572356888224",
-		false
-	],
-*/
+		}
+	},
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
-	, j2     = doc.toJSON()
+	, j2     = Defiant.node.toJSON(doc)
 	, j2s    = JSON.stringify( j2, null, '\t' )
 	, d2     = JSON.toXML(j2)
-	;
+	
 
-console.log( doc.xml );
-
-var xEl  = document.getElementById('x-output'),
+	xEl  = document.getElementById('x-output'),
 	jEl  = document.getElementById('j-output'),
 	rxEl = document.getElementById('rx-output'),
 	rjEl = document.getElementById('rj-output'),
-	str  = doc.xml;
+	str  = Defiant.node.prettyPrint(doc),
+	str2 = Defiant.node.prettyPrint(d2);
 
-xEl.innerHTML  = str.replace(/</g, '&lt;')
-					.replace(/>/g, '&gt;');
-
-jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
-
-rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
-
-str = d2.xml;
-rxEl.innerHTML = str.replace(/</g, '&lt;')
-					.replace(/>/g, '&gt;');
+if (is_ie !== null && is_ie[1] < 9) {
+	xEl.innerText  = str;
+	jEl.innerText  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
+	rjEl.innerText = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
+	rxEl.innerText = str2;
+} else {
+	xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
+	rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
+	rxEl.innerHTML = str2.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 </script>
 

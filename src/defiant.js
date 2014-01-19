@@ -1,20 +1,6 @@
 
 if (typeof module === "undefined") {
 	var module = { exports: undefined };
-
-	// IE polyfill
-	if (window.ActiveXObject !== undefined) {
-		var XSLTProcessor = function() {};
-		XSLTProcessor.prototype = {
-			importStylesheet: function(xsldoc) {
-				this.xsldoc = xsldoc;
-			},
-			transformToFragment: function(data, doc) {
-				return data.transformNode(this.xsldoc);
-			}
-		};
-	}
-
 } else {
 	// Node env adaptation goes here...
 }
@@ -51,7 +37,7 @@ module.exports = Defiant = (function(window, undefined) {
 
 			if (!this.xsl_template) this.gather_templates();
 
-			temp = this.xsl_template.selectSingleNode( '//xsl:template[@name="'+ opt.template +'"]');
+			temp = this.node.selectSingleNode(this.xsl_template, '//xsl:template[@name="'+ opt.template +'"]');
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -74,19 +60,11 @@ module.exports = Defiant = (function(window, undefined) {
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
-			var parser,
+			var parser = new DOMParser(),
 				xmlDoc;
 			str = str.replace(/>\s{1,}</g, '><');
 			if (str.trim().match(/<\?xml/) === null) str = this.xml_decl + str;
-			if (window.DOMParser) {
-				parser = new DOMParser();
-				xmlDoc = parser.parseFromString(str, 'text/xml');
-			} else {
-				// Internet Explorer
-				xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-				xmlDoc.async = 'false';
-				xmlDoc.loadXML(str);
-			}
+			xmlDoc = parser.parseFromString(str, 'text/xml');
 			return xmlDoc;
 		},
 		extend: function(src, dest) {
@@ -187,7 +165,8 @@ module.exports = Defiant = (function(window, undefined) {
 			}
 			that.queue = new Queue(that);
 			return that.load(url, callback);
-		}
+		},
+		node: {}
 	};
 
 	// extending Defiant.ajax with function chaining

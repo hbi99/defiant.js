@@ -5,7 +5,7 @@ if (!JSON.search) {
 		
 		var doc  = JSON.toXML(tree),
 			od   = doc.documentElement,
-			xres = doc[ single ? 'selectSingleNode' : 'selectNodes' ](xpath),
+			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
 			jres = [],
 			ret  = [],
 			map,
@@ -72,7 +72,7 @@ if (!JSON.search) {
 				map.push({
 					node : node,
 					key  : (is_attr ? '@' : '') + node.nodeName,
-					val  : is_attr ? node.value : node.toJSON('\t')
+					val  : is_attr ? node.value : Defiant.node.toJSON(node, '\t')
 				});
 				node = is_attr ? node.ownerElement : node.parentNode;
 			}

@@ -1,7 +1,7 @@
 // IE polyfills
 if (window.ActiveXObject !== undefined) {
 
-	if (typeof(DOMParser) === 'undefined') {
+	//if (typeof(DOMParser) === 'undefined') {
 		var DOMParser = function() {};
 		DOMParser.prototype.parseFromString = function(str, contentType) {
 			var xmldata;
@@ -23,18 +23,18 @@ if (window.ActiveXObject !== undefined) {
 				return xmldata.responseXML;
 			}
 		};
-	}
+	//}
 
-	if (typeof(XMLSerializer) === 'undefined') {
+	//if (typeof(XMLSerializer) === 'undefined') {
 		var XMLSerializer = function() {};
 		XMLSerializer.prototype = {
 			serializeToString: function(node) {
 				return node.xml;
 			}
 		};
-	}
+	//}
 
-	if (typeof(XSLTProcessor) === 'undefined') {
+	//if (typeof(XSLTProcessor) === 'undefined') {
 		var XSLTProcessor = function() {};
 		XSLTProcessor.prototype = {
 			importStylesheet: function(xsldoc) {
@@ -47,7 +47,7 @@ if (window.ActiveXObject !== undefined) {
 				return span;
 			}
 		};
-	}
+	//}
 
 	Object.prototype.getName = function() {
 		var funcNameRegex = /function (.{1,})\(/,

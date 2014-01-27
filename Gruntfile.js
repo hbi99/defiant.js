@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 			]
 		},
 
-		// concat this version
+		// JShint this version
 		jshint: {
 			files: {
 				src: '<%= meta.source %>'

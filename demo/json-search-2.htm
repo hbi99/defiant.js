@@ -79,12 +79,12 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-	var url = 'https://www.googleapis.com/freebase/v1/search?indent=true&filter=%28all+name%3A%22Blade+Runner%22%29&output=%28disambiguator%29';
-	Defiant.ajax(url)
-			.search('//*[name="Musical Track"]')
-			.each(function(item) {
-				console.log( item );
-			});
+var url = 'https://www.googleapis.com/freebase/v1/search?indent=true&filter=%28all+name%3A%22Blade+Runner%22%29&output=%28disambiguator%29';
+Defiant.ajax(url)
+		.search('//*[name="Musical Recording"]')
+		.each(function(item) {
+			console.log( item );
+		});
 
 </script>
 

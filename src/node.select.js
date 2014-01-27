@@ -16,7 +16,5 @@ Defiant.node.selectSingleNode = function(XNode, XPath) {
 	if (XNode.evaluate) {
 		var xI = this.selectNodes(XNode, XPath);
 		return (xI.length > 0)? xI[0] : null;
-	} else {
-		return XNode.selectSingleNode(XPath);
-	}
+	} else return XNode.selectSingleNode(XPath);
 };

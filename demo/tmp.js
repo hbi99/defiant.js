@@ -1,6 +1,6 @@
-{
+Defiant.ajax.callback({
   "name": "defiant",
-  "version": "0.9.4",
+  "version": "0.9.3",
   "description": "Smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",
@@ -28,4 +28,4 @@
     "grunt-contrib-nodeunit": "~0.2.2",
     "mocha": "0.3.x"
   }
-}
+});

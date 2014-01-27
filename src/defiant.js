@@ -164,7 +164,7 @@ module.exports = Defiant = (function(window, undefined) {
 				}
 			}
 			that.queue = new Queue(that);
-			return that.load(url, callback);
+			return url ? that.load(url, callback) : that ;
 		},
 		node: {}
 	};
@@ -178,14 +178,27 @@ module.exports = Defiant = (function(window, undefined) {
 			this.queue.flush();
 			return this;
 		},
+		wait: function(msec) {
+			var self = this,
+				fn = function() {
+					setTimeout(function() {
+						self.queue._paused = false;
+						self.queue.flush();
+					}, msec);
+				};
+			fn._paused = true;
+			this.queue.add(fn);
+			return this;
+		},
 		load: function(url, cb) {
 			var self = this,
 				fn = function() {
 					var headLoc = document.getElementsByTagName("head").item(0),
-						scriptObj = document.createElement("script");
+						scriptObj = document.createElement("script"),
+						delimiter = url.indexOf('?') > -1 ? '&' : '?';
 					scriptObj.setAttribute("type", "text/javascript");
 					scriptObj.setAttribute("charset", "utf-8");
-					scriptObj.setAttribute("src", url +'&callback=Defiant.ajax.callback');
+					scriptObj.setAttribute("src", url + delimiter +'callback=Defiant.ajax.callback');
 					headLoc.appendChild(scriptObj);
 				},
 				f2 = function() {
@@ -199,6 +212,7 @@ module.exports = Defiant = (function(window, undefined) {
 		each: function(fn) {
 			var self = this;
 			this.queue.add(function() {
+				if (!self.res.length) return fn.call(self);
 				for (var i=0, il=self.res.length; i<il; i++) {
 					fn.call(self, self.res[i]);
 				}
@@ -208,7 +222,7 @@ module.exports = Defiant = (function(window, undefined) {
 		search: function(xpath) {
 			var self = this,
 				fn = function() {
-					self.res = JSON.search(this.data, xpath);
+					self.res = JSON.search(self.data, xpath);
 				};
 			this.queue.add(fn);
 			return this;

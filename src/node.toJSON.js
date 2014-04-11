@@ -21,6 +21,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					for (var j=0, jl=attr.length, a; j<jl; j++) {
 						a = attr.item(j);
 						if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
+						console.log( a.nodeName );
 
 						type = leaf.getAttribute('d:'+ a.nodeName);
 						if (type && type !== 'undefined') {
@@ -97,6 +98,9 @@ Defiant.node.toJSON = function(xnode, stringify) {
 						}
 					}
 				}
+			}
+			if (leaf.getAttribute('d:type') === 'ArrayItem') {
+				obj = [obj];
 			}
 			return obj;
 		},

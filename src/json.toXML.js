@@ -114,7 +114,7 @@ if (!JSON.toXML) {
 					if (val === null) return '<'+ name +' d:constr="null"/>';
 					if (val.length === 1 && val[0].constructor === Object) {
 						text = this.hash_to_xml(false, val[0]);
-						return '<'+ name + ' d:type="ArrayItem">'+ text.slice(36,-9) +'</'+ name +'>'
+						return '<'+ name + ' d:type="ArrayItem">'+ text.slice(36,-9) +'</'+ name +'>';
 					} else if (override) {
 						return this.hash_to_xml( name, val, true );
 					}

@@ -12,7 +12,6 @@ if (!JSON.toXML) {
 				},
 				to_xml: function(tree) {
 					var str = this.hash_to_xml(null, tree);
-					//console.log(str);
 					return Defiant.xmlFromString(str);
 				},
 				hash_to_xml: function(name, tree, array_child) {
@@ -38,9 +37,6 @@ if (!JSON.toXML) {
 						if (val === null) {
 							constr  = null;
 							cnName  = false;
-						//} else if (cname === 'getName') {
-						//	console.log(val);
-						//	continue;
 						} else {
 							constr  = val.constructor;
 							cnName  = (constr.name !== undefined)? constr.name : constr.getName();	
@@ -74,7 +70,7 @@ if (!JSON.toXML) {
 									/* falls through */
 								case Number:
 								case Boolean:
-									if (cname === '#text' && cnName !== 'String') attr.push('d:constr="'+ cnName+'"');
+									if (cname === '#text' && cnName !== 'String') attr.push('d:constr="'+ cnName +'"');
 									elem.push( this.scalar_to_xml( cname, val ) );
 									break;
 								case Function:
@@ -104,7 +100,7 @@ if (!JSON.toXML) {
 						constr,
 						cnName;
 
-					// chech whether the nodename is valid
+					// check whether the nodename is valid
 					if (name.match(/^(?!xml)[a-z_][\w\d.:]*$/i) === null) {
 						attr += ' d:name="'+ name +'"';
 						name = 'd:name';
@@ -112,7 +108,12 @@ if (!JSON.toXML) {
 					}
 					if (val === null || val.toString() === 'NaN') val = null;
 					if (val === null) return '<'+ name +' d:constr="null"/>';
-					if (override) return this.hash_to_xml( name, val, true );
+					if (val.length === 1 && val[0].constructor === Object) {
+						text = this.hash_to_xml(false, val[0]);
+						return '<'+ name + ' d:type="ArrayItem">'+ text.slice(36,-9) +'</'+ name +'>';
+					} else if (override) {
+						return this.hash_to_xml( name, val, true );
+					}
 
 					constr = val.constructor;
 					cnName = constr.name || constr.getName();

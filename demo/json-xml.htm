@@ -105,6 +105,7 @@ pre {
 Defiant.env = 'development';
 
 var is_ie = navigator.userAgent.match(/msie (\d)/i),
+	/*
 	json = {
 		"mall": {
 			"store": {
@@ -128,6 +129,13 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 			}
 		}
 	},
+	*/
+	json = {
+	    key: [
+		        //{ item: "value" },
+		        { item: "value" }
+		    ]
+	 },
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = Defiant.node.toJSON(doc)

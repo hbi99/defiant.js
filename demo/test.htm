@@ -18,15 +18,31 @@
 
 <script type="text/javascript">
 
-var t = Defiant.xmlFromString('<data><i id="1"/></data>');
+var data = {
+	"store": {
+		"book": [{
+			"title": "The Lord of the Rings",
+			"author": "J. R. R. Tolkien",
+			"category": "Fiction",
+			"price": 22.99,
+		   },
+		   {
+		   	"title": "Moby Dick",
+			"author": "Herman Melville",
+			"category": "Fiction",
+			"price": 8.99
+		   },
+		   {
+		   	"title": "this is \"NOT\" me",
+			"author": "Herman Melville",
+			"category": "Fiction",
+			"price": 8.99
+		   }]
+	   	}
+	},
+	found = JSON.search(data,"//*[title='this is \"NOT\" me']");
 
-//Defiant.node.prettyPrint( t )
-
-var range = document.createRange();
-console.log(range);
-
-//console.log( Defiant.node.selectNodes(t, '//*').length );
-
+console.log( found );
   
 </script>
 

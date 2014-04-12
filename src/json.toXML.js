@@ -12,7 +12,6 @@ if (!JSON.toXML) {
 				},
 				to_xml: function(tree) {
 					var str = this.hash_to_xml(null, tree);
-					//console.log(str);
 					return Defiant.xmlFromString(str);
 				},
 				hash_to_xml: function(name, tree, array_child) {
@@ -38,9 +37,6 @@ if (!JSON.toXML) {
 						if (val === null) {
 							constr  = null;
 							cnName  = false;
-						//} else if (cname === 'getName') {
-						//	console.log(val);
-						//	continue;
 						} else {
 							constr  = val.constructor;
 							cnName  = (constr.name !== undefined)? constr.name : constr.getName();	

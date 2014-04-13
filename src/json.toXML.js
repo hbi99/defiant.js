@@ -109,9 +109,15 @@ if (!JSON.toXML) {
 					if (val === null || val.toString() === 'NaN') val = null;
 					if (val === null) return '<'+ name +' d:constr="null"/>';
 					if (val.length === 1 && val[0].constructor === Object) {
+						
 						text = this.hash_to_xml(false, val[0]);
-						return '<'+ name + ' d:type="ArrayItem">'+ text.slice(36,-9) +'</'+ name +'>';
-					} else if (override) {
+						attr = text.match(/<(.+?)( d:contr=".*?")>/);
+						attr = (attr !== null)? attr[2] : '';
+						text = text.match(/(<.+?>)(.*?)(<\/d:data>)/i);
+
+						return '<'+ name + attr +' d:type="ArrayItem">'+ text[2] +'</'+ name +'>';
+					} else 
+					if (override) {
 						return this.hash_to_xml( name, val, true );
 					}
 

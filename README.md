@@ -1,7 +1,9 @@
 defiant.js
 ==========
 
-DefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath. DefiantJS extends the global object JSON with the method "search", which enables searches on JSON structures with XPath expressions.
+DefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath.
+
+DefiantJS also extends the global object JSON with the method "search", which enables searches on JSON structures with XPath expressions and returns matches as an array-like object.
 
 For detailed information, please visit http://defiantjs.com
 

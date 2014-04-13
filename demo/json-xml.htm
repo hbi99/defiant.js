@@ -83,6 +83,7 @@ pre {
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.mtrace.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
@@ -149,6 +150,8 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 	rjEl = document.getElementById('rj-output'),
 	str  = Defiant.node.prettyPrint(doc),
 	str2 = Defiant.node.prettyPrint(d2);
+
+JSON.search.trace = true;
 
 if (is_ie !== null && is_ie[1] < 9) {
 	xEl.innerText  = str;

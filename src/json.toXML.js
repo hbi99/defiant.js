@@ -114,10 +114,12 @@ if (!JSON.toXML) {
 
 						var a1 = text.match(/<(.+?)( .*?)>/),
 							a2 = text.match(/<(.+?)( d:contr=".*?")>/);
-						a1 = (a1 !== null)? a1[2].replace(/ xmlns\:d="defiant\-namespace"/, '').replace(/>/, '').replace(/"\//, '"') : '';
+						a1 = (a1 !== null)? a1[2]
+									.replace(/ xmlns\:d="defiant\-namespace"/, '')
+									.replace(/>/, '')
+									.replace(/"\/$/, '"') : '';
 						a2 = (a2 !== null)? a2[2] : '';
 
-						//console.log( a1, a2 );
 						text = text.match(/(<.+?>)(.*?)(<\/d:data>)/i);
 						text = (text !== null)? text[2] : '';
 

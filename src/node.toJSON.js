@@ -98,7 +98,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					}
 				}
 			}
-			if (xnode.getAttribute && leaf.getAttribute('d:type') === 'ArrayItem') {
+			if (leaf.getAttribute && leaf.getAttribute('d:type') === 'ArrayItem') {
 				obj = [obj];
 			}
 			return obj;

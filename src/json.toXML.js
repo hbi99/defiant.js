@@ -111,11 +111,17 @@ if (!JSON.toXML) {
 					if (val.length === 1 && val[0].constructor === Object) {
 						
 						text = this.hash_to_xml(false, val[0]);
-						attr = text.match(/<(.+?)( d:contr=".*?")>/);
-						attr = (attr !== null)? attr[2] : '';
-						text = text.match(/(<.+?>)(.*?)(<\/d:data>)/i);
 
-						return '<'+ name + attr +' d:type="ArrayItem">'+ text[2] +'</'+ name +'>';
+						var a1 = text.match(/<(.+?)( .*?)>/),
+							a2 = text.match(/<(.+?)( d:contr=".*?")>/);
+						a1 = (a1 !== null)? a1[2].replace(/ xmlns\:d="defiant\-namespace"/, '').replace(/>/, '').replace(/"\//, '"') : '';
+						a2 = (a2 !== null)? a2[2] : '';
+
+						//console.log( a1, a2 );
+						text = text.match(/(<.+?>)(.*?)(<\/d:data>)/i);
+						text = (text !== null)? text[2] : '';
+
+						return '<'+ name + a1 +' '+ a2 +' d:type="ArrayItem">'+ text +'</'+ name +'>';
 					} else 
 					if (override) {
 						return this.hash_to_xml( name, val, true );

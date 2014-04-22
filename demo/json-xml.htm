@@ -139,12 +139,17 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 	 },
 	 */
 	json = {
-	   "@id": ".",
-	   "file": [
-	      {
-	         "@id": "./tmp"
-	      }
-	   ]
+		"@id":"network_shared",
+		"file":[
+			{
+				"@extension":"jpg",
+				"@height":null
+			},
+			{
+				"@extension":"jpg",
+				"@height":null
+			}
+		]
 	},
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)

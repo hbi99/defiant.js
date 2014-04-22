@@ -24,7 +24,8 @@ Defiant.node.toJSON = function(xnode, stringify) {
 
 						type = leaf.getAttribute('d:'+ a.nodeName);
 						if (type && type !== 'undefined') {
-							cval = window[ type ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
+							if (a.nodeValue === 'null') cval = null;
+							else cval = window[ type ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
 						} else {
 							cval = a.nodeValue;
 						}

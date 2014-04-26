@@ -84,8 +84,13 @@ module.exports = function (grunt) {
 		},
 
 		// test tasks
-		nodeunit: {
-			all: ['test/*']
+		jasmine: {
+			test: {
+				src: '<%= meta.source %>',
+				options: {
+					specs: 'test/*.js'
+				}
+			}
 		}
 
 	});
@@ -93,10 +98,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-nodeunit');
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
 
 	grunt.registerTask('default', [
 		'jshint',
+		'test',
 		'concat:stable',
     	'uglify:stable',
 		'concat:latest',
@@ -106,6 +112,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('lib', [ 'concat:nodelib' ]);
 
-	grunt.registerTask('test', [ 'nodeunit' ]);
+	grunt.registerTask('test', [ 'jasmine' ]);
 
 };
+

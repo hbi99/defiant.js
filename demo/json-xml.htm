@@ -55,7 +55,7 @@ pre {
 	border: #ccc 1px solid;
 	border-radius: 5px;
 	overflow: auto;
-	font-size: 1em;
+	font-size: 1.25em;
 }
 
 #j-output {
@@ -131,13 +131,12 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 		}
 	},
 	*/
-	/*
 	json = {
-	    "key": [
-		        { "@item": "value" }
-		    ]
-	 },
-	 */
+	    "a": {
+	        "b": 37
+	    }
+	},
+	/*
 	json = {
 		"@id":"network_shared",
 		"file":[
@@ -151,6 +150,7 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 			}
 		]
 	},
+	 */
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = Defiant.node.toJSON(doc)

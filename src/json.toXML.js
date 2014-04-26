@@ -35,11 +35,11 @@ if (!JSON.toXML) {
 						cname   = array_child ? name : key;
 						if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
 						if (val === null) {
-							constr  = null;
-							cnName  = false;
+							constr = null;
+							cnName = false;
 						} else {
-							constr  = val.constructor;
-							cnName  = (constr.name !== undefined)? constr.name : constr.getName();	
+							constr = val.constructor;
+							cnName = (constr.name !== undefined)? constr.name : constr.getName();	
 						}
 
 						if (is_attr) {
@@ -49,6 +49,10 @@ if (!JSON.toXML) {
 							elem.push( this.scalar_to_xml( cname, val ) );
 						} else {
 							switch (constr) {
+								case Function:
+									// if constructor is function, then it's not a JSON structure
+									// it's a JS object
+									break;
 								case Object:
 									elem.push( this.hash_to_xml( cname, val ) );
 									break;
@@ -67,13 +71,20 @@ if (!JSON.toXML) {
 									/* falls through */
 								case String:
 									if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+									if (cname === '#text') {
+										attr.push('d:constr="'+ cnName +'"');
+										elem.push( this.escape_xml(val) );
+										break;
+									}
 									/* falls through */
 								case Number:
 								case Boolean:
-									if (cname === '#text' && cnName !== 'String') attr.push('d:constr="'+ cnName +'"');
+									if (cname === '#text' && cnName !== 'String') {
+										attr.push('d:constr="'+ cnName +'"');
+										elem.push( this.escape_xml(val) );
+										break;
+									}
 									elem.push( this.scalar_to_xml( cname, val ) );
-									break;
-								case Function:
 									break;
 								default:
 									//console.log( val.constructor, key, val );
@@ -124,7 +135,10 @@ if (!JSON.toXML) {
 						text = (text !== null)? text[2] : '';
 
 						return '<'+ name + a1 +' '+ a2 +' d:type="ArrayItem">'+ text +'</'+ name +'>';
-					} else 
+					} else if (val.length === 0 && val.constructor === Array) {
+						return '<'+ name +' d:constr="Array"/>';
+					}
+					// else 
 					if (override) {
 						return this.hash_to_xml( name, val, true );
 					}
@@ -134,9 +148,7 @@ if (!JSON.toXML) {
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
-					if ( (cnName) !== 'String' ) {
-						attr += ' d:constr="'+ (cnName) +'"';
-					}
+					attr += ' d:constr="'+ cnName +'"';
 
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},

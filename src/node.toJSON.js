@@ -78,8 +78,12 @@ Defiant.node.toJSON = function(xnode, stringify) {
 							case 'Array':
 								//console.log( Defiant.node.prettyPrint(item) );
 								if (item.parentNode.firstChild === item && cConstr === 'Array' && cname !== 'd:item') {
-									if (cname === 'd:item' || cConstr === 'Array') obj[cname] = [interpret(item)];
-									else obj[cname] = interpret(item);
+									if (cname === 'd:item' || cConstr === 'Array') {
+										cval = interpret(item);
+										obj[cname] = cval.length ? [cval] : cval;
+									} else {
+										obj[cname] = interpret(item);
+									}
 								}
 								else if (obj.push) obj.push( interpret(item) );
 								else obj[cname] = interpret(item);

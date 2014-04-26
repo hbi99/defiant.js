@@ -126,7 +126,10 @@ if (!JSON.toXML) {
 						text = (text !== null)? text[2] : '';
 
 						return '<'+ name + a1 +' '+ a2 +' d:type="ArrayItem">'+ text +'</'+ name +'>';
-					} else 
+					} else if (val.length === 0 && val.constructor === Array) {
+						return '<'+ name +' d:constr="Array"/>';
+					}
+					// else 
 					if (override) {
 						return this.hash_to_xml( name, val, true );
 					}
@@ -136,7 +139,7 @@ if (!JSON.toXML) {
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
-					attr += ' d:constr="'+ (cnName) +'"';
+					attr += ' d:constr="'+ cnName +'"';
 
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},

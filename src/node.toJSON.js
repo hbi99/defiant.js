@@ -10,23 +10,26 @@ Defiant.node.toJSON = function(xnode, stringify) {
 				cname,
 				cConstr,
 				cval,
-				text;
+				text,
+				i, il, a;
 
 			switch (leaf.nodeType) {
 				case 1:
-					type = leaf.getAttribute('d:constr');
-					if (type === 'Array') obj = [];
-					else if (type === 'String') obj = '';
+					cConstr = leaf.getAttribute('d:constr');
+					if (cConstr === 'Array') obj = [];
+					else if (cConstr === 'String' && leaf.textContent === '') obj = '';
 
 					attr = leaf.attributes;
-					for (var j=0, jl=attr.length, a; j<jl; j++) {
-						a = attr.item(j);
+					i = 0;
+					il = attr.length;
+					for (; i<il; i++) {
+						a = attr.item(i);
 						if (a.nodeName.match(/\:d|d\:/g) !== null) continue;
 
-						type = leaf.getAttribute('d:'+ a.nodeName);
-						if (type && type !== 'undefined') {
+						cConstr = leaf.getAttribute('d:'+ a.nodeName);
+						if (cConstr && cConstr !== 'undefined') {
 							if (a.nodeValue === 'null') cval = null;
-							else cval = window[ type ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
+							else cval = window[ cConstr ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
 						} else {
 							cval = a.nodeValue;
 						}
@@ -40,7 +43,9 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					break;
 			}
 			if (leaf.hasChildNodes()) {
-				for(var i=0, il=leaf.childNodes.length; i<il; i++) {
+				i = 0;
+				il = leaf.childNodes.length;
+				for(; i<il; i++) {
 					item  = leaf.childNodes.item(i);
 					cname = item.nodeName;
 					attr  = leaf.attributes;

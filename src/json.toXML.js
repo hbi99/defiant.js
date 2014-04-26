@@ -49,6 +49,10 @@ if (!JSON.toXML) {
 							elem.push( this.scalar_to_xml( cname, val ) );
 						} else {
 							switch (constr) {
+								case Function:
+									// if constructor is function, then it's not a JSON structure
+									// it's a JS object
+									break;
 								case Object:
 									elem.push( this.hash_to_xml( cname, val ) );
 									break;
@@ -67,15 +71,20 @@ if (!JSON.toXML) {
 									/* falls through */
 								case String:
 									if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+									if (cname === '#text') {
+										attr.push('d:constr="'+ cnName +'"');
+										elem.push( this.escape_xml(val) );
+										break;
+									}
 									/* falls through */
 								case Number:
 								case Boolean:
-									if (cname === '#text' && cnName !== 'String') attr.push('d:constr="'+ cnName +'"');
+									if (cname === '#text' && cnName !== 'String') {
+										attr.push('d:constr="'+ cnName +'"');
+										elem.push( this.escape_xml(val) );
+										break;
+									}
 									elem.push( this.scalar_to_xml( cname, val ) );
-									break;
-								case Function:
-									// if constructor is function, then it's not a JSON structure
-									// it's a JS object
 									break;
 								default:
 									//console.log( val.constructor, key, val );

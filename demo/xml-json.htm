@@ -108,10 +108,9 @@ var s = ''+
 	//	'<data>'+
 	//	'<data xmlns:d="defiant-namespace">'+
 		'<d:data xmlns:d="defiant-namespace">'+
-	//	'    <key d:type="ArrayItem">'+
-	//	'        <item>value</item>'+
-	//	'    </key>'+
-		'	<file id="./tmp" d:type="ArrayItem"/>'+
+		'    <a>'+
+		'        <b d:constr="String"></b>'+
+		'    </a>'+
 	//	'	<banan>3</banan>'+
 	//	'	<cage/>'+
 	//	'	<banan id="a">4</banan>'+
@@ -133,8 +132,8 @@ var s = ''+
 
 	doc = Defiant.xmlFromString(s)
 	, json = Defiant.node.toJSON(doc)
-	, d2 = JSON.toXML(json)
-	, j2 = Defiant.node.toJSON(d2)
+	, d2
+	, j2
 	, str;
 
 
@@ -150,11 +149,13 @@ xEl.innerHTML  = str.replace(/</g, '&lt;')
 jEl.innerHTML  = JSON.stringify( json, null, '\t' )
 					.replace(/\t/g, String().fill(Defiant.tabsize));
 /**/
+d2 = JSON.toXML(json);
+
 str = Defiant.node.prettyPrint(d2);
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
-rjEl.innerHTML = JSON.stringify( j2, null, '\t' )
+rjEl.innerHTML = JSON.stringify( Defiant.node.toJSON(d2), null, '\t' )
 					.replace(/\t/g, String().fill(Defiant.tabsize));
 
 </script>

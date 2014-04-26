@@ -16,6 +16,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 				case 1:
 					type = leaf.getAttribute('d:constr');
 					if (type === 'Array') obj = [];
+					else if (type === 'String') obj = '';
 
 					attr = leaf.attributes;
 					for (var j=0, jl=attr.length, a; j<jl; j++) {

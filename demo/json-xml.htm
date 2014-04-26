@@ -131,13 +131,12 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 		}
 	},
 	*/
-	/*
 	json = {
-	    "key": [
-		        { "@item": "value" }
-		    ]
-	 },
-	 */
+	    "a": {
+	        "b": ""
+	    }
+	},
+	/*
 	json = {
 		"@id":"network_shared",
 		"file":[
@@ -151,6 +150,7 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 			}
 		]
 	},
+	 */
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = Defiant.node.toJSON(doc)

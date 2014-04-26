@@ -35,11 +35,11 @@ if (!JSON.toXML) {
 						cname   = array_child ? name : key;
 						if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
 						if (val === null) {
-							constr  = null;
-							cnName  = false;
+							constr = null;
+							cnName = false;
 						} else {
-							constr  = val.constructor;
-							cnName  = (constr.name !== undefined)? constr.name : constr.getName();	
+							constr = val.constructor;
+							cnName = (constr.name !== undefined)? constr.name : constr.getName();	
 						}
 
 						if (is_attr) {
@@ -74,6 +74,8 @@ if (!JSON.toXML) {
 									elem.push( this.scalar_to_xml( cname, val ) );
 									break;
 								case Function:
+									// if constructor is function, then it's not a JSON structure
+									// it's a JS object
 									break;
 								default:
 									//console.log( val.constructor, key, val );
@@ -134,9 +136,7 @@ if (!JSON.toXML) {
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
-					if ( (cnName) !== 'String' ) {
-						attr += ' d:constr="'+ (cnName) +'"';
-					}
+					attr += ' d:constr="'+ (cnName) +'"';
 
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},

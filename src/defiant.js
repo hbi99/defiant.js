@@ -9,17 +9,20 @@ module.exports = Defiant = (function(window, undefined) {
 	'use strict';
 
 	var Defiant = {
+		is_ie     : /msie/i.test(navigator.userAgent),
+		is_safari : /safari/i.test(navigator.userAgent),
 		env       : 'production',
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
-		is_safari : (typeof navigator !== 'undefined')? navigator.userAgent.match(/safari/i) !== null : false,
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
 				opt       = {match: '/'},
+				tmplt_xpath,
 				scripts,
-				temp;
+				temp,
+				sorter;
 			// handle arguments
 			switch (typeof(template)) {
 				case 'object':
@@ -34,10 +37,20 @@ module.exports = Defiant = (function(window, undefined) {
 					throw 'error';
 			}
 			opt.data = JSON.toXML(opt.data);
+			tmplt_xpath = '//xsl:template[@name="'+ opt.template +'"]';
 
 			if (!this.xsl_template) this.gather_templates();
 
-			temp = this.node.selectSingleNode(this.xsl_template, '//xsl:template[@name="'+ opt.template +'"]');
+			if (opt.sorter) {
+				sorter = this.node.selectSingleNode(this.xsl_template, tmplt_xpath +'//xsl:for-each//xsl:sort');
+				if (sorter) {
+					if (opt.sorter.order) sorter.setAttribute('order', opt.sorter.order);
+					if (opt.sorter.select) sorter.setAttribute('select', opt.sorter.select);
+					sorter.setAttribute('data-type', opt.sorter.type || 'text');
+				}
+			}
+
+			temp = this.node.selectSingleNode(this.xsl_template, tmplt_xpath);
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -60,12 +73,20 @@ module.exports = Defiant = (function(window, undefined) {
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
-			var parser = new DOMParser(),
-				xmlDoc;
+			var parser,
+				doc;
 			str = str.replace(/>\s{1,}</g, '><');
-			if (str.trim().match(/<\?xml/) === null) str = this.xml_decl + str;
-			xmlDoc = parser.parseFromString(str, 'text/xml');
-			return xmlDoc;
+			if (str.trim().match(/<\?xml/) === null) {
+				str = this.xml_decl + str;
+			}
+			if (this.is_ie) {
+				doc = new ActiveXObject('Msxml2.DOMDocument');
+				doc.loadXML(str);
+			} else {
+				parser = new DOMParser();
+				doc = parser.parseFromString(str, 'text/xml');
+			}
+			return doc;
 		},
 		extend: function(src, dest) {
 			for (var content in dest) {
@@ -256,3 +277,4 @@ module.exports = Defiant = (function(window, undefined) {
 	return Defiant;
 
 })(this);
+

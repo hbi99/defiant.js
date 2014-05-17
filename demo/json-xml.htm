@@ -78,8 +78,8 @@ pre {
 
 </style>
 <script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
-<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
 <script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
@@ -167,19 +167,12 @@ var is_ie = navigator.userAgent.match(/msie (\d)/i),
 
 JSON.search.trace = true;
 
-if (is_ie !== null && is_ie[1] < 9) {
-	xEl.innerText  = str;
-	jEl.innerText  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
-	rjEl.innerText = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
-	rxEl.innerText = str2;
-} else {
-	xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
-	rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
-	rxEl.innerHTML = str2.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
+rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
+rxEl.innerHTML = str2.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-console.log( JSON.search( json, '//item' ) );
+console.log( JSON.search( json, '//b' ) );
 
 </script>
 

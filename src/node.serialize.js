@@ -1,10 +1,17 @@
 
 Defiant.node.prettyPrint = function(node) {
-	var tabs = Defiant.tabsize,
-		decl = Defiant.xml_decl.toLowerCase(),
-		ser  = new XMLSerializer(),
+	var root = Defiant,
+		tabs = root.tabsize,
+		decl = root.xml_decl.toLowerCase(),
+		ser,
+		xstr;
+	if (root.is_ie) {
+		xstr = node.xml;
+	} else {
+		ser  = new XMLSerializer();
 		xstr = ser.serializeToString(node);
-	if (Defiant.env !== 'development') {
+	}
+	if (root.env !== 'development') {
 		// if environment is not development, remove defiant related info
 		xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
 	}

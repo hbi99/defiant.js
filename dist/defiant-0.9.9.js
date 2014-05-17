@@ -17,11 +17,12 @@ module.exports = Defiant = (function(window, undefined) {
 	'use strict';
 
 	var Defiant = {
+		is_ie     : /msie/i.test(navigator.userAgent),
+		is_safari : /safari/i.test(navigator.userAgent),
 		env       : 'production',
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
-		is_safari : (typeof navigator !== 'undefined')? navigator.userAgent.match(/safari/i) !== null : false,
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -68,12 +69,20 @@ module.exports = Defiant = (function(window, undefined) {
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		xmlFromString: function(str) {
-			var parser = new DOMParser(),
-				xmlDoc;
+			var parser,
+				doc;
 			str = str.replace(/>\s{1,}</g, '><');
-			if (str.trim().match(/<\?xml/) === null) str = this.xml_decl + str;
-			xmlDoc = parser.parseFromString(str, 'text/xml');
-			return xmlDoc;
+			if (str.trim().match(/<\?xml/) === null) {
+				str = this.xml_decl + str;
+			}
+			if (this.is_ie) {
+				doc = new ActiveXObject('Msxml2.DOMDocument.6.0');
+				doc.loadXML(str);
+			} else {
+				parser = new DOMParser();
+				doc = parser.parseFromString(str, 'text/xml');
+			}
+			return doc;
 		},
 		extend: function(src, dest) {
 			for (var content in dest) {
@@ -265,63 +274,13 @@ module.exports = Defiant = (function(window, undefined) {
 
 })(this);
 
-// IE polyfills
-if (window.ActiveXObject !== undefined) {
 
-	//if (typeof(DOMParser) === 'undefined') {
-		var DOMParser = function() {};
-		DOMParser.prototype.parseFromString = function(str, contentType) {
-			var xmldata;
-			if(typeof(ActiveXObject) != 'undefined') {
-				xmldata = new ActiveXObject('MSXML.DomDocument');
-				xmldata.async = false;
-				xmldata.loadXML(str);
-				return xmldata;
-			} else if(typeof(XMLHttpRequest) != 'undefined') {
-				xmldata = new XMLHttpRequest();
-				if(!contentType) {
-					contentType = 'application/xml';
-				}
-				xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
-				if(xmldata.overrideMimeType) {
-					xmldata.overrideMimeType(contentType);
-				}
-				xmldata.send(null);
-				return xmldata.responseXML;
-			}
-		};
-	//}
-
-	//if (typeof(XMLSerializer) === 'undefined') {
-		var XMLSerializer = function() {};
-		XMLSerializer.prototype = {
-			serializeToString: function(node) {
-				return node.xml;
-			}
-		};
-	//}
-
-	//if (typeof(XSLTProcessor) === 'undefined') {
-		var XSLTProcessor = function() {};
-		XSLTProcessor.prototype = {
-			importStylesheet: function(xsldoc) {
-				this.xsldoc = xsldoc;
-			},
-			transformToFragment: function(data, doc) {
-				var str = data.transformNode(this.xsldoc),
-					span = document.createElement('span');
-				span.innerHTML = str;
-				return span;
-			}
-		};
-	//}
-
-	Object.prototype.getName = function() {
-		var funcNameRegex = /function (.{1,})\(/,
-			results = (funcNameRegex).exec(this.toString());
-		return (results && results.length > 1) ? results[1] : '';
+if (!String.prototype.trim) {
+	String.prototype.trim = function () {
+		return this.replace(/^\s+|\s+$/g, '');
 	};
 }
+
 
 
 // extending STRING
@@ -419,7 +378,7 @@ if (!JSON.toXML) {
 							cnName = false;
 						} else {
 							constr = val.constructor;
-							cnName = (constr.name !== undefined)? constr.name : constr.getName();	
+							cnName = constr.toString().match(/function (\w+)/i)[1];
 						}
 
 						if (is_attr) {
@@ -487,8 +446,8 @@ if (!JSON.toXML) {
 					return '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 				},
 				scalar_to_xml: function(name, val, override) {
-					var text,
-						attr = '',
+					var attr = '',
+						text,
 						constr,
 						cnName;
 
@@ -525,7 +484,7 @@ if (!JSON.toXML) {
 					}
 
 					constr = val.constructor;
-					cnName = constr.name || constr.getName();
+					cnName = constr.toString().match(/function (\w+)/i)[1];
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 
@@ -705,11 +664,18 @@ Defiant.node.selectSingleNode = function(XNode, XPath) {
 
 
 Defiant.node.prettyPrint = function(node) {
-	var tabs = Defiant.tabsize,
-		decl = Defiant.xml_decl.toLowerCase(),
-		ser  = new XMLSerializer(),
+	var root = Defiant,
+		tabs = root.tabsize,
+		decl = root.xml_decl.toLowerCase(),
+		ser,
+		xstr;
+	if (root.is_ie) {
+		xstr = node.xml;
+	} else {
+		ser  = new XMLSerializer();
 		xstr = ser.serializeToString(node);
-	if (Defiant.env !== 'development') {
+	}
+	if (root.env !== 'development') {
 		// if environment is not development, remove defiant related info
 		xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
 	}
@@ -845,7 +811,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					}
 				}
 			}
-			if (leaf.getAttribute && leaf.getAttribute('d:type') === 'ArrayItem') {
+			if (leaf.nodeType === 1 && leaf.getAttribute('d:type') === 'ArrayItem') {
 				obj = [obj];
 			}
 			return obj;

@@ -3,71 +3,19 @@
 <head>
 <meta charset="utf-8">
 <title>Defiant.js - Sum, Avg</title>
-<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
-<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
-<script type="text/javascript" src="/defiant.js/src/string.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+<script type="text/javascript" src="http://sandbox/xdbc.js"></script>
 </head>
 <body>
 
-
 <script type="text/javascript">
 
-var data = {
-	"store": {
-		"book": [{
-			"title": "The Lord of the Rings",
-			"author": "J. R. R. Tolkien",
-			"category": "Fiction",
-			"price": 22.99,
-		   },
-		   {
-		   	"title": "Moby Dick",
-			"author": "Herman Melville",
-			"category": "Fiction",
-			"price": 8.99
-		   },
-		   {
-		   	"title": "this is \"NOT\" me",
-			"author": "Herman Melville",
-			"category": "Fiction",
-			"price": 8.99
-		   }]
-	   	}
-	},
-	found = JSON.search(data,"//*[title='this is \"NOT\" me']");
+var str ='<?xml version="1.0"?><book><author select="tests">blah</author></book>';
+var tmp = xdbc.load(str);
+var sel = tmp.selectNodes('//*');
 
-console.log( found );
-  
-</script>
-
-</body>
-</html>
-
-<!--
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Defiant.js - Sum, Avg</title>
-<script type="text/javascript" src="//sandbox/old/extend.js"></script>
-</head>
-<body>
-
-
-<script type="text/javascript">
-
-var doc = xdbc.load('<data><i id="1"/></data>');
-  
-console.log( typeof doc.selectNodes );
+console.log( sel.length );
 
 </script>
 
 </body>
 </html>
-	-->

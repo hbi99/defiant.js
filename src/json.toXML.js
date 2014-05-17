@@ -39,7 +39,7 @@ if (!JSON.toXML) {
 							cnName = false;
 						} else {
 							constr = val.constructor;
-							cnName = (constr.name !== undefined)? constr.name : constr.getName();	
+							cnName = constr.toString().match(/function (\w+)/i)[1];
 						}
 
 						if (is_attr) {
@@ -107,8 +107,8 @@ if (!JSON.toXML) {
 					return '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 				},
 				scalar_to_xml: function(name, val, override) {
-					var text,
-						attr = '',
+					var attr = '',
+						text,
 						constr,
 						cnName;
 
@@ -145,7 +145,7 @@ if (!JSON.toXML) {
 					}
 
 					constr = val.constructor;
-					cnName = constr.name || constr.getName();
+					cnName = constr.toString().match(/function (\w+)/i)[1];
 					text = (constr === Array)   ? this.hash_to_xml( 'd:item', val, true )
 												: this.escape_xml(val);
 

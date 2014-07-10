@@ -16,10 +16,11 @@ if (!JSON.search) {
 			is_attr,
 			key,
 			do_search = function(current) {
+				var j, jl, check;
 				if (map_index === jres[i].length) return current;
 				switch (current.constructor) {
 					case Array:
-						for (var j=0, jl=current.length, check; j<jl; j++) {
+						for (j=0, jl=current.length; j<jl; j++) {
 							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
 								if (map_index < jres[i].length) {
 									map_index++;

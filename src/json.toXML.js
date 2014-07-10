@@ -25,7 +25,8 @@ if (!JSON.toXML) {
 						is_attr,
 						cname,
 						constr,
-						cnName;
+						cnName,
+						i;
 
 					for (key in tree) {
 						val     = tree[key];
@@ -61,7 +62,9 @@ if (!JSON.toXML) {
 									if (key === cname) {
 										val_is_array = val.constructor === Array;
 										if (val_is_array) {
-											for (var i=0, il=val.length; i<il; i++) {
+											i = val.length;
+											while (val[i]) {
+												i--;
 												if (val[i].constructor === Array) val_is_array = true;
 												if (!val_is_array && val[i].constructor === Object) val_is_array = true;
 											}

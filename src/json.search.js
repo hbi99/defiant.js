@@ -11,10 +11,12 @@ if (!JSON.search) {
 			map,
 			node,
 			map_index,
+			map_cache = {},
 			item_map,
 			current,
 			is_attr,
 			key,
+			i, il,
 			do_search = function(current) {
 				var j, jl, check;
 				if (map_index === jres[i].length) return current;
@@ -70,19 +72,22 @@ if (!JSON.search) {
 			if (node === od) continue;
 			while (node !== od) {
 				is_attr = node.nodeType === 2;
+				if (!map_cache[node]) {
+					map_cache[node] = is_attr ? node.value : Defiant.node.toJSON(node, '\t');
+				}
 				map.push({
 					node : node,
 					key  : (is_attr ? '@' : '') + node.nodeName,
-					val  : is_attr ? node.value : Defiant.node.toJSON(node, '\t')
+					val  : map_cache[node]
 				});
 				node = is_attr ? node.ownerElement : node.parentNode;
 			}
 			jres.push(map.reverse());
 		}
 		//console.log( 'j-RES:', jres );
-		for (var i=0, il=jres.length; i<il; i++) {
-			map_index  = 0;
-			item_map   = jres[i][map_index];
+		for (i=0, il=jres.length; i<il; i++) {
+			map_index = 0;
+			item_map  = jres[i][map_index];
 			ret.push( do_search(tree) );
 		}
 		// if tracing is enabled

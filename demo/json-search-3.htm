@@ -20,10 +20,10 @@
 var test = {
 	init: function(data) {
 		var start = Date.now(),
-			found = JSON.search(data, '//file');
+			found = JSON.search(data, '//*');
 
-		//console.log( Date.now() - start );
-		//console.log( found.length );
+		console.log( Date.now() - start );
+		console.log( found.length );
 	}
 };
 

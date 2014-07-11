@@ -20,10 +20,14 @@
 var test = {
 	init: function(data) {
 		var start = Date.now(),
-			found = JSON.search(data, '//*');
+			found = JSON.search(data, '//*[@width]');
 
-		console.log( Date.now() - start );
-		console.log( found.length );
+		//console.log( Date.now() - start );
+		//console.log( found.length );
+
+		for (var i=0, il=found.length; i<il; i++) {
+			//console.log( found[i]['@width'] );
+		}
 	}
 };
 

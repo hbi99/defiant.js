@@ -11,35 +11,36 @@ if (!JSON.search) {
 			map,
 			node,
 			map_index,
-			map_cache = {},
 			item_map,
 			current,
 			is_attr,
 			key,
 			i, il,
-			do_search = function(current, jr) {
-				var j,
+			do_search = function(current, jr, im, mi) {
+				var is_attr,
+					key,
+					j,
 					jl,
 					check;
-				if (map_index === jr.length) return current;
+				if (mi === jr.length) return current;
 				switch (current.constructor) {
 					case Array:
 						for (j=0, jl=current.length; j<jl; j++) {
-							if (item_map.val === JSON.stringify(current[j], null, '\t')) {
-								if (map_index < jr.length) {
-									map_index++;
-									item_map = jr[map_index];
-									return do_search(current[j], jr);
+							if (im.val === JSON.stringify(current[j], null, '\t')) {
+								if (mi < jr.length) {
+									mi++;
+									im = jr[mi];
+									return do_search(current[j], jr, im, mi);
 								}
 							}
 						}
 						if (j === jl) {
-							if (item_map.val === JSON.stringify(current, null, '\t')) {
-								map_index++;
-								item_map = jr[map_index];
+							if (im.val === JSON.stringify(current, null, '\t')) {
+								mi++;
+								im = jr[mi];
 
 								for (j=0; j<jl; j++) {
-									check = do_search(current[j], jr);
+									check = do_search(current[j], jr, im, mi);
 									if (check) return check;
 								}
 							}
@@ -47,23 +48,22 @@ if (!JSON.search) {
 						}
 						break;
 					default:
-						is_attr = jr[map_index].node.nodeType;
-						key = (is_attr === 1)? jr[map_index].node.getAttribute('d:name') : false;
-						//key = jr[map_index].node.getAttribute('d:name');
-						key = key || item_map.key;
-						current = current[key];
+						is_attr = jr[mi].node.nodeType;
+						key = (is_attr === 1)? jr[mi].node.getAttribute('d:name') : false;
+						current = current[key || im.key];
 						if (typeof(current) !== 'object') {
-							map_index++;
-							item_map = jr[map_index];
+							mi++;
+							im = jr[mi];
 							return current;
 						}
 						if (current.constructor === Object) {
-							map_index++;
-							item_map = jr[map_index];
+							mi++;
+							im = jr[mi];
 						}
 				}
-				return do_search(current, jr);
+				return do_search(current, jr, im, mi);
 			};
+
 
 		if (single) xres = [xres];
 		//console.log( 'x-RES:', xres );
@@ -74,24 +74,21 @@ if (!JSON.search) {
 			if (node === od) continue;
 			while (node !== od) {
 				is_attr = node.nodeType === 2;
-				if (!map_cache[node]) {
-					map_cache[node] = is_attr ? node.value : Defiant.node.toJSON(node, '\t');
-				}
 				map.unshift({
 					node : node,
 					key  : (is_attr ? '@' : '') + node.nodeName,
-					val  : map_cache[node]
+					val  : is_attr ? node.value : Defiant.node.toJSON(node, '\t')
 				});
 				node = is_attr ? node.ownerElement : node.parentNode;
 			}
 			jres.push(map);
 		}
 		//console.log( 'j-RES:', jres );
+		var start = Date.now();
 		for (i=0, il=jres.length; i<il; i++) {
-			map_index = 0;
-			item_map  = jres[i][map_index];
-			ret.push( do_search(tree, jres[i]) );
+			ret.push( do_search(tree, jres[i], jres[i][0], 0) );
 		}
+		console.log( Date.now() - start );
 		// if tracing is enabled
 		this.trace = JSON.search.trace ? JSON.mtrace(tree, jres) : false;
 

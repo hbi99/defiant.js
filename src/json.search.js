@@ -89,6 +89,7 @@ if (!JSON.search) {
 			ret.push( do_search(tree, jres[i], jres[i][0], 0) );
 		}
 		console.log( Date.now() - start );
+
 		// if tracing is enabled
 		this.trace = JSON.search.trace ? JSON.mtrace(tree, jres) : false;
 

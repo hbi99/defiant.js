@@ -107,180 +107,7 @@ module.exports = Defiant = (function(window, undefined) {
 			}
 			return src;
 		},
-		result: function() {
-			var Q = function(found) {
-				for (var method in Q.prototype) {
-					if (Q.prototype.hasOwnProperty(method)) {
-						found[method] = Q.prototype[method];
-					}
-				}
-				return found;
-			};
-			Q.prototype = {
-				sum: function(key) {
-					var i = 0,
-						il = this.length,
-						sum = 0;
-					for (; i<il; i++) {
-						sum += +this[i][key];
-					}
-					return sum;
-				},
-				avg: function(key) {
-					return this.sum(key) / this.length;
-				},
-				sortAsc: function(key) {
-					return this.sort(function(a,b) {
-						return a[key] - b[key];
-					});
-				},
-				sortDesc: function(key) {
-					return this.sort(function(a,b) {
-						return b[key] - a[key];
-					});
-				},
-				min: function(key, method) {
-					var i = 0,
-						il = this.length,
-						arr = [];
-					for (; i<il; i++) {
-						arr.push(this[i][key]);
-					}
-					return Math[ method || 'min' ].apply(null, arr);
-				},
-				max: function(key) {
-					return this.min(key, 'max');
-				},
-				add: function(key, val, operator) {
-					var i = 0,
-						il = this.length,
-						is_string = typeof(val) === 'string';
-
-					for (; i<il; i++) {
-						switch (operator) {
-							case 'divide':   this[i][key] /= (is_string) ? this[i][val] : +val; break;
-							case 'multiply': this[i][key] *= (is_string) ? this[i][val] : +val; break;
-							case 'subtract': this[i][key] -= (is_string) ? this[i][val] : +val; break;
-							default: this[i][key] += (is_string) ? this[i][val] : +val;
-						}
-					}
-					return this;
-				},
-				subtract: function(key, val) {
-					return this.add(key, val, 'subtract');
-				},
-				divide: function(key, val) {
-					return this.add(key, val, 'divide');
-				},
-				multiply: function(key, val) {
-					return this.add(key, val, 'multiply');
-				},
-				each: function(fn) {
-					var i = 0,
-						il = this.length;
-					for (; i<il; i++) {
-						fn(this[i]);
-					}
-					return this;
-				}
-			};
-			return new Q(arguments[0]);
-		},
-		ajax: function(url, callback) {
-			var that = Defiant.ajax;
-			for (var method in ajax.prototype) {
-				if (ajax.prototype.hasOwnProperty(method)) {
-					that[method] = ajax.prototype[method];
-				}
-			}
-			that.queue = new Queue(that);
-			return url ? that.load(url, callback) : that ;
-		},
 		node: {}
-	};
-
-	// extending Defiant.ajax with function chaining
-	var ajax = function(url) {};
-	ajax.prototype = {
-		callback: function(data) {
-			this.data = data;
-			this.queue._paused = false;
-			this.queue.flush();
-			return this;
-		},
-		wait: function(msec) {
-			var self = this,
-				fn = function() {
-					setTimeout(function() {
-						self.queue._paused = false;
-						self.queue.flush();
-					}, msec);
-				};
-			fn._paused = true;
-			this.queue.add(fn);
-			return this;
-		},
-		load: function(url, cb) {
-			var self = this,
-				fn = function() {
-					var headLoc = document.getElementsByTagName("head").item(0),
-						scriptObj = document.createElement("script"),
-						delimiter = url.indexOf('?') > -1 ? '&' : '?';
-					scriptObj.setAttribute("type", "text/javascript");
-					scriptObj.setAttribute("charset", "utf-8");
-					scriptObj.setAttribute("src", url + delimiter +'callback=Defiant.ajax.callback');
-					headLoc.appendChild(scriptObj);
-				},
-				f2 = function() {
-					cb(this.data);
-				};
-			fn._paused = true;
-			this.queue.add(fn);
-			if (cb) this.queue.add(f2);
-			return this;
-		},
-		each: function(fn) {
-			var self = this;
-			this.queue.add(function() {
-				if (!self.res.length) return fn.call(self);
-				for (var i=0, il=self.res.length; i<il; i++) {
-					fn.call(self, self.res[i]);
-				}
-			});
-			return this;
-		},
-		search: function(xpath) {
-			var self = this,
-				fn = function() {
-					self.res = JSON.search(self.data, xpath);
-				};
-			this.queue.add(fn);
-			return this;
-		}
-	};
-
-	// implementing function chaining
-	function Queue(owner) {
-		this._methods = [];
-		this._owner = owner;
-		this._paused = false;
-	}
-	Queue.prototype = {
-		add: function(fn) {
-			this._methods.push(fn);
-			if (!this._paused) this.flush();
-		},
-		flush: function() {
-			if (this._paused) return;
-			while (this._methods[0]) {
-				var fn = this._methods.shift();
-				fn.call(this._owner);
-				if (fn._paused) {
-					this._paused = true;
-					break;
-				}
-			}
-		}
 	};
 
 	return Defiant;
@@ -557,66 +384,43 @@ if (!JSON.search) {
 		
 		var doc  = JSON.toXML(tree),
 			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
+			i    = xres.length,
 			ret  = [],
-			mapIndex,
-			i;
+			mapIndex;
 
 		if (single) xres = [xres];
 
 		//console.log( 'x-RES:', xres );
-		i = xres.length;
 		while (i--) {
-			if (xres[i].nodeType === 2) {
-				ret.unshift( xres[i].nodeValue );
-			} else {
-				mapIndex = +xres[i].getAttribute('d:mi');
-				ret.unshift( this.search.map[mapIndex-1] );
+			switch(xres[i].nodeType) {
+				case 2:
+				case 3: 
+					ret.unshift( xres[i].nodeValue );
+					break;
+				default:
+					mapIndex = +xres[i].getAttribute('d:mi');
+					ret.unshift( this.search.map[mapIndex-1] );
 			}
 		}
+		// if tracing is enabled
+		this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
 
 		//console.log( 'RES:', ret );
-		return Defiant.result(ret);
+		return ret;
 	};
 }
 
 
 if (!JSON.mtrace) {
-	JSON.mtrace = function(root, map) {
+	JSON.mtrace = function(root) {
 		'use strict';
 
 		var trace = [],
 			sroot = JSON.stringify( root, null, '\t' ).notabs(),
-			mroot,
-			mrow,
-			mlen,
-			is_leaf,
-			char_index,
-			line_index,
-			line_length;
+			map   = this.search.map;
 
-		for (var i=0, il=map.length; i<il; i++) {
-			mrow       = map[i];
-			char_index = 0;
-			mroot      = sroot;
-			mlen       = mrow.length;
-			is_leaf    = mrow[mlen-1].val.match(/[\{\}:\[\]]/g) === null;
-
-			if (is_leaf) mlen--;
-			if (mrow[0].val.notabs() !== sroot && mlen > 0) {
-				mroot = mrow[0].val.notabs();
-				char_index += sroot.indexOf( mroot );
-			}
-			for (var j=0, jl=mlen; j<jl; j++) {
-				char_index += mroot.indexOf( mrow[j].val.notabs() );
-				mroot = mrow[j].val.notabs();
-			}
-			if (is_leaf) {
-				char_index += mroot.indexOf( '"'+ mrow[j].key +'": ' );
-			}
-			line_index  = sroot.slice( 0, char_index ).count_nl()+1;
-			line_length = mrow[ is_leaf ? mlen : mlen-1  ].val.count_nl();
-			trace.push( [line_index, line_length] );
-		}
+		console.log( map );
+		
 		return trace;
 	};
 }

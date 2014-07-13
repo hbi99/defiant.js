@@ -5,24 +5,28 @@ if (!JSON.search) {
 		
 		var doc  = JSON.toXML(tree),
 			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
+			i    = xres.length,
 			ret  = [],
-			mapIndex,
-			i;
+			mapIndex;
 
 		if (single) xres = [xres];
 
 		//console.log( 'x-RES:', xres );
-		i = xres.length;
 		while (i--) {
-			if (xres[i].nodeType === 2) {
-				ret.unshift( xres[i].nodeValue );
-			} else {
-				mapIndex = +xres[i].getAttribute('d:mi');
-				ret.unshift( this.search.map[mapIndex-1] );
+			switch(xres[i].nodeType) {
+				case 2:
+				case 3: 
+					ret.unshift( xres[i].nodeValue );
+					break;
+				default:
+					mapIndex = +xres[i].getAttribute('d:mi');
+					ret.unshift( this.search.map[mapIndex-1] );
 			}
 		}
+		// if tracing is enabled
+		this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
 
 		//console.log( 'RES:', ret );
-		return Defiant.result(ret);
+		return ret;
 	};
 }

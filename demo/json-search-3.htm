@@ -20,10 +20,10 @@
 var test = {
 	init: function(data) {
 		var start = Date.now(),
-			found = JSON.search(data, '//*');
+			found = JSON.search(data, '//title');
 
 		console.log( Date.now() - start );
-		console.log( found.length );
+		console.log( found );
 	}
 };
 

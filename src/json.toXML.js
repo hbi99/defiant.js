@@ -4,6 +4,7 @@ if (!JSON.toXML) {
 		'use strict';
 
 		var interpreter = {
+			map: [],
 			rx_validate_name : /^(?!xml)[a-z_][\w\d.:]*$/i,
 			rx_node          : /<(.+?)( .*?)>/,
 			rx_constructor   : /<(.+?)( d:contr=".*?")>/,
@@ -58,8 +59,7 @@ if (!JSON.toXML) {
 						switch (constr) {
 							case Function:
 								// if constructor is function, then it's not a JSON structure
-								// it's a JS object
-								//throw 'ERROR!';
+								// throw 'ERROR!';
 								break;
 							case Object:
 								elem.push( this.hash_to_xml( cname, val ) );
@@ -69,8 +69,7 @@ if (!JSON.toXML) {
 									val_is_array = val.constructor === Array;
 									if (val_is_array) {
 										i = val.length;
-										while (val[i]) {
-											i--;
+										while (i--) {
 											if (val[i].constructor === Array) val_is_array = true;
 											if (!val_is_array && val[i].constructor === Object) val_is_array = true;
 										}
@@ -82,6 +81,9 @@ if (!JSON.toXML) {
 							case String:
 								if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
 								if (cname === '#text') {
+									// prepare map
+									this.map.push(tree);
+									attr.push('d:mi="'+ this.map.length +'"');
 									attr.push('d:constr="'+ cnName +'"');
 									elem.push( this.escape_xml(val) );
 									break;
@@ -90,6 +92,9 @@ if (!JSON.toXML) {
 							case Number:
 							case Boolean:
 								if (cname === '#text' && cnName !== 'String') {
+									// prepare map
+									this.map.push(tree);
+									attr.push('d:mi="'+ this.map.length +'"');
 									attr.push('d:constr="'+ cnName +'"');
 									elem.push( this.escape_xml(val) );
 									break;
@@ -109,6 +114,9 @@ if (!JSON.toXML) {
 					name = 'd:name';
 				}
 				if (array_child) return elem.join('');
+				// prepare map
+				this.map.push(tree);
+				attr.push('d:mi="'+ this.map.length +'"');
 
 				return '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 			},
@@ -156,6 +164,9 @@ if (!JSON.toXML) {
 											: this.escape_xml(val);
 
 				attr += ' d:constr="'+ cnName +'"';
+				// prepare map
+				this.map.push(val);
+				attr += ' d:mi="'+ this.map.length +'"';
 
 				return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 			},
@@ -169,6 +180,8 @@ if (!JSON.toXML) {
 		doc = interpreter.to_xml.call(interpreter, tree);
 
 		interpreter.replace.call(tree, Defiant.node.toJSON(doc.documentElement));
+
+		this.search.map = interpreter.map;
 		return doc;
 	};
 }

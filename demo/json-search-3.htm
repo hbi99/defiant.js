@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
 <script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
@@ -19,11 +20,15 @@
 
 var test = {
 	init: function(data) {
-		var start = Date.now(),
-			found = JSON.search(data, '//*');
+		JSON.search.trace = true;
 
-		console.log( Date.now() - start );
-		console.log( found.length );
+		var start = Date.now(),
+			found = JSON.search(data, '//book');
+
+		//console.log( Date.now() - start );
+		found[0].title = '123';
+		console.log( found[0] );
+		console.log( data.store.book[0] );
 	}
 };
 

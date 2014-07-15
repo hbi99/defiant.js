@@ -2,6 +2,8 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+
 <title>Defiant.js</title>
 <style type="text/css">
 
@@ -153,7 +155,7 @@ jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
 
 
-res = JSON.search(json, '//channel');
+res = JSON.search(json, '//*[contains(op, "priv")]');
 console.log( 'RES', res );
 
 </script>

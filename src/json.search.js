@@ -24,7 +24,8 @@ if (!JSON.search) {
 			}
 		}
 		// if tracing is enabled
-		this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
+		//if (typeof JSON.mtrace) JSON.mtrace();
+		//this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
 
 		//console.log( 'RES:', ret );
 		return ret;

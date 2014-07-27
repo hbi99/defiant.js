@@ -145,17 +145,23 @@ var json = {
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = Defiant.node.toJSON(doc)
-	
+	, d2     = JSON.toXML(j2)
 
 	xEl  = document.getElementById('x-output'),
 	jEl  = document.getElementById('j-output'),
-	str  = Defiant.node.prettyPrint(doc);
+	str  = Defiant.node.prettyPrint(doc),
+	rjEl  = document.getElementById('rj-output'),
+	rxEl  = document.getElementById('rx-output');
 
 xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
 
-var found = JSON.search( json, '//book' );
-console.log( found );
+
+str = Defiant.node.prettyPrint(d2);
+rxEl.innerHTML = str.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;');
+rjEl.innerHTML = JSON.stringify( Defiant.node.toJSON(d2), null, '\t' )
+					.replace(/\t/g, String().fill(Defiant.tabsize));
 
 </script>
 

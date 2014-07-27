@@ -23,9 +23,10 @@ if (!JSON.search) {
 					ret.unshift( this.search.map[mapIndex-1] );
 			}
 		}
-		// if tracing is enabled
-		//if (typeof JSON.mtrace) JSON.mtrace();
-		//this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
+		// if environment = development, add search tracing
+		if (Defiant.env === 'development') {
+			this.trace = JSON.mtrace(tree, ret, xres);
+		}
 
 		//console.log( 'RES:', ret );
 		return ret;

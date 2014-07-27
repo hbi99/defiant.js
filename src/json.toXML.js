@@ -11,12 +11,6 @@ if (!JSON.toXML) {
 			rx_namespace     : / xmlns\:d="defiant\-namespace"/,
 			rx_data          : /(<.+?>)(.*?)(<\/d:data>)/i,
 			rx_function      : /function (\w+)/i,
-			replace: function(dep) {
-				//for (var key in this) {
-				//	delete this[key];
-				//}
-				//Defiant.extend(this, dep);
-			},
 			to_xml: function(tree) {
 				var str = this.hash_to_xml(null, tree);
 				return Defiant.xmlFromString(str);
@@ -178,8 +172,6 @@ if (!JSON.toXML) {
 			}
 		},
 		doc = interpreter.to_xml.call(interpreter, tree);
-
-		//interpreter.replace.call(tree, Defiant.node.toJSON(doc.documentElement));
 
 		this.search.map = interpreter.map;
 		return doc;

@@ -4,6 +4,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 
 	var interpret = function(leaf) {
 			var obj = {},
+				win = window,
 				attr,
 				type,
 				item,
@@ -29,7 +30,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 						cConstr = leaf.getAttribute('d:'+ a.nodeName);
 						if (cConstr && cConstr !== 'undefined') {
 							if (a.nodeValue === 'null') cval = null;
-							else cval = window[ cConstr ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
+							else cval = win[ cConstr ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
 						} else {
 							cval = a.nodeValue;
 						}
@@ -38,7 +39,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					break;
 				case 3:
 					type = leaf.parentNode.getAttribute('d:type');
-					cval = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+					cval = (type) ? win[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
 					obj = cval;
 					break;
 			}
@@ -60,13 +61,13 @@ Defiant.node.toJSON = function(xnode, stringify) {
 						cval = cConstr === 'Boolean' && text === 'false' ? '' : text;
 
 						if (!cConstr && !attr.length) obj = cval;
-						else if (cConstr && attr.length === 1) {
-							obj = window[cConstr](cval);
+						else if (cConstr && il === 1) {
+							obj = win[cConstr](cval);
 						} else if (!leaf.hasChildNodes()) {
-							obj[cname] = (cConstr)? window[cConstr](cval) : cval;
+							obj[cname] = (cConstr)? win[cConstr](cval) : cval;
 						} else {
-							if (attr.length < 3) obj = (cConstr)? window[cConstr](cval) : cval;
-							else obj[cname] = (cConstr)? window[cConstr](cval) : cval;
+							if (attr.length < 3) obj = (cConstr)? win[cConstr](cval) : cval;
+							else obj[cname] = (cConstr)? win[cConstr](cval) : cval;
 						}
 					} else {
 						if (obj[cname]) {
@@ -99,7 +100,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 								text = item.textContent || item.text;
 								cval = cConstr === 'Boolean' && text === 'false' ? '' : text;
 
-								if (obj.push) obj.push( window[cConstr](cval) );
+								if (obj.push) obj.push( win[cConstr](cval) );
 								else obj[cname] = interpret(item);
 								break;
 							default:
@@ -115,8 +116,8 @@ Defiant.node.toJSON = function(xnode, stringify) {
 			return obj;
 		},
 		node = (xnode.nodeType === 9) ? xnode.documentElement : xnode,
-		ret = interpret(node),
-		rn  = ret[node.nodeName];
+		ret  = interpret(node),
+		rn   = ret[node.nodeName];
 
 	// exclude root, if "this" is root node
 	if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {

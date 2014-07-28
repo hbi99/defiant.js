@@ -82,7 +82,9 @@ module.exports = Defiant = (function(window, undefined) {
 			if (this.is_ie) {
 				doc = new ActiveXObject('Msxml2.DOMDocument');
 				doc.loadXML(str);
-				doc.setProperty('SelectionLanguage', 'XPath');
+				if (str.indexOf('xsl:stylesheet') === -1) {
+					doc.setProperty('SelectionLanguage', 'XPath');
+				}
 			} else {
 				parser = new DOMParser();
 				doc = parser.parseFromString(str, 'text/xml');

@@ -10,11 +10,7 @@ if (!JSON.search) {
 			mapIndex;
 
 		if (single) xres = [xres];
-<<<<<<< HEAD
-console.log( this.search );
-=======
 
->>>>>>> benchmark
 		//console.log( 'x-RES:', xres );
 		while (i--) {
 			switch(xres[i].nodeType) {
@@ -26,18 +22,11 @@ console.log( this.search );
 					mapIndex = +xres[i].getAttribute('d:mi');
 					ret.unshift( this.search.map[mapIndex-1] );
 			}
-<<<<<<< HEAD
-		}
-		// if tracing is enabled
-		if (typeof JSON.mtrace === 'function') JSON.mtrace();
-		//this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
-=======
 		}
 		// if environment = development, add search tracing
 		if (Defiant.env === 'development') {
 			this.trace = JSON.mtrace(tree, ret, xres);
 		}
->>>>>>> benchmark
 
 		//console.log( 'RES:', ret );
 		return ret;

@@ -1,15 +1,5 @@
 
 if (!JSON.mtrace) {
-<<<<<<< HEAD
-	JSON.mtrace = function(root) {
-		'use strict';
-
-		var trace = [],
-			sroot = JSON.stringify( root, null, '\t' ).notabs(),
-			map   = this.search.map;
-
-		console.log( map );
-=======
 	JSON.mtrace = function(root, hits, xres) {
 		'use strict';
 
@@ -59,7 +49,6 @@ if (!JSON.mtrace) {
 			lStart = sroot.substring(0,mIndex).match(/\n/g).length+1;
 			trace.push([lStart, lEnd]);
 		}
->>>>>>> benchmark
 		
 		return trace;
 	};

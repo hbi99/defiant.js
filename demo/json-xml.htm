@@ -105,75 +105,63 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-var is_ie = navigator.userAgent.match(/msie (\d)/i),
-	/*
-	json = {
-		"mall": {
-			"store": {
-				"book": [
-						[3,2,4],
-						{
-							"@price": 12.99,
-							"title": "Sword of Honour",
-							"category": "fiction",
-							"author": "Evelyn Waugh"
-						},
-						{
-							"@price": 8.99,
-							"title": "Moby Dick",
-							"category": "fiction",
-							"author": "Herman Melville",
-							"isbn": "0-553-21311-3"
-						}
-					
-				]
-			}
-		}
+var json = {
+	   "store": {
+		  "book": [
+			 {
+				"@price": 12.99,
+				"title": "Sword of Honour",
+				"category": "fiction",
+				"author": "Evelyn Waugh"
+			 },
+			 {
+				"@price": 8.99,
+				"title": "Moby Dick",
+				"category": "fiction",
+				"author": "Herman Melville",
+				"isbn": "0-553-21311-3"
+			 },
+			 {
+				"@price": 8.95,
+				"title": "Sayings of the Century",
+				"category": "reference",
+				"author": "Nigel Rees"
+			 },
+			 {
+				"@price": 22.99,
+				"title": "The Lord of the Rings",
+				"category": "fiction",
+				"author": "J. R. R. Tolkien",
+				"isbn": "0-395-19395-8"
+			 }
+		  ],
+		  "bicycle": {
+			 "@price": 19.95,
+			 "brand": "Cannondale",
+			 "color": "red"
+		  }
+	   }
 	},
-	*/
-	json = {
-	    "a": {
-	        "b": 37,
-	        "@c": "test&nbsp;b"
-	    }
-	},
-	/*
-	json = {
-		"@id":"network_shared",
-		"file":[
-			{
-				"@extension":"jpg",
-				"@height":null
-			},
-			{
-				"@extension":"jpg",
-				"@height":null
-			}
-		]
-	},
-	 */
 	json_str = JSON.stringify( json, null, '\t' )
 	, doc    = JSON.toXML(json)
 	, j2     = Defiant.node.toJSON(doc)
-	, j2s    = JSON.stringify( j2, null, '\t' )
 	, d2     = JSON.toXML(j2)
-	
 
 	xEl  = document.getElementById('x-output'),
 	jEl  = document.getElementById('j-output'),
-	rxEl = document.getElementById('rx-output'),
-	rjEl = document.getElementById('rj-output'),
 	str  = Defiant.node.prettyPrint(doc),
-	str2 = Defiant.node.prettyPrint(d2);
-
-JSON.search.trace = true;
+	rjEl  = document.getElementById('rj-output'),
+	rxEl  = document.getElementById('rx-output');
 
 xEl.innerHTML  = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 jEl.innerHTML  = json_str.replace(/\t/g, String().fill(Defiant.tabsize));
-rjEl.innerHTML = j2s.replace(/\t/g, String().fill(Defiant.tabsize));
-rxEl.innerHTML = str2.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-console.log( JSON.search( json, '//b' ) );
+
+str = Defiant.node.prettyPrint(d2);
+rxEl.innerHTML = str.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;');
+rjEl.innerHTML = JSON.stringify( Defiant.node.toJSON(d2), null, '\t' )
+					.replace(/\t/g, String().fill(Defiant.tabsize));
 
 </script>
 

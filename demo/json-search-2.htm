@@ -73,21 +73,25 @@ pre {
 <pre id="x-output"></pre>
 <pre id="j-output"></pre>
 
-
 <script type="text/javascript">
 
 // development flag
 Defiant.env = 'development';
 
-var url = 'https://www.googleapis.com/freebase/v1/search?indent=true&filter=%28all+name%3A%22Blade+Runner%22%29&output=%28disambiguator%29';
-Defiant.ajax(url)
-		.search('//*[name="Musical Recording"]')
-		.each(function(item) {
-			console.log( item );
-		});
+var test = {
+	init: function(data) {
+		var start = Date.now(),
+			found = JSON.search(data, '//*[@price]');
+
+		//console.log( Date.now() - start );
+		//console.log( found.length );
+		console.log( JSON.search.map );
+	}
+};
 
 </script>
-
+<!-- Load JSON structure -->
+<script type="text/javascript" src="/defiant.js/demo/tmp.js"></script>
 
 
 </body>

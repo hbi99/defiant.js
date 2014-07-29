@@ -8,17 +8,16 @@ DefiantJS also extends the global object JSON with the method "search", which en
 For detailed information, please visit http://defiantjs.com
 
 ```js
-    var data = [
-           { "x": 2, "y": 0 },
-           { "x": 3, "y": 1 },
-           { "x": 4, "y": 1 },
-           { "x": 2, "y": 1 }
-        ],
-        res = JSON.search( data, '//*[ y > 0 ]' );
+var data = [
+       { "x": 2, "y": 0 },
+       { "x": 3, "y": 1 },
+       { "x": 4, "y": 1 },
+       { "x": 2, "y": 1 }
+    ],
+    res = JSON.search( data, '//*[ y > 0 ]' );
 
-    console.log( res );
-    // [{ x=3, y=1}, { x=4, y=1}, { x=2, y=1}]
-
+console.log( res );
+// [{ x=3, y=1}, { x=4, y=1}, { x=2, y=1}]
 ```
 
 ```html

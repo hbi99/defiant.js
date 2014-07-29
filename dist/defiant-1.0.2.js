@@ -90,7 +90,9 @@ module.exports = Defiant = (function(window, undefined) {
 			if (this.is_ie) {
 				doc = new ActiveXObject('Msxml2.DOMDocument');
 				doc.loadXML(str);
-				doc.setProperty('SelectionLanguage', 'XPath');
+				if (str.indexOf('xsl:stylesheet') === -1) {
+					doc.setProperty('SelectionLanguage', 'XPath');
+				}
 			} else {
 				parser = new DOMParser();
 				doc = parser.parseFromString(str, 'text/xml');
@@ -202,12 +204,6 @@ if (!JSON.toXML) {
 			rx_namespace     : / xmlns\:d="defiant\-namespace"/,
 			rx_data          : /(<.+?>)(.*?)(<\/d:data>)/i,
 			rx_function      : /function (\w+)/i,
-			replace: function(dep) {
-				//for (var key in this) {
-				//	delete this[key];
-				//}
-				//Defiant.extend(this, dep);
-			},
 			to_xml: function(tree) {
 				var str = this.hash_to_xml(null, tree);
 				return Defiant.xmlFromString(str);
@@ -370,8 +366,6 @@ if (!JSON.toXML) {
 		},
 		doc = interpreter.to_xml.call(interpreter, tree);
 
-		//interpreter.replace.call(tree, Defiant.node.toJSON(doc.documentElement));
-
 		this.search.map = interpreter.map;
 		return doc;
 	};
@@ -402,9 +396,10 @@ if (!JSON.search) {
 					ret.unshift( this.search.map[mapIndex-1] );
 			}
 		}
-		// if tracing is enabled
-		//if (typeof JSON.mtrace) JSON.mtrace();
-		//this.trace = JSON.search.trace ? JSON.mtrace(tree, ret) : false;
+		// if environment = development, add search tracing
+		if (Defiant.env === 'development') {
+			this.trace = JSON.mtrace(tree, ret, xres);
+		}
 
 		//console.log( 'RES:', ret );
 		return ret;
@@ -413,14 +408,55 @@ if (!JSON.search) {
 
 
 if (!JSON.mtrace) {
-	JSON.mtrace = function(root) {
+	JSON.mtrace = function(root, hits, xres) {
 		'use strict';
 
-		var trace = [],
-			sroot = JSON.stringify( root, null, '\t' ).notabs(),
-			map   = this.search.map;
+		var win       = window,
+			stringify = JSON.stringify,
+			sroot     = stringify( root, null, '\t' ).notabs(),
+			trace     = [],
+			i         = 0,
+			il        = xres.length,
+			od        = il ? xres[i].ownerDocument.documentElement : false,
+			map       = this.search.map,
+			hstr,
+			cConstr,
+			mIndex,
+			lStart,
+			lEnd;
 
-		console.log( map );
+		for (; i<il; i++) {
+			switch (xres[i].nodeType) {
+				case 2:
+					cConstr = xres[i].ownerElement.getAttribute('d:'+ xres[i].nodeName);
+					hstr    = '"@'+ xres[i].nodeName +'": '+ win[ cConstr ]( hits[i] );
+					mIndex  = sroot.indexOf(hstr);
+					lEnd    = 0;
+					break;
+				case 3:
+					cConstr = xres[i].parentNode.getAttribute('d:constr');
+					hstr    = win[ cConstr ]( hits[i] );
+					hstr    = '"'+ xres[i].parentNode.nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
+					mIndex  = sroot.indexOf(hstr);
+					lEnd    = 0;
+					break;
+				default:
+					if (xres[i] === od) continue;
+					if (xres[i].getAttribute('d:constr') === 'String') {
+						cConstr = xres[i].getAttribute('d:constr');
+						hstr    = win[ cConstr ]( hits[i] );
+						hstr    = '"'+ xres[i].nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
+						mIndex  = sroot.indexOf(hstr);
+						lEnd    = 0;
+					} else {
+						hstr   = stringify( hits[i], null, '\t' ).notabs();
+						mIndex = sroot.indexOf(hstr);
+						lEnd   = hstr.match(/\n/g).length;
+					}
+			}
+			lStart = sroot.substring(0,mIndex).match(/\n/g).length+1;
+			trace.push([lStart, lEnd]);
+		}
 		
 		return trace;
 	};
@@ -495,6 +531,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 
 	var interpret = function(leaf) {
 			var obj = {},
+				win = window,
 				attr,
 				type,
 				item,
@@ -520,7 +557,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 						cConstr = leaf.getAttribute('d:'+ a.nodeName);
 						if (cConstr && cConstr !== 'undefined') {
 							if (a.nodeValue === 'null') cval = null;
-							else cval = window[ cConstr ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
+							else cval = win[ cConstr ]( (a.nodeValue === 'false') ? '' : a.nodeValue );
 						} else {
 							cval = a.nodeValue;
 						}
@@ -529,7 +566,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					break;
 				case 3:
 					type = leaf.parentNode.getAttribute('d:type');
-					cval = (type) ? window[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
+					cval = (type) ? win[ type ]( leaf.nodeValue === 'false' ? '' : leaf.nodeValue ) : leaf.nodeValue;
 					obj = cval;
 					break;
 			}
@@ -551,13 +588,13 @@ Defiant.node.toJSON = function(xnode, stringify) {
 						cval = cConstr === 'Boolean' && text === 'false' ? '' : text;
 
 						if (!cConstr && !attr.length) obj = cval;
-						else if (cConstr && attr.length === 1) {
-							obj = window[cConstr](cval);
+						else if (cConstr && il === 1) {
+							obj = win[cConstr](cval);
 						} else if (!leaf.hasChildNodes()) {
-							obj[cname] = (cConstr)? window[cConstr](cval) : cval;
+							obj[cname] = (cConstr)? win[cConstr](cval) : cval;
 						} else {
-							if (attr.length < 3) obj = (cConstr)? window[cConstr](cval) : cval;
-							else obj[cname] = (cConstr)? window[cConstr](cval) : cval;
+							if (attr.length < 3) obj = (cConstr)? win[cConstr](cval) : cval;
+							else obj[cname] = (cConstr)? win[cConstr](cval) : cval;
 						}
 					} else {
 						if (obj[cname]) {
@@ -590,7 +627,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 								text = item.textContent || item.text;
 								cval = cConstr === 'Boolean' && text === 'false' ? '' : text;
 
-								if (obj.push) obj.push( window[cConstr](cval) );
+								if (obj.push) obj.push( win[cConstr](cval) );
 								else obj[cname] = interpret(item);
 								break;
 							default:
@@ -606,8 +643,8 @@ Defiant.node.toJSON = function(xnode, stringify) {
 			return obj;
 		},
 		node = (xnode.nodeType === 9) ? xnode.documentElement : xnode,
-		ret = interpret(node),
-		rn  = ret[node.nodeName];
+		ret  = interpret(node),
+		rn   = ret[node.nodeName];
 
 	// exclude root, if "this" is root node
 	if (node === node.ownerDocument.documentElement && rn && rn.constructor === Array) {

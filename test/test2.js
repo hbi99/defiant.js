@@ -1,4 +1,6 @@
 
+"use strict";
+
 describe('Test 2', function() {
 	var data = {
 			"a": {

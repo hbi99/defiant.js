@@ -16,24 +16,9 @@ For detailed information, please visit http://defiantjs.com
         ],
         res = JSON.search( data, '//*[ y > 0 ]' );
 
-    console.log( res.sum('x') );
-    // 9
-    console.log( res.avg('x') );
-    // 3
-    console.log( res.min('x') );
-    // 2
-    console.log( res.max('x') );
-    // 4
-    res.multiply('x', 5);
     console.log( res );
-    // [{ x=15, y=1}, { x=20, y=1}, { x=10, y=1}]
+    // [{ x=3, y=1}, { x=4, y=1}, { x=2, y=1}]
 
-    res.each(function(row) {
-        console.log( row );
-    });
-    // { x=15, y=1}
-    // { x=20, y=1}
-    // { x=10, y=1}
 ```
 
 ```html

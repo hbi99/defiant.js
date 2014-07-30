@@ -20,7 +20,7 @@ if (!JSON.mtrace) {
 		for (; i<il; i++) {
 			switch (xres[i].nodeType) {
 				case 2:
-					cConstr = xres[i].ownerElement.getAttribute('d:'+ xres[i].nodeName);
+					cConstr = xres[i].ownerElement ? xres[i].ownerElement.getAttribute('d:'+ xres[i].nodeName) : 'String';
 					hstr    = '"@'+ xres[i].nodeName +'": '+ win[ cConstr ]( hits[i] );
 					mIndex  = sroot.indexOf(hstr);
 					lEnd    = 0;

@@ -7,6 +7,21 @@ DefiantJS also extends the global object JSON with the method "search", which en
 
 For detailed information, please visit http://defiantjs.com
 
+As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
+
+```js
+var data {
+	// ...large JSON structure...
+};
+
+// Regular search
+found = JSON.search(data, '//item');
+
+var snapshot = Defiant.getSnapshot(data);
+// Snapshot search - this is more than 100 times faster than 'regular search'
+found = JSON.search(snapshot, '//item');
+```
+
 ```js
 var data = [
        { "x": 2, "y": 0 },

@@ -27,13 +27,14 @@ var test = {
 
 		// test 1
 		start = Date.now();
-		found = JSON.search(data, '//index');
+		found = JSON.search(data, '//balance');
 		console.log( 'Found '+ found.length +' items in '+ (Date.now() - start) +' ms' );
 
 		// test 2
 		start = Date.now();
-		found = JSON.search(snapshot, '//index');
+		found = JSON.search(snapshot, '//balance');
 		console.log( 'Found '+ found.length +' items in '+ (Date.now() - start) +' ms' );
+
 	}
 };
 

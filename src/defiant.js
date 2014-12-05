@@ -19,7 +19,7 @@ module.exports = Defiant = (function(window, undefined) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
 				opt       = {match: '/'},
-				tmplt_xpath,
+				tmpltXpath,
 				scripts,
 				temp,
 				sorter;
@@ -37,12 +37,12 @@ module.exports = Defiant = (function(window, undefined) {
 					throw 'error';
 			}
 			opt.data = JSON.toXML(opt.data);
-			tmplt_xpath = '//xsl:template[@name="'+ opt.template +'"]';
+			tmpltXpath = '//xsl:template[@name="'+ opt.template +'"]';
 
-			if (!this.xsl_template) this.gather_templates();
+			if (!this.xsl_template) this.gatherTemplates();
 
 			if (opt.sorter) {
-				sorter = this.node.selectSingleNode(this.xsl_template, tmplt_xpath +'//xsl:for-each//xsl:sort');
+				sorter = this.node.selectSingleNode(this.xsl_template, tmpltXpath +'//xsl:for-each//xsl:sort');
 				if (sorter) {
 					if (opt.sorter.order) sorter.setAttribute('order', opt.sorter.order);
 					if (opt.sorter.select) sorter.setAttribute('select', opt.sorter.select);
@@ -50,7 +50,7 @@ module.exports = Defiant = (function(window, undefined) {
 				}
 			}
 
-			temp = this.node.selectSingleNode(this.xsl_template, tmplt_xpath);
+			temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
 			temp.setAttribute('match', opt.match);
 			processor.importStylesheet(this.xsl_template);
 			span.appendChild(processor.transformToFragment(opt.data, document));
@@ -62,7 +62,7 @@ module.exports = Defiant = (function(window, undefined) {
 			}
 			return span.innerHTML;
 		},
-		gather_templates: function() {
+		gatherTemplates: function() {
 			var scripts = document.getElementsByTagName('script'),
 				str     = '',
 				i       = 0,
@@ -71,6 +71,9 @@ module.exports = Defiant = (function(window, undefined) {
 				if (scripts[i].type === 'defiant/xsl-template') str += scripts[i].innerHTML;
 			}
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
+		},
+		getSnapshot: function(data) {
+			return JSON.toXML(data, true);
 		},
 		xmlFromString: function(str) {
 			var parser,

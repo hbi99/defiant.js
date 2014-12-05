@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<title>Defiant.js</title>
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.mtrace.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var test = {
+	init: function(data) {
+		var snapshot = Defiant.getSnapshot(data),
+			start,
+			found;
+
+		// test 1
+		start = Date.now();
+		found = JSON.search(data, '//balance');
+		console.log( 'Found '+ found.length +' items in '+ (Date.now() - start) +' ms' );
+
+		// test 2
+		start = Date.now();
+		found = JSON.search(snapshot, '//balance');
+		console.log( 'Found '+ found.length +' items in '+ (Date.now() - start) +' ms' );
+
+	}
+};
+
+</script>
+<!-- Load JSON structure -->
+<script type="text/javascript" src="tmp2.js"></script>
+
+</body>
+</html>

@@ -3,15 +3,17 @@ if (!JSON.search) {
 	JSON.search = function(tree, xpath, single) {
 		'use strict';
 		
-		var doc  = JSON.toXML(tree),
+		var isSnapshot = tree['doc'] && tree.doc.nodeType,
+			doc  = isSnapshot ? tree.doc : JSON.toXML(tree),
+			map  = isSnapshot ? tree.map : this.search.map,
 			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
-			i    = xres.length,
 			ret  = [],
-			mapIndex;
+			mapIndex,
+			i;
 
 		if (single) xres = [xres];
+		i = xres.length;
 
-		//console.log( 'x-RES:', xres );
 		while (i--) {
 			switch(xres[i].nodeType) {
 				case 2:
@@ -20,9 +22,10 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					ret.unshift( this.search.map[mapIndex-1] );
+					ret.unshift( map[mapIndex-1] );
 			}
 		}
+
 		// if environment = development, add search tracing
 		if (Defiant.env === 'development') {
 			this.trace = JSON.mtrace(tree, ret, xres);

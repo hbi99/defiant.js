@@ -1,6 +1,6 @@
 
 if (!JSON.toXML) {
-	JSON.toXML = function(tree) {
+	JSON.toXML = function(tree, snapshot) {
 		'use strict';
 
 		var interpreter = {
@@ -172,6 +172,13 @@ if (!JSON.toXML) {
 			}
 		},
 		doc = interpreter.to_xml.call(interpreter, tree);
+
+		if (snapshot) {
+			return {
+				doc: doc,
+				map: interpreter.map
+			};
+		}
 
 		this.search.map = interpreter.map;
 		return doc;

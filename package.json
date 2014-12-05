@@ -7,6 +7,12 @@
     "email": "hbi@longscript.com",
     "url": "https://github.com/hbi99"
   },
+  "keywords": [
+    "json",
+    "xpath",
+    "xslt",
+    "search"
+  ],
   "license": {
     "type": "MIT",
     "url": "http://mit-license.org/"

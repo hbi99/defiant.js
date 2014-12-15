@@ -81,7 +81,7 @@ module.exports = Defiant = (function(window, undefined) {
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		getSnapshot: function(data) {
-			return JSON.toXML(data);
+			return JSON.toXML(data, true);
 		},
 		xmlFromString: function(str) {
 			var parser,
@@ -196,7 +196,7 @@ if (typeof(JSON) === 'undefined') {
 /* jshint ignore:end */
 
 if (!JSON.toXML) {
-	JSON.toXML = function(tree) {
+	JSON.toXML = function(tree, snapshot) {
 		'use strict';
 
 		var interpreter = {
@@ -369,6 +369,13 @@ if (!JSON.toXML) {
 		},
 		doc = interpreter.to_xml.call(interpreter, tree);
 
+		if (snapshot) {
+			return {
+				doc: doc,
+				map: interpreter.map
+			};
+		}
+
 		this.search.map = interpreter.map;
 		return doc;
 	};
@@ -379,7 +386,9 @@ if (!JSON.search) {
 	JSON.search = function(tree, xpath, single) {
 		'use strict';
 		
-		var doc  = tree.nodeType ? tree : JSON.toXML(tree),
+		var isSnapshot = tree.doc && tree.doc.nodeType,
+			doc  = isSnapshot ? tree.doc : JSON.toXML(tree),
+			map  = isSnapshot ? tree.map : this.search.map,
 			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
 			ret  = [],
 			mapIndex,
@@ -396,7 +405,7 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					ret.unshift( this.search.map[mapIndex-1] );
+					ret.unshift( map[mapIndex-1] );
 			}
 		}
 

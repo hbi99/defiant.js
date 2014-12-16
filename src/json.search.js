@@ -4,10 +4,11 @@ if (!JSON.search) {
 		'use strict';
 		
 		var isSnapshot = tree.doc && tree.doc.nodeType,
-			doc  = isSnapshot ? tree.doc : JSON.toXML(tree),
-			map  = isSnapshot ? tree.map : this.search.map,
-			xres = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
-			ret  = [],
+			doc        = isSnapshot ? tree.doc : JSON.toXML(tree),
+			map        = isSnapshot ? tree.map : this.search.map,
+			src        = isSnapshot ? tree.src : tree,
+			xres       = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
+			ret        = [],
 			mapIndex,
 			i;
 
@@ -28,7 +29,7 @@ if (!JSON.search) {
 
 		// if environment = development, add search tracing
 		if (Defiant.env === 'development') {
-			this.trace = JSON.mtrace(tree, ret, xres);
+			this.trace = JSON.mtrace(src, ret, xres);
 		}
 
 		//console.log( 'RES:', ret );

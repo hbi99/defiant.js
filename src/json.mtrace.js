@@ -5,7 +5,7 @@ if (!JSON.mtrace) {
 
 		var win       = window,
 			stringify = JSON.stringify,
-			sroot     = stringify( root, null, '\t' ).notabs(),
+			sroot     = stringify( root, null, '\t' ).replace(/\t/g, ''),
 			trace     = [],
 			i         = 0,
 			il        = xres.length,
@@ -41,7 +41,7 @@ if (!JSON.mtrace) {
 						mIndex  = sroot.indexOf(hstr);
 						lEnd    = 0;
 					} else {
-						hstr   = stringify( hits[i], null, '\t' ).notabs();
+						hstr   = stringify( hits[i], null, '\t' ).replace(/\t/g, '');
 						mIndex = sroot.indexOf(hstr);
 						lEnd   = hstr.match(/\n/g).length;
 					}

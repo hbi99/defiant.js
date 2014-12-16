@@ -4,7 +4,7 @@ if (!JSON.toXML) {
 		'use strict';
 
 		var interpreter = {
-			map: [],
+			map              : [],
 			rx_validate_name : /^(?!xml)[a-z_][\w\d.:]*$/i,
 			rx_node          : /<(.+?)( .*?)>/,
 			rx_constructor   : /<(.+?)( d:contr=".*?")>/,
@@ -53,7 +53,7 @@ if (!JSON.toXML) {
 						switch (constr) {
 							case Function:
 								// if constructor is function, then it's not a JSON structure
-								// throw 'ERROR!';
+								// throw ERROR ?
 								break;
 							case Object:
 								elem.push( this.hash_to_xml( cname, val ) );
@@ -173,9 +173,11 @@ if (!JSON.toXML) {
 		},
 		doc = interpreter.to_xml.call(interpreter, tree);
 
+		// snapshot distinctly improves performance
 		if (snapshot) {
 			return {
 				doc: doc,
+				src: tree,
 				map: interpreter.map
 			};
 		}

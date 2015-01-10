@@ -61,6 +61,6 @@ console.log( res );
 </script>
 ```
 
-// Changelog
+### Changelog
 `1.2.2` The XPath method 'contains' is automatically case insensitive 
 `1.2.0` Added snapshot search feature

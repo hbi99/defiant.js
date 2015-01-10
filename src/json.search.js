@@ -7,7 +7,7 @@ if (!JSON.search) {
 			doc        = isSnapshot ? tree.doc : JSON.toXML(tree),
 			map        = isSnapshot ? tree.map : this.search.map,
 			src        = isSnapshot ? tree.src : tree,
-			xres       = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath),
+			xres       = Defiant.node[ single ? 'selectSingleNode' : 'selectNodes' ](doc, xpath.xTransform()),
 			ret        = [],
 			mapIndex,
 			i;

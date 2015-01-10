@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<title>Defiant.js</title>
+<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
+<script type="text/javascript" src="/defiant.js/src/string.js"></script>
+<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
+<script type="text/javascript" src="/defiant.js/src/json.mtrace.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
+<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var test = {
+	init: function(data) {
+		var found;
+
+		// instead of writing this XPath
+		found = JSON.search(data, "//*[contains(translate(title, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'rings')]/title");
+		// ...do like this instead. Defiant will make 'contains' case insensitive automatically
+		found = JSON.search(data, "//*[contains(title, 'rings')]/title");
+
+		console.log( found );
+
+
+		// case insensitive 'contains' on keys
+		found = JSON.search(data, "//*[contains(name(), 'title')]");
+
+		console.log( found );
+	}
+};
+
+test.init({
+	"store": {
+		"book": [
+			{
+				"@price": 12.99,
+				"title": "Sword of Honour",
+				"category": "fiction",
+				"author": "Evelyn Waugh"
+			},
+			{
+				"@price": 8.99,
+				"title": "Moby Dick",
+				"category": "fiction",
+				"author": "Herman Melville",
+				"isbn": "0-553-21311-3"
+			},
+			{
+				"@price": 8.95,
+				"Title": "Sayings of the Century", // <-- notice that the key starts with uppercase character
+				"category": "reference",
+				"author": "Nigel Rees"
+			},
+			{
+				"@price": 22.99,
+				"title": "The Lord of the Rings",
+				"category": "fiction",
+				"author": "J. R. R. Tolkien",
+				"isbn": "0-395-19395-8"
+			}
+		],
+		"bicycle": {
+			"@price": 19.95,
+			"brand": "Cannondale",
+			"color": "red"
+		}
+	}
+});
+
+</script>
+
+</body>
+</html>

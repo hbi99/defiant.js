@@ -60,3 +60,7 @@ console.log( res );
     // The Usual Suspects<br>Pulp Fiction<br>Independence Day<br>
 </script>
 ```
+
+// Changelog
+`1.2.2` The XPath method 'contains' is automatically case insensitive 
+`1.2.0` Added snapshot search feature

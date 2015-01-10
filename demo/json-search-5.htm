@@ -21,10 +21,15 @@
 
 var test = {
 	init: function(data) {
-		// case insensitive 'contains'
-		var found = JSON.search(data, "//*[contains(title, 'rings')]/title");
+		var found;
+
+		// instead of writing this XPath
+		found = JSON.search(data, "//*[contains(translate(title, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'rings')]/title");
+		// ...do like this instead. Defiant will make 'contains' case insensitive automatically
+		found = JSON.search(data, "//*[contains(title, 'rings')]/title");
 
 		console.log( found );
+
 
 		// case insensitive 'contains' on keys
 		found = JSON.search(data, "//*[contains(name(), 'title')]");

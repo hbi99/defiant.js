@@ -22,7 +22,7 @@ if (!String.prototype.xTransform) {
 			str = this.replace(/contains\(([^,]+),(.+)\)/, function(c,h,n) {
 				var a = 'abcdefghijklmnopqrstuvwxyz',
 					q = n.trim().slice(-1);
-				return "contains(translate("+ h +", "+ q + a.toUpperCase() + q +", "+ q + a + q +"),"+ n +")";
+				return "contains(translate("+ h +", "+ q + a.toUpperCase() + q +", "+ q + a + q +"),"+ n.toLowerCase() +")";
 			});
 		}
 		return str.toString();

@@ -1,10 +1,11 @@
 
 if (!JSON.toXML) {
-	JSON.toXML = function(tree, snapshot) {
+	JSON.toXML = function(tree, callback) {
 		'use strict';
 
 		var interpreter = {
 			map              : [],
+			namespace        : 'xmlns:d="defiant-namespace"',
 			rx_validate_name : /^(?!xml)[a-z_][\w\d.:]*$/i,
 			rx_node          : /<(.+?)( .*?)>/,
 			rx_constructor   : /<(.+?)( d:contr=".*?")>/,
@@ -12,8 +13,11 @@ if (!JSON.toXML) {
 			rx_data          : /(<.+?>)(.*?)(<\/d:data>)/i,
 			rx_function      : /function (\w+)/i,
 			to_xml: function(tree) {
-				var str = this.hash_to_xml(null, tree);
-				return Defiant.xmlFromString(str);
+				return {
+					str: this.hash_to_xml(null, tree),
+					src: tree,
+					map: this.map
+				};
 			},
 			hash_to_xml: function(name, tree, array_child) {
 				var is_array = tree.constructor === Array,
@@ -100,7 +104,7 @@ if (!JSON.toXML) {
 				}
 				if (!name) {
 					name = 'd:data';
-					attr.push(Defiant.namespace);
+					attr.push(this.namespace);
 					if (is_array) attr.push('d:constr="Array"');
 				}
 				if (name.match(this.rx_validate_name) === null) {
@@ -171,17 +175,25 @@ if (!JSON.toXML) {
 									.replace(/&nbsp;/g, '&#160;');
 			}
 		},
-		doc = interpreter.to_xml.call(interpreter, tree);
+		task,
+		doc,
+		str;
 
-		// snapshot distinctly improves performance
-		if (snapshot) {
-			return {
-				doc: doc,
-				src: tree,
-				map: interpreter.map
-			};
+		if (callback) {
+			// compile interpreter with 'x10.js'
+			task = x10.compile(interpreter);
+
+			// parse in a dedicated thread			
+			task.to_xml(tree, function(snapshot) {
+				snapshot.doc = Defiant.xmlFromString(snapshot.str);
+				// snapshot distinctly improves performance
+				callback(snapshot);
+			});
+			return;
 		}
 
+		str = interpreter.to_xml(tree);
+		doc = Defiant.xmlFromString(str);
 		this.search.map = interpreter.map;
 		return doc;
 	};

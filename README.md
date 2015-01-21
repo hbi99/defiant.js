@@ -1,4 +1,4 @@
-[![](http://goo.gl/z6qgCa)](http://defiantjs.com/)
+[![](http://goo.gl/7TGBFK)](http://defiantjs.com/)
 
 DefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath.
 

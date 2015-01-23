@@ -13,6 +13,7 @@ if (!JSON.mtrace) {
 			map       = this.search.map,
 			hstr,
 			cConstr,
+			fIndex = 0,
 			mIndex,
 			lStart,
 			lEnd;
@@ -38,8 +39,9 @@ if (!JSON.mtrace) {
 						cConstr = xres[i].getAttribute('d:constr');
 						hstr    = win[ cConstr ]( hits[i] );
 						hstr    = '"'+ xres[i].nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
-						mIndex  = sroot.indexOf(hstr);
+						mIndex  = sroot.indexOf(hstr, fIndex);
 						lEnd    = 0;
+						fIndex  = mIndex + 1;
 					} else {
 						hstr   = stringify( hits[i], null, '\t' ).replace(/\t/g, '');
 						mIndex = sroot.indexOf(hstr);
@@ -49,7 +51,7 @@ if (!JSON.mtrace) {
 			lStart = sroot.substring(0,mIndex).match(/\n/g).length+1;
 			trace.push([lStart, lEnd]);
 		}
-		
+
 		return trace;
 	};
 }

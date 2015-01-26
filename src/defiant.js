@@ -73,7 +73,7 @@ module.exports = Defiant = (function(window, undefined) {
 			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		getSnapshot: function(data, callback) {
-			return JSON.toXML(data, callback);
+			return JSON.toXML(data, callback || true);
 		},
 		xmlFromString: function(str) {
 			var parser,

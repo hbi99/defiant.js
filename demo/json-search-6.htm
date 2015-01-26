@@ -22,16 +22,27 @@
 
 var test = {
 	init: function(data) {
-		var start;
+		var snapshot,
+			found,
+			start = Date.now();
 
 		// test 1
-		start = Date.now();
-		Defiant.getSnapshot(data, function(snapshot) {
-			console.log( 'Snapshot created in '+ (Date.now() - start) +' ms' );
+	//	var found = JSON.search(data, '//friends[contains(name, "mona")]/name');
+	//	console.log(found);
 
-			var found = JSON.search(snapshot, '//first');
-			console.log(snapshot);
+		// test 2
+	//	snapshot = Defiant.getSnapshot(data);
+	//	found = JSON.search(snapshot, '//friends[contains(name, "mona")]/name');
+	//	console.log(found);
+
+		Defiant.getSnapshot(data, function(snapshot) {
+			console.log('Created snapshot with web worker in '+ (Date.now() - start) +' ms');
+			
+			// test 3
+			var found = JSON.search(snapshot, '//friends[contains(name, "mona")]/name');
+			console.log(found);
 		});
+
 	}
 };
 

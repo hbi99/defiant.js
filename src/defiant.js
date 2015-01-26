@@ -110,4 +110,3 @@ module.exports = Defiant = (function(window, undefined) {
 	return Defiant;
 
 })(this);
-

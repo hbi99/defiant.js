@@ -15,11 +15,11 @@
 			postMessage([func, ret]);
 		},
 		setup: function(tree) {
-			var url     = window.URL || window.webkitURL,
-				script  = 'var tree = {'+ this.parse(tree).join(',') +'};',
-				blob    = new Blob([script + 'self.addEventListener("message", '+ this.work_handler.toString() +', false);'],
+			var url    = window.URL || window.webkitURL,
+				script = 'var tree = {'+ this.parse(tree).join(',') +'};',
+				blob   = new Blob([script + 'self.addEventListener("message", '+ this.work_handler.toString() +', false);'],
 									{type: 'text/javascript'}),
-				worker  = new Worker(url.createObjectURL(blob));
+				worker = new Worker(url.createObjectURL(blob));
 			
 			// thread pipe
 			worker.onmessage = function(event) {
@@ -47,15 +47,20 @@
 				worker.postMessage(args);
 			};
 		},
-		compile: function(tree) {
-			var worker = this.setup(tree),
+		compile: function(hash) {
+			var worker = this.setup(typeof(hash) === 'function' ? {func: hash} : hash),
 				obj    = {},
 				fn;
 			// create return object
-			for (fn in tree) {
-				obj[fn] = this.call_handler(fn, worker);
+			if (typeof(hash) === 'function') {
+				obj.func = this.call_handler('func', worker);
+				return obj.func;
+			} else {
+				for (fn in hash) {
+					obj[fn] = this.call_handler(fn, worker);
+				}
+				return obj;
 			}
-			return obj;
 		},
 		parse: function(tree, isArray) {
 			var hash = [],

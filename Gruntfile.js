@@ -92,7 +92,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', [
 		'jshint',
-	//	'test',
+		'test',
 		'concat:latest',
     	'uglify:latest',
     	'concat:nodelib'

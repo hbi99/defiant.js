@@ -19,7 +19,7 @@ if (!String.prototype.xTransform) {
 	String.prototype.xTransform = function () {
 		var str = this;
 		if (this.indexOf('translate(') === -1) {
-			str = this.replace(/contains\(([^,]+),(.+)\)/, function(c,h,n) {
+			str = this.replace(/contains\(([^,]+),([^\\)]+)\)/, function(c,h,n) {
 				var a = 'abcdefghijklmnopqrstuvwxyz',
 					q = n.trim().slice(-1);
 				return "contains(translate("+ h +", "+ q + a.toUpperCase() + q +", "+ q + a + q +"),"+ n.toLowerCase() +")";

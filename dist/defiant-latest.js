@@ -267,7 +267,10 @@ if (!JSON.toXML) {
 								}
 								/* falls through */
 							case String:
-								if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+								if (typeof(val) === 'string') {
+									val = val.toString().replace(/\&/g, '&amp;')
+														.replace(/\r|\n/g, '&#13;');
+								}
 								if (cname === '#text') {
 									// prepare map
 									this.map.push(tree);
@@ -405,7 +408,7 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					ret.unshift( map[mapIndex-1] );
+					if (map[mapIndex-1]) ret.unshift( map[mapIndex-1] );
 			}
 		}
 
@@ -414,7 +417,6 @@ if (!JSON.search) {
 			this.trace = JSON.mtrace(src, ret, xres);
 		}
 
-		//console.log( 'RES:', ret );
 		return ret;
 	};
 }

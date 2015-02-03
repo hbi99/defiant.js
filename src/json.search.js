@@ -23,7 +23,7 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					ret.unshift( map[mapIndex-1] );
+					if (map[mapIndex-1]) ret.unshift( map[mapIndex-1] );
 			}
 		}
 
@@ -32,7 +32,6 @@ if (!JSON.search) {
 			this.trace = JSON.mtrace(src, ret, xres);
 		}
 
-		//console.log( 'RES:', ret );
 		return ret;
 	};
 }

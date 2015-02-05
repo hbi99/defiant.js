@@ -31,7 +31,9 @@ module.exports = function (grunt) {
 						'src/node.serialize.js',
 						'src/node.toJSON.js',
 						// add jQuery plugin
-						'src/jquery-plugin.js'
+						'src/jquery-plugin.js',
+						// add x10.js
+						'src/x10.js'
 			]
 		},
 

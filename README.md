@@ -7,20 +7,6 @@ DefiantJS also extends the global object __JSON__ with the method "__search__", 
 For detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator).
 
 ###Example usage
-* Snapshot feature
-```js
-var data {
-  // ...large JSON structure...
-};
-
-// Regular search
-found = JSON.search(data, '//item');
-
-var snapshot = Defiant.getSnapshot(data);
-// Snapshot search - this is more than 100 times faster than 'regular search'
-found = JSON.search(snapshot, '//item');
-```
-
 * Snapshots - very large JSON
 ```js
 var data {
@@ -33,6 +19,20 @@ Defiant.getSnapshot(data, function(snapshot) {
   found = JSON.search(snapshot, '//item');  
 });
 
+```
+
+* Snapshot feature
+```js
+var data {
+  // ...large JSON structure...
+};
+
+// Regular search
+found = JSON.search(data, '//item');
+
+var snapshot = Defiant.getSnapshot(data);
+// Snapshot search - this is more than 100 times faster than 'regular search'
+found = JSON.search(snapshot, '//item');
 ```
 
 * Simple search

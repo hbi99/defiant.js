@@ -56,7 +56,7 @@ if (!JSON.toXML) {
 							switch (constr) {
 								case Function:
 									// if constructor is function, then it's not a JSON structure
-									// throw ERROR ?
+									throw 'JSON data should not contain functions. Please check jour structure.';
 									break;
 								case Object:
 									elem.push( this.hash_to_xml( cname, val ) );

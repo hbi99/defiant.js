@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (grunt) {
+
 	grunt.initConfig({
 
 		// metadata
@@ -16,6 +17,9 @@ module.exports = function (grunt) {
 						' * Licensed under the <%= pkg.license.type %> License \n' +
 						' */ \n',
 			source    : [
+						// import x10.js
+						'node_modules/x10.js/dist/x10.js',
+						// defiant source code
 						'src/defiant.js',
 						// IE polyfills
 						'src/ie.polyfill.js',
@@ -31,9 +35,7 @@ module.exports = function (grunt) {
 						'src/node.serialize.js',
 						'src/node.toJSON.js',
 						// add jQuery plugin
-						'src/jquery-plugin.js',
-						// add x10.js
-						'src/x10.js'
+						'src/jquery-plugin.js'
 			]
 		},
 

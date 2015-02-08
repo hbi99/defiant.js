@@ -1,5 +1,5 @@
 /* 
- * Defiant.js v1.2.6 
+ * Defiant.js v1.2.7 
  * Search JSON structures plus smart templating with XSLT and XPath. 
  * http://defiantjs.com 
  * 
@@ -390,8 +390,8 @@ if (!JSON.toXML) {
 							switch (constr) {
 								case Function:
 									// if constructor is function, then it's not a JSON structure
-									// throw ERROR ?
-									break;
+									throw 'JSON data should not contain functions. Please check jour structure.';
+									/* falls through */
 								case Object:
 									elem.push( this.hash_to_xml( cname, val ) );
 									break;

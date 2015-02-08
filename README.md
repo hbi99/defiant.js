@@ -6,14 +6,11 @@ DefiantJS also extends the global object __JSON__ with the method "__search__", 
 
 For detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator).
 
-###Update v1.2.0
-As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
-
 ###Example usage
 * Snapshot feature
 ```js
 var data {
-	// ...large JSON structure...
+  // ...large JSON structure...
 };
 
 // Regular search
@@ -22,6 +19,20 @@ found = JSON.search(data, '//item');
 var snapshot = Defiant.getSnapshot(data);
 // Snapshot search - this is more than 100 times faster than 'regular search'
 found = JSON.search(snapshot, '//item');
+```
+
+* Snapshots - very large JSON
+```js
+var data {
+  // ...biiig JSON structure...
+};
+
+// this way has a non-blocking effect on the UI-thread
+Defiant.getSnapshot(data, function(snapshot) {
+  // executed when the snapshot is created
+  found = JSON.search(snapshot, '//item');  
+});
+
 ```
 
 * Simple search
@@ -61,8 +72,16 @@ console.log( res );
 </script>
 ```
 
+###Update highlights
+- v1.2.6
+As of this version, snapshots can be created with web workers - consequently the UI thread is not blocked when creating snapshots of large JSON structures.
+
+- v1.2.0
+As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
+
 ### Changelog
-* `1.2.5` Bugfix related to not() preceding 'contains'-method
-* `1.2.4` UI-related bugg fix 
-* `1.2.2` The XPath method 'contains' is automatically case insensitive 
-* `1.2.0` Added snapshot search feature
+- [x] `1.2.6` Snapshot can be created with web worker (x10.js)
+- [x] `1.2.5` Bugfix related to not() preceding 'contains'-method
+- [x] `1.2.4` UI-related bugg fix 
+- [x] `1.2.2` The XPath method 'contains' is automatically case insensitive 
+- [x] `1.2.0` Added snapshot search feature

@@ -16,6 +16,9 @@ module.exports = function (grunt) {
 						' * Licensed under the <%= pkg.license.type %> License \n' +
 						' */ \n',
 			source    : [
+						// import x10.js
+						'node_modules/x10.js/dist/x10.js',
+						// defiant source code
 						'src/defiant.js',
 						// IE polyfills
 						'src/ie.polyfill.js',
@@ -48,15 +51,10 @@ module.exports = function (grunt) {
 				stripBanners: 'all',
 				banner: '<%= meta.banner %>'
 			},
-			// concat this version
-			stable: {
-				src: '<%= meta.source %>',
-				dest: 'dist/defiant-<%= pkg.version %>.js'
-			},
 			// concat latest
 			latest: {
 				src: '<%= meta.source %>',
-				dest: 'dist/defiant-latest.js'
+				dest: 'dist/defiant.js'
 			},
 			// concat Node version
 			nodelib: {
@@ -71,15 +69,10 @@ module.exports = function (grunt) {
 				banner: '<%= meta.banner %>',
 				mangle: true
 			},
-			// uglify this version
-			stable: {
-				src: ['<%= concat.stable.dest %>'],
-				dest: 'dist/defiant-<%= pkg.version %>.min.js'
-			},
 			// uglify latest
 			latest: {
 				src: ['<%= concat.latest.dest %>'],
-				dest: 'dist/defiant-latest.min.js'
+				dest: 'dist/defiant.min.js'
 			}
 		},
 
@@ -103,8 +96,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', [
 		'jshint',
 		'test',
-		'concat:stable',
-    	'uglify:stable',
 		'concat:latest',
     	'uglify:latest',
     	'concat:nodelib'

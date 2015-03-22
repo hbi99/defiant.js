@@ -76,7 +76,10 @@ if (!JSON.toXML) {
 									}
 									/* falls through */
 								case String:
-									if (typeof(val) === 'string') val = val.toString().replace(/\&/g, '&amp;');
+									if (typeof(val) === 'string') {
+										val = val.toString().replace(/\&/g, '&amp;')
+												.replace(/\r|\n/g, '&#13;');
+									}
 									if (cname === '#text') {
 										// prepare map
 										this.map.push(tree);

@@ -80,6 +80,7 @@ As of this version, snapshots can be created with web workers - consequently the
 As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
 
 ### Changelog
+- [x] `1.2.9` Handling '\r\n' in string (throws error)
 - [x] `1.2.8` Automatically case insensitive - global regular expression
 - [x] `1.2.7` JSON data containing functions will throw error
 - [x] `1.2.6` Snapshot can be created with web worker (x10.js)

@@ -9,7 +9,7 @@ module.exports = Defiant = (function(window, undefined) {
 	'use strict';
 
 	var Defiant = {
-		is_ie     : /msie/i.test(navigator.userAgent),
+		is_ie     : /(msie|trident)/i.test(navigator.userAgent),
 		is_safari : /safari/i.test(navigator.userAgent),
 		env       : 'production',
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',

@@ -1,5 +1,5 @@
 /* 
- * Defiant.js v1.2.9 
+ * Defiant.js v1.3.0 
  * Search JSON structures plus smart templating with XSLT and XPath. 
  * http://defiantjs.com 
  * 

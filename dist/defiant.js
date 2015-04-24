@@ -573,7 +573,9 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					if (map[mapIndex-1]) ret.unshift( map[mapIndex-1] );
+					//if (map[mapIndex-1] !== false) {
+						ret.unshift( map[mapIndex-1] );
+					//}
 			}
 		}
 
@@ -622,11 +624,11 @@ if (!JSON.mtrace) {
 					break;
 				default:
 					if (xres[i] === od) continue;
-					if (xres[i].getAttribute('d:constr') === 'String') {
+					if (xres[i].getAttribute('d:constr') === 'String' || xres[i].getAttribute('d:constr') === 'Number') {
 						cConstr = xres[i].getAttribute('d:constr');
 						hstr    = win[ cConstr ]( hits[i] );
-						hstr    = '"'+ xres[i].nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
 						mIndex  = sroot.indexOf(hstr, fIndex);
+						hstr    = '"'+ xres[i].nodeName +'": '+ (cConstr === 'Number' ? hstr : '"'+ hstr +'"');
 						lEnd    = 0;
 						fIndex  = mIndex + 1;
 					} else {

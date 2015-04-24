@@ -23,7 +23,9 @@ if (!JSON.search) {
 					break;
 				default:
 					mapIndex = +xres[i].getAttribute('d:mi');
-					if (map[mapIndex-1]) ret.unshift( map[mapIndex-1] );
+					//if (map[mapIndex-1] !== false) {
+						ret.unshift( map[mapIndex-1] );
+					//}
 			}
 		}
 

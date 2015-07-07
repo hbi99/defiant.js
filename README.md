@@ -9,7 +9,7 @@ For detailed information, please visit [defiantjs.com](http://defiantjs.com) and
 ###Example usage
 * Snapshots - very large JSON
 ```js
-var data {
+var data = {
   // ...biiig JSON structure...
 };
 
@@ -23,7 +23,7 @@ Defiant.getSnapshot(data, function(snapshot) {
 
 * Snapshot feature
 ```js
-var data {
+var data = {
   // ...large JSON structure...
 };
 

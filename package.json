@@ -27,7 +27,7 @@
   "homepage": "http://www.defiantjs.com",
   "main": "./lib/defiant",
   "dependencies": {
-    "x10": "git://github.com:hbi99/x10.js.git"
+    "x10": "git://github.com/hbi99/x10.js.git"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

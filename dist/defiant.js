@@ -276,8 +276,8 @@ if (typeof(XSLTProcessor) === 'undefined') {
 		}
 	};
 
-} else {
-
+} else if (typeof(XSLTProcessor) !== 'function') {
+	
 	// throw error
 	throw 'XSLTProcessor transformNode not implemented';
 

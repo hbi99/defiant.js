@@ -15,7 +15,7 @@ if (typeof(XSLTProcessor) === 'undefined') {
 		}
 	};
 
-} else if (typeof(XSLTProcessor) !== 'function') {
+} else if (typeof(XSLTProcessor) !== 'function' && !XSLTProcessor) {
 	
 	// throw error
 	throw 'XSLTProcessor transformNode not implemented';

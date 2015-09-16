@@ -1,5 +1,5 @@
 /* 
- * Defiant.js v1.3.2 
+ * Defiant.js v1.3.3 
  * Search JSON structures plus smart templating with XSLT and XPath. 
  * http://defiantjs.com 
  * 
@@ -276,7 +276,7 @@ if (typeof(XSLTProcessor) === 'undefined') {
 		}
 	};
 
-} else if (typeof(XSLTProcessor) !== 'function') {
+} else if (typeof(XSLTProcessor) !== 'function' && !XSLTProcessor) {
 	
 	// throw error
 	throw 'XSLTProcessor transformNode not implemented';

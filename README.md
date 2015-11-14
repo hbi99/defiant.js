@@ -9,7 +9,7 @@ For detailed information, please visit [defiantjs.com](http://defiantjs.com) and
 ###Example usage
 * Snapshots - very large JSON
 ```js
-var data {
+var data = {
   // ...biiig JSON structure...
 };
 
@@ -23,7 +23,7 @@ Defiant.getSnapshot(data, function(snapshot) {
 
 * Snapshot feature
 ```js
-var data {
+var data = {
   // ...large JSON structure...
 };
 
@@ -80,6 +80,9 @@ As of this version, snapshots can be created with web workers - consequently the
 As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
 
 ### Changelog
+- [x] `1.3.4` Syncing up package version with release version
+- [x] `1.3.3` Safari handles "XSLTProcessor" - adapting
+- [x] `1.3.2` Throws error if "transformNode" is not supported
 - [x] `1.3.1` Fixing MSIE11 detection
 - [x] `1.3.0` Zero values threw error in "match tracer"
 - [x] `1.2.9` Handling '\r\n' in string (throws error)

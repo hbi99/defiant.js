@@ -16,5 +16,3 @@ describe('Test 1', function() {
 		expect( JSON.stringify( data ) ).toEqual('{"a":{"b":[]}}');
 	});
 });
-
-

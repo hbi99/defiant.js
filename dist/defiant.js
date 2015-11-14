@@ -1,5 +1,5 @@
 /* 
- * Defiant.js v1.3.1 
+ * Defiant.js v1.3.4 
  * Search JSON structures plus smart templating with XSLT and XPath. 
  * http://defiantjs.com 
  * 
@@ -275,6 +275,11 @@ if (typeof(XSLTProcessor) === 'undefined') {
 			return span;
 		}
 	};
+
+} else if (typeof(XSLTProcessor) !== 'function' && !XSLTProcessor) {
+	
+	// throw error
+	throw 'XSLTProcessor transformNode not implemented';
 
 }
 

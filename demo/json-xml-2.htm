@@ -105,14 +105,40 @@ pre {
 // development flag
 Defiant.env = 'development';
 
-var json;
-json = [ { "stamp": 1388157235621615,
-		"2": {
-			"a": true,
-			"b": 123
+var json = {
+	"fs": [
+		{
+			"directoryA": [
+				{
+					"directoryB": "defiant.js"
+				},
+				{
+					"directoryC": [
+						"style.css",
+						"style.less"
+					]
+				},
+				{
+					"directoryD": [
+						"logo.png",
+						"sprite.png"
+					]
+				},
+				{
+					"directoryF": {
+						"subDirectoryF": [
+							null,
+							"a"
+						]
+					}
+				}
+			]
 		},
-		"d2": ["red", "blue"],
-		"4.2": 4 }, [1,2,3] ];
+		"readme.txt",
+		"config.php",
+		"index.htm"
+	]
+};
 /*
 	json = {
 		"2-f": {

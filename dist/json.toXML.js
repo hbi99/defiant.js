@@ -1,3 +1,9 @@
+/*
+ * defiant.js [v1.3.4]
+ * http://www.defiantjs.com 
+ * Copyright (c) 2013-2015, Hakan Bilgin <hbi@longscript.com> 
+ * Licensed under the MIT License
+ */
 
 if (!JSON.toXML) {
 	JSON.toXML = function(tree, callback) {

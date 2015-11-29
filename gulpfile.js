@@ -73,6 +73,7 @@ gulp.task('tests', function() {
 
 gulp.task('minify', function() {
 	return gulp.src(SRC)
+				.pipe($.concat('defiant.js'))
 				.pipe($.jshint())
 				.pipe($.jshint.reporter('jshint-stylish'))
 				.pipe($.header(banner, PKG))

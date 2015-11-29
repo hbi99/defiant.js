@@ -1,11 +1,5 @@
 
-if (typeof module === "undefined") {
-	var module = { exports: undefined };
-} else {
-	// Node env adaptation goes here...
-}
-
-module.exports = Defiant = (function(window, undefined) {
+(function(window, module, undefined) {
 	'use strict';
 
 	var Defiant = {
@@ -107,6 +101,10 @@ module.exports = Defiant = (function(window, undefined) {
 		node: {}
 	};
 
-	return Defiant;
+	// Export
+	window.Defiant = module.exports = Defiant;
 
-})(this);
+})(
+	typeof window !== 'undefined' ? window : {},
+	typeof module !== 'undefined' ? module : {}
+);

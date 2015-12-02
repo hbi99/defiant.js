@@ -1,5 +1,5 @@
 /*
- * defiant.js [v1.3.5]
+ * defiant.js [v1.3.6]
  * http://www.defiantjs.com 
  * Copyright (c) 2013-2015, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the MIT License
@@ -364,6 +364,7 @@ if (!JSON.toXML) {
 				},
 				hash_to_xml: function(name, tree, array_child) {
 					var is_array = tree.constructor === Array,
+						self = this,
 						elem = [],
 						attr = [],
 						key,
@@ -374,78 +375,89 @@ if (!JSON.toXML) {
 						cname,
 						constr,
 						cnName,
-						i;
+						i,
+						il,
+						fn = function(key, tree) {
+							val = tree[key];
+							if (val === null || val === undefined || val.toString() === 'NaN') val = null;
 
-					for (key in tree) {
-						val = tree[key];
-						if (val === null || val === undefined || val.toString() === 'NaN') val = null;
-
-						is_attr = key.slice(0,1) === '@';
-						cname   = array_child ? name : key;
-						if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
-						if (val === null) {
-							constr = null;
-							cnName = false;
-						} else {
-							constr = val.constructor;
-							cnName = constr.toString().match(this.rx_function)[1];
-						}
-
-						if (is_attr) {
-							attr.push( cname.slice(1) +'="'+ this.escape_xml(val) +'"' );
-							if (cnName !== 'String') attr.push( 'd:'+ cname.slice(1) +'="'+ cnName +'"' );
-						} else if (val === null) {
-							elem.push( this.scalar_to_xml( cname, val ) );
-						} else {
-							switch (constr) {
-								case Function:
-									// if constructor is function, then it's not a JSON structure
-									throw 'JSON data should not contain functions. Please check jour structure.';
-									/* falls through */
-								case Object:
-									elem.push( this.hash_to_xml( cname, val ) );
-									break;
-								case Array:
-									if (key === cname) {
-										val_is_array = val.constructor === Array;
-										if (val_is_array) {
-											i = val.length;
-											while (i--) {
-												if (val[i] === null || !val[i] || val[i].constructor === Array) val_is_array = true;
-												if (!val_is_array && val[i].constructor === Object) val_is_array = true;
-											}
-										}
-										elem.push( this.scalar_to_xml( cname, val, val_is_array ) );
-										break;
-									}
-									/* falls through */
-								case String:
-									if (typeof(val) === 'string') {
-										val = val.toString().replace(/\&/g, '&amp;')
-												.replace(/\r|\n/g, '&#13;');
-									}
-									if (cname === '#text') {
-										// prepare map
-										this.map.push(tree);
-										attr.push('d:mi="'+ this.map.length +'"');
-										attr.push('d:constr="'+ cnName +'"');
-										elem.push( this.escape_xml(val) );
-										break;
-									}
-									/* falls through */
-								case Number:
-								case Boolean:
-									if (cname === '#text' && cnName !== 'String') {
-										// prepare map
-										this.map.push(tree);
-										attr.push('d:mi="'+ this.map.length +'"');
-										attr.push('d:constr="'+ cnName +'"');
-										elem.push( this.escape_xml(val) );
-										break;
-									}
-									elem.push( this.scalar_to_xml( cname, val ) );
-									break;
+							is_attr = key.slice(0,1) === '@';
+							cname   = array_child ? name : key;
+							if (cname == +cname && tree.constructor !== Object) cname = 'd:item';
+							if (val === null) {
+								constr = null;
+								cnName = false;
+							} else {
+								constr = val.constructor;
+								cnName = constr.toString().match(self.rx_function)[1];
 							}
+
+							if (is_attr) {
+								attr.push( cname.slice(1) +'="'+ self.escape_xml(val) +'"' );
+								if (cnName !== 'String') attr.push( 'd:'+ cname.slice(1) +'="'+ cnName +'"' );
+							} else if (val === null) {
+								elem.push( self.scalar_to_xml( cname, val ) );
+							} else {
+								switch (constr) {
+									case Function:
+										// if constructor is function, then it's not a JSON structure
+										throw 'JSON data should not contain functions. Please check jour structure.';
+										/* falls through */
+									case Object:
+										elem.push( self.hash_to_xml( cname, val ) );
+										break;
+									case Array:
+										if (key === cname) {
+											val_is_array = val.constructor === Array;
+											if (val_is_array) {
+												i = val.length;
+												while (i--) {
+													if (val[i] === null || !val[i] || val[i].constructor === Array) val_is_array = true;
+													if (!val_is_array && val[i].constructor === Object) val_is_array = true;
+												}
+											}
+											elem.push( self.scalar_to_xml( cname, val, val_is_array ) );
+											break;
+										}
+										/* falls through */
+									case String:
+										if (typeof(val) === 'string') {
+											val = val.toString().replace(/\&/g, '&amp;')
+													.replace(/\r|\n/g, '&#13;');
+										}
+										if (cname === '#text') {
+											// prepare map
+											self.map.push(tree);
+											attr.push('d:mi="'+ self.map.length +'"');
+											attr.push('d:constr="'+ cnName +'"');
+											elem.push( self.escape_xml(val) );
+											break;
+										}
+										/* falls through */
+									case Number:
+									case Boolean:
+										if (cname === '#text' && cnName !== 'String') {
+											// prepare map
+											self.map.push(tree);
+											attr.push('d:mi="'+ self.map.length +'"');
+											attr.push('d:constr="'+ cnName +'"');
+											elem.push( self.escape_xml(val) );
+											break;
+										}
+										elem.push( self.scalar_to_xml( cname, val ) );
+										break;
+								}
+							}
+						};
+					if (tree.constructor === Array) {
+						i = 0;
+						il = tree.length;
+						for (; i<il; i++) {
+							fn(i.toString(), tree);
+						}
+					} else {
+						for (key in tree) {
+							fn(key, tree);
 						}
 					}
 					if (!name) {

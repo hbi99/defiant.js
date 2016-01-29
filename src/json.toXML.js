@@ -145,7 +145,7 @@ if (!JSON.toXML) {
 						override = false;
 					}
 					if (val === null || val.toString() === 'NaN') val = null;
-					if (val === null) return '<'+ name +' d:constr="null"/>';
+					if (val === null || val[0] === null || val[0] === undefined) return '<'+ name +' d:constr="null"/>';
 					if (val.length === 1 && val[0].constructor === Object) {
 						
 						text = this.hash_to_xml(false, val[0]);

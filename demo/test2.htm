@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <title>Defiant.js</title>
 <script type="text/javascript" src="/defiant.js/dist/defiant.min.js"></script>
 </head>
@@ -15,14 +15,10 @@ var test = {
 		Defiant.getSnapshot(data, function(snapshot) {
 			
 			// searching on snapshot created with web worker
-			var found = JSON.search(snapshot, '//*[contains(tags/text(), "li")]');
+			var found = JSON.search(snapshot, '//*');
 
 			// found
 			console.log( found.length );
-			// the first occurrence
-			console.log( found[0].name );
-			console.log( found[0].picture );
-			console.log( found[0].gender );
 		});
 	}
 };

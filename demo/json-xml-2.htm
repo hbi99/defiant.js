@@ -78,7 +78,6 @@ pre {
 }
 
 </style>
-<!--
 <script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
 <script type="text/javascript" src="/defiant.js/src/string.js"></script>
 <script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
@@ -88,8 +87,10 @@ pre {
 <script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
 <script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
--->
+
+<!--
 <script type="text/javascript" src="/defiant.js/dist/defiant.min.js"></script>
+-->
 </head>
 <body>
 
@@ -109,38 +110,22 @@ pre {
 Defiant.env = 'development';
 
 var json = {
-	"fs": [
-		{
-			"directoryA": [
-				{
-					"directoryB": "defiant.js"
-				},
-				{
-					"directoryC": [
-						"style.css",
-						"style.less"
-					]
-				},
-				{
-					"directoryD": [
-						"logo.png",
-						"sprite.png"
-					]
-				},
-				{
-					"directoryF": {
-						"subDirectoryF": [
-							null,
-							"a"
-						]
-					}
-				}
-			]
-		},
-		"readme.txt",
-		"config.php",
-		"index.htm"
-	]
+  "API_URL": "/api/v1/insales",
+  "goods": [
+      {
+        "variants": [
+          {
+            "price2": null,
+            "prices": [
+              null
+            ],
+            "quantity": null,
+            "sku": null,
+            "title": "Базовая / черный"
+          }
+        ]
+      }
+    ]
 };
 /*
 	json = {

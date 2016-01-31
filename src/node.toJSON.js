@@ -72,8 +72,8 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					} else {
 						if (item.getAttribute('d:constr') === 'null') {
 							if (obj[cname] && obj[cname].push) obj[cname].push(null);
-							else if (item.previousSibling) obj[cname] = [obj[cname], null];
-							else obj[cname] = [obj[cname]];
+							else if (item.getAttribute('d:type') === 'ArrayItem') obj[cname] = [obj[cname]];
+							else obj[cname] = null;
 							continue;
 						}
 						if (obj[cname]) {

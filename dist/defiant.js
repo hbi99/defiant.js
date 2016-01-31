@@ -489,7 +489,10 @@ if (!JSON.toXML) {
 						override = false;
 					}
 					if (val === null || val.toString() === 'NaN') val = null;
-					if (val === null || val[0] === null || val[0] === undefined) return '<'+ name +' d:constr="null"/>';
+					if (val === null) return '<'+ name +' d:constr="null"/>';
+					if (val.length === 1 && val.constructor === Array && !val[0]) {
+						return '<'+ name +' d:constr="null" d:type="ArrayItem"/>';
+					}
 					if (val.length === 1 && val[0].constructor === Object) {
 						
 						text = this.hash_to_xml(false, val[0]);
@@ -803,8 +806,8 @@ Defiant.node.toJSON = function(xnode, stringify) {
 					} else {
 						if (item.getAttribute('d:constr') === 'null') {
 							if (obj[cname] && obj[cname].push) obj[cname].push(null);
-							else if (item.previousSibling) obj[cname] = [obj[cname], null];
-							else obj[cname] = [obj[cname]];
+							else if (item.getAttribute('d:type') === 'ArrayItem') obj[cname] = [obj[cname]];
+							else obj[cname] = null;
 							continue;
 						}
 						if (obj[cname]) {

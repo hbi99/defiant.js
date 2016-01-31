@@ -15,10 +15,10 @@ var test = {
 		Defiant.getSnapshot(data, function(snapshot) {
 			
 			// searching on snapshot created with web worker
-			var found = JSON.search(snapshot, '//*');
+			var found = JSON.search(snapshot, '//prices');
 
 			// found
-			console.log( found.length );
+			console.log( found );
 		});
 	}
 };

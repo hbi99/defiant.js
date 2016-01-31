@@ -80,6 +80,7 @@ As of this version, snapshots can be created with web workers - consequently the
 As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
 
 ### Changelog
+- [x] `1.3.8` Handling null value in arrays
 - [x] `1.3.7` Safari / VueJS related bugfix
 - [x] `1.3.6` Fixed bug in gulp file
 - [x] `1.3.5` Handling special occasion of 'null' in array

@@ -20,9 +20,8 @@ if (!String.prototype.xTransform) {
 		var str = this;
 		if (this.indexOf('translate(') === -1) {
 			str = this.replace(/contains\(([^,]+),([^\\)]+)\)/g, function(c,h,n) {
-				var a = 'abcdefghijklmnopqrstuvwxyz',
-					q = n.trim().slice(-1);
-				return "contains(translate("+ h +", "+ q + a.toUpperCase() + q +", "+ q + a + q +"),"+ n.toLowerCase() +")";
+				var a = 'abcdefghijklmnopqrstuvwxyz';
+				return "contains(translate("+ h +", \""+ a.toUpperCase() +"\", \""+ a +"\"),"+ n.toLowerCase() +")";
 			});
 		}
 		return str.toString();

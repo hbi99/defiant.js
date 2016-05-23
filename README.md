@@ -1,12 +1,13 @@
 [![](http://goo.gl/7TGBFK)](http://defiantjs.com/)
 
-###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
-
 DefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath.
 
 DefiantJS also extends the global object __JSON__ with the method "__search__", which enables searches on JSON structures with XPath expressions and returns matches as an array-like object.
 
-For detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator).
+For detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator) or...
+
+###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
+
 
 ###Example usage
 * Snapshots - very large JSON

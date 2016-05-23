@@ -1,6 +1,6 @@
-###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
-
 [![](http://goo.gl/7TGBFK)](http://defiantjs.com/)
+
+###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
 
 DefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath.
 

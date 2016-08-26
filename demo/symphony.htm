@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js - Symphony demo</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/defiant.js/1.3.1/defiant.min.js"></script>
+</head>
+<body>
+
+<!-- Defiant template -->
+<script type="defiant/xsl-template">
+
+<xsl:template name="mart-template">
+	<xsl:for-each select="//*">
+		<h2><xsl:value-of select="title"/></h2>
+		<div><xsl:value-of select="region"/></div>
+	</xsl:for-each>
+</xsl:template>
+
+</script>
+
+
+<section id="searchForm">
+	<select name="region" id="region">
+		<option value="Northern">Northern</option>
+		<option value="Midlands">Midlands</option>
+		<option value="Wales">Wales</option>
+		<option value="Southern">Southern</option>
+	</select>
+	<button id="search">Find Mart</button>
+</section>
+
+<!-- Output element -->
+<section id="resultsForm"></section>
+
+<script type="text/javascript">
+
+var dataBlock = {
+	"mart":[
+		{"title":"Mart 1", "region": "Wales"},	
+		{"title":"Mart 2", "region": "Wales"},
+		{"title":"Mart 3", "region": "Northern"},
+		{"title":"Mart 4", "region": "Southern"},
+		{"title":"Mart 5", "region": "Southern"},
+		{"title":"Mart 6", "region": "Midlands"},
+		{"title":"Mart 7", "region": "Northern"}
+	]
+};
+
+
+$(document).ready(function() {
+
+	var getMart = function() {
+		var selectedRegion = $('#region').val();
+		if (selectedRegion == '') {
+			$('#resultsForm').html("<p><strong>Please select a region</strong></p>");
+		} else {
+			//$('#resultsForm').html("<p><strong>Loading...</strong></p>");
+     		res = JSON.search( dataBlock, '//mart[region="' + selectedRegion + '"]');
+			//console.log(res);
+			htm = Defiant.render({
+					'template': 'mart-template',
+					'data': res,
+					'sorter': {
+						'order': 'descending',
+						'select': 'title',
+						'type': 'string'
+					}
+				});
+			$('#resultsForm').html(htm);
+		}
+		return false;
+	}
+	
+	$('#search').click(getMart);
+
+	$('#region').keyup(function(event) {
+		if (event.keyCode == 13) {
+			getMart();
+		}
+	});
+	
+});
+  
+</script>
+
+</body>
+</html>

@@ -9,7 +9,7 @@ For detailed information, please visit [defiantjs.com](http://defiantjs.com) and
 ###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
 
 
-###Example usage
+### Example usage
 * Snapshots - very large JSON
 ```js
 var data = {
@@ -75,7 +75,7 @@ console.log( res );
 </script>
 ```
 
-###Update highlights
+### Update highlights
 - v1.2.6
 As of this version, snapshots can be created with web workers - consequently the UI thread is not blocked when creating snapshots of large JSON structures.
 

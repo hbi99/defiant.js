@@ -1,3 +1,9 @@
+<a name="1.4.2"></a>
+## [1.4.2](https://github.com/hbi99/defiant.js/compare/v1.4.0...v1.4.2) (2017-04-26)
+
+
+
+
 <a name="1.4.1"></a>
 ## [1.4.1](https://github.com/hbi99/defiant.js/compare/v1.3.9...v1.4.1) (2016-07-24)
 

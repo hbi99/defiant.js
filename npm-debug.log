@@ -1,0 +1,132 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@4.0.5
+3 info using node@v0.12.4
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec { raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/hbi/Documents/proj/priv/defiant.js',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/hbi/.npm/defiant/1.4.2/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/hbi/.npm correctMkdir not in flight; initializing
+10 info lifecycle defiant@1.4.2~prepublish: defiant@1.4.2
+11 silly lifecycle defiant@1.4.2~prepublish: no script for prepublish, continuing
+12 info lifecycle defiant@1.4.2~prepare: defiant@1.4.2
+13 silly lifecycle defiant@1.4.2~prepare: no script for prepare, continuing
+14 verbose tar pack [ '/Users/hbi/.npm/defiant/1.4.2/package.tgz',
+14 verbose tar pack   '/Users/hbi/Documents/proj/priv/defiant.js' ]
+15 verbose tarball /Users/hbi/.npm/defiant/1.4.2/package.tgz
+16 verbose folder /Users/hbi/Documents/proj/priv/defiant.js
+17 verbose addLocalTarball adding from inside cache /Users/hbi/.npm/defiant/1.4.2/package.tgz
+18 verbose correctMkdir /Users/hbi/.npm correctMkdir not in flight; initializing
+19 silly cache afterAdd defiant@1.4.2
+20 verbose afterAdd /Users/hbi/.npm/defiant/1.4.2/package/package.json not in flight; writing
+21 verbose correctMkdir /Users/hbi/.npm correctMkdir not in flight; initializing
+22 verbose afterAdd /Users/hbi/.npm/defiant/1.4.2/package/package.json written
+23 silly publish { name: 'defiant',
+23 silly publish   version: '1.4.2',
+23 silly publish   description: 'Search JSON structures plus smart templating with XSLT and XPath.',
+23 silly publish   author:
+23 silly publish    { name: 'Hakan Bilgin',
+23 silly publish      email: 'hbi@longscript.com',
+23 silly publish      url: 'https://github.com/hbi99' },
+23 silly publish   keywords: [ 'json', 'xpath', 'xslt', 'search' ],
+23 silly publish   license: 'MIT',
+23 silly publish   repository:
+23 silly publish    { type: 'git',
+23 silly publish      url: 'git+https://github.com/hbi99/defiant.js.git' },
+23 silly publish   bugs: { url: 'https://github.com/hbi99/defiant.js/issues' },
+23 silly publish   homepage: 'http://www.defiantjs.com',
+23 silly publish   main: './lib/defiant',
+23 silly publish   dependencies: { x10: 'git://github.com/hbi99/x10.js.git' },
+23 silly publish   devDependencies:
+23 silly publish    { colors: '^1.1.2',
+23 silly publish      'conventional-github-releaser': '^0.5.0',
+23 silly publish      grunt: '~0.4.2',
+23 silly publish      'grunt-contrib-jasmine': '~0.6.3',
+23 silly publish      gulp: '^3.9.0',
+23 silly publish      'gulp-bump': '^1.0.0',
+23 silly publish      'gulp-concat': '^2.6.0',
+23 silly publish      'gulp-conventional-changelog': '^0.7.0',
+23 silly publish      'gulp-git': '^1.6.0',
+23 silly publish      'gulp-header': '^1.7.1',
+23 silly publish      'gulp-jshint': '^1.12.0',
+23 silly publish      'gulp-load-plugins': '^1.0.0',
+23 silly publish      'gulp-rename': '^1.2.2',
+23 silly publish      'gulp-uglify': '^1.4.2',
+23 silly publish      'gulp-util': '^3.0.7',
+23 silly publish      'jshint-stylish': '^2.0.1',
+23 silly publish      mocha: '0.3.x',
+23 silly publish      'run-sequence': '^1.1.4' },
+23 silly publish   readme: '[![](http://goo.gl/7TGBFK)](http://defiantjs.com/)\n\nDefiantJS provides the ability for you to build smart templates applicable on JSON structures, based upon proven &amp; standardized technologies such as XSLT and XPath.\n\nDefiantJS also extends the global object __JSON__ with the method "__search__", which enables searches on JSON structures with XPath expressions and returns matches as an array-like object.\n\nFor detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator) or...\n\n###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>\n\n\n### Example usage\n* Snapshots - very large JSON\n```js\nvar data = {\n  // ...biiig JSON structure...\n};\n\n// this way has a non-blocking effect on the UI-thread\nDefiant.getSnapshot(data, function(snapshot) {\n  // executed when the snapshot is created\n  found = JSON.search(snapshot, \'//item\');  \n});\n\n```\n\n* Snapshot feature\n```js\nvar data = {\n  // ...large JSON structure...\n};\n\n// Regular search\nfound = JSON.search(data, \'//item\');\n\nvar snapshot = Defiant.getSnapshot(data);\n// Snapshot search - this is more than 100 times faster than \'regular search\'\nfound = JSON.search(snapshot, \'//item\');\n```\n\n* Simple search\n```js\nvar data = [\n       { "x": 2, "y": 0 },\n       { "x": 3, "y": 1 },\n       { "x": 4, "y": 1 },\n       { "x": 2, "y": 1 }\n    ],\n    res = JSON.search( data, \'//*[ y > 0 ]\' );\n\nconsole.log( res );\n// [{ x=3, y=1}, { x=4, y=1}, { x=2, y=1}]\n```\n\n* XSLT Templating\n```html\n<!-- Defiant template -->\n<script type="defiant/xsl-template">\n    <xsl:template name="books_template">\n        <xsl:for-each select="//movie">\n            <xsl:value-of select="title"/><br/>\n        </xsl:for-each>\n    </xsl:template>\n</script>\n \n<script type="text/javascript">\n    var data = {\n            "movie": [{"title": "The Usual Suspects"},\n                      {"title": "Pulp Fiction"},\n                      {"title": "Independence Day"}]\n        },\n        htm = Defiant.render(\'books_template\', data);\n    console.log(htm);\n    // The Usual Suspects<br>Pulp Fiction<br>Independence Day<br>\n</script>\n```\n\n### Update highlights\n- v1.2.6\nAs of this version, snapshots can be created with web workers - consequently the UI thread is not blocked when creating snapshots of large JSON structures.\n\n- v1.2.0\nAs of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use \'snapshot search\' when you are certain that the JSON structure hasn\'t been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.\n\n### Changelog\n- [x] `1.3.8` Handling null value in arrays\n- [x] `1.3.7` Safari / VueJS related bugfix\n- [x] `1.3.6` Fixed bug in gulp file\n- [x] `1.3.5` Handling special occasion of \'null\' in array\n- [x] `1.3.4` Syncing up package version with release version\n- [x] `1.3.3` Safari handles "XSLTProcessor" - adapting\n- [x] `1.3.2` Throws error if "transformNode" is not supported\n- [x] `1.3.1` Fixing MSIE11 detection\n- [x] `1.3.0` Zero values threw error in "match tracer"\n- [x] `1.2.9` Handling \'\\r\\n\' in string (throws error)\n- [x] `1.2.8` Automatically case insensitive - global regular expression\n- [x] `1.2.7` JSON data containing functions will throw error\n- [x] `1.2.6` Snapshot can be created with web worker (x10.js)\n- [x] `1.2.5` Bugfix related to not() preceding \'contains\'-method\n- [x] `1.2.4` UI-related bugg fix \n- [x] `1.2.2` The XPath method \'contains\' is automatically case insensitive \n- [x] `1.2.0` Added snapshot search feature\n',
+23 silly publish   readmeFilename: 'README.md',
+23 silly publish   gitHead: '3bda1d6ceb4517da33204498212e196372501f4b',
+23 silly publish   _id: 'defiant@1.4.2',
+23 silly publish   scripts: {},
+23 silly publish   _shasum: 'd98abecc664bc1af786e7b5739f7e60cafbea883',
+23 silly publish   _from: '.' }
+24 info lifecycle defiant@1.4.2~prepublishOnly: defiant@1.4.2
+25 silly lifecycle defiant@1.4.2~prepublishOnly: no script for prepublishOnly, continuing
+26 verbose getPublishConfig undefined
+27 silly mapToRegistry name defiant
+28 silly mapToRegistry using default registry
+29 silly mapToRegistry registry https://registry.npmjs.org/
+30 silly mapToRegistry data { raw: 'defiant',
+30 silly mapToRegistry   scope: null,
+30 silly mapToRegistry   escapedName: 'defiant',
+30 silly mapToRegistry   name: 'defiant',
+30 silly mapToRegistry   rawSpec: '',
+30 silly mapToRegistry   spec: 'latest',
+30 silly mapToRegistry   type: 'tag' }
+31 silly mapToRegistry uri https://registry.npmjs.org/defiant
+32 verbose publish registryBase https://registry.npmjs.org/
+33 silly publish uploading /Users/hbi/.npm/defiant/1.4.2/package.tgz
+34 verbose request uri https://registry.npmjs.org/defiant
+35 verbose request sending authorization for write operation
+36 info attempt registry request try #1 at 4:56:56 PM
+37 verbose request using bearer token for auth
+38 verbose request id d23d65bac5fc9dca
+39 http request PUT https://registry.npmjs.org/defiant
+40 http 403 https://registry.npmjs.org/defiant
+41 verbose headers { 'content-type': 'application/json',
+41 verbose headers   'cache-control': 'max-age=300',
+41 verbose headers   'content-length': '101',
+41 verbose headers   'accept-ranges': 'bytes',
+41 verbose headers   date: 'Tue, 16 May 2017 14:56:57 GMT',
+41 verbose headers   via: '1.1 varnish',
+41 verbose headers   connection: 'keep-alive',
+41 verbose headers   'x-served-by': 'cache-bma7031-BMA',
+41 verbose headers   'x-cache': 'MISS',
+41 verbose headers   'x-cache-hits': '0',
+41 verbose headers   'x-timer': 'S1494946616.353254,VS0,VE990',
+41 verbose headers   vary: 'Accept-Encoding' }
+42 verbose request invalidating /Users/hbi/.npm/registry.npmjs.org/defiant on PUT
+43 error publish Failed PUT 403
+44 verbose stack Error: you do not have permission to publish "defiant". Are you logged in as the correct user? : defiant
+44 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+44 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+44 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+44 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:186:22)
+44 verbose stack     at Request.emit (events.js:110:17)
+44 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1081:10)
+44 verbose stack     at Request.emit (events.js:107:17)
+44 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1001:12)
+44 verbose stack     at IncomingMessage.g (events.js:199:16)
+44 verbose stack     at IncomingMessage.emit (events.js:129:20)
+45 verbose statusCode 403
+46 verbose pkgid defiant
+47 verbose cwd /Users/hbi/Documents/proj/priv/defiant.js
+48 error Darwin 16.4.0
+49 error argv "node" "/usr/local/bin/npm" "publish"
+50 error node v0.12.4
+51 error npm  v4.0.5
+52 error code E403
+53 error you do not have permission to publish "defiant". Are you logged in as the correct user? : defiant
+54 error If you need help, you may report this error at:
+54 error     <https://github.com/npm/npm/issues>
+55 verbose exit [ 1, true ]

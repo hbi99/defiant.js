@@ -1,5 +1,5 @@
 /*
- * defiant.js.js [v1.4.4]
+ * defiant.js [v1.4.4]
  * http://www.defiantjs.com 
  * Copyright (c) 2013-2017, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the MIT License

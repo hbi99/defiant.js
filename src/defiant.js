@@ -76,10 +76,12 @@
 			if (str.trim().match(/<\?xml/) === null) {
 				str = this.xml_decl + str;
 			}
+			// if (this.is_ie) {
 			// if (typeof(ActiveXObject) != 'undefined') {
-			if (this.is_ie) {
+			if ( 'ActiveXObject' in window ) {
 				doc = new ActiveXObject('Msxml2.DOMDocument');
 				doc.loadXML(str);
+				doc.setProperty('SelectionNamespaces', this.namespace);
 				if (str.indexOf('xsl:stylesheet') === -1) {
 					doc.setProperty('SelectionLanguage', 'XPath');
 				}

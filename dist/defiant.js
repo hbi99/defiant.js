@@ -1,5 +1,5 @@
 /*
- * defiant.js [v1.4.2]
+ * defiant.js.js [v1.4.4]
  * http://www.defiantjs.com 
  * Copyright (c) 2013-2017, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the MIT License
@@ -82,10 +82,12 @@
 			if (str.trim().match(/<\?xml/) === null) {
 				str = this.xml_decl + str;
 			}
+			// if (this.is_ie) {
 			// if (typeof(ActiveXObject) != 'undefined') {
-			if (this.is_ie) {
+			if ( 'ActiveXObject' in window ) {
 				doc = new ActiveXObject('Msxml2.DOMDocument');
 				doc.loadXML(str);
+				doc.setProperty('SelectionNamespaces', this.namespace);
 				if (str.indexOf('xsl:stylesheet') === -1) {
 					doc.setProperty('SelectionLanguage', 'XPath');
 				}

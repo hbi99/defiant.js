@@ -76,7 +76,8 @@
 			if (str.trim().match(/<\?xml/) === null) {
 				str = this.xml_decl + str;
 			}
-			if (typeof(ActiveXObject) != 'undefined') {
+			// if (typeof(ActiveXObject) != 'undefined') {
+			if (this.is_ie) {
 				doc = new ActiveXObject('Msxml2.DOMDocument');
 				doc.loadXML(str);
 				if (str.indexOf('xsl:stylesheet') === -1) {

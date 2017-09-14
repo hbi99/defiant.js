@@ -64,7 +64,7 @@
 			for (; i<il; i++) {
 				if (scripts[i].type === 'defiant/xsl-template') str += scripts[i].innerHTML;
 			}
-			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
+			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		getSnapshot: function(data, callback) {
 			return JSON.toXML(data, callback || true);

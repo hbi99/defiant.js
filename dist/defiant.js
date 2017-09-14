@@ -1,5 +1,5 @@
 /*
- * defiant.js [v1.4.1]
+ * defiant.js.js [v1.4.4]
  * http://www.defiantjs.com 
  * Copyright (c) 2013-2017, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the MIT License
@@ -218,7 +218,7 @@
 			for (; i<il; i++) {
 				if (scripts[i].type === 'defiant/xsl-template') str += scripts[i].innerHTML;
 			}
-			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
+			this.xsl_template = this.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" '+ this.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		},
 		getSnapshot: function(data, callback) {
 			return JSON.toXML(data, callback || true);

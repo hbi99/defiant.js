@@ -24,7 +24,7 @@
   "homepage": "http://www.defiantjs.com",
   "main": "./lib/defiant",
   "dependencies": {
-    "x10": "git://github.com/hbi99/x10.js.git"
+    "x10.js": "^0.1.3"
   },
   "devDependencies": {
     "colors": "^1.1.2",

@@ -22,7 +22,7 @@
     "url": "https://github.com/hbi99/defiant.js/issues"
   },
   "homepage": "http://www.defiantjs.com",
-  "main": "./lib/defiant",
+  "main": "./dist/defiant",
   "dependencies": {
     "x10.js": "^0.1.3"
   },

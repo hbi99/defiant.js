@@ -8,10 +8,16 @@
     "url": "https://github.com/hbi99"
   },
   "keywords": [
+    "search",
+    "javascript",
+    "js",
+    "clientside",
+    "client-side",
+    "query",
     "json",
     "xpath",
     "xslt",
-    "search"
+    "browser"
   ],
   "license": "MIT",
   "repository": {

@@ -82,6 +82,9 @@ As of this version, snapshots can be created with web workers - consequently the
 - v1.2.0
 As of version 1.2.0, the __snapshot__ feature was added. Using this feature, the performance of the search is increased by more than 100 times. Use 'snapshot search' when you are certain that the JSON structure hasn't been changed. If the structure changes, create a new snapshot and always make searches on the latest snapshot. The example below shows how it can be used.
 
+### To-do's
+- [ ] Add support for XPath searches in Postman
+
 ### Changelog
 - [x] `1.3.8` Handling null value in arrays
 - [x] `1.3.7` Safari / VueJS related bugfix

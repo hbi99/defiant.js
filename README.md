@@ -6,9 +6,18 @@ DefiantJS also extends the global object __JSON__ with the method "__search__", 
 
 For detailed information, please visit [defiantjs.com](http://defiantjs.com) and try out the [XPath Evaluator](http://www.defiantjs.com/#xpath_evaluator) or...
 
-###### :point_right: [![Join the chat at https://gitter.im/hbi99/defiantjs.com](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hbi99/defiantjs.com?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) <sup>Chat with Defiant.js users</sup>
+### Installation from __npmjs.com__
+Notice that installation requires "defiant.js" and not "defiant". This is due to the account of "kstngroup" has published it on __npmjs.com__. Making your project dependant to "defiant" might result in secuirty issues in the future since I do not control the namespace of "defiant".
+* Correct way to install
+```js
+npm install defiant.js
+```
 
-
+* <ins>__Wrong__</ins> way to install
+```js
+npm install defiant
+```
+<br><br><br>
 ### Example usage
 * Snapshots - very large JSON
 ```js

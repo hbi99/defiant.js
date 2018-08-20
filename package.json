@@ -1,11 +1,14 @@
 {
   "name": "defiant.js",
-  "version": "1.4.5",
+  "version": "2.0.2-alpha",
   "description": "Search JSON structures plus smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",
     "email": "hbi@longscript.com",
     "url": "https://github.com/hbi99"
+  },
+  "engines": {
+    "node": "9.2.0"
   },
   "keywords": [
     "search",
@@ -28,12 +31,13 @@
     "url": "https://github.com/hbi99/defiant.js/issues"
   },
   "homepage": "http://www.defiantjs.com",
-  "main": "./dist/defiant",
+  "main": "index.js",
   "dependencies": {
+    "qure-defiant": "^1.0.2",
     "x10.js": "^0.1.3"
   },
   "devDependencies": {
-    "colors": "^1.1.2",
+    "colors": "^1.3.0",
     "conventional-github-releaser": "^0.5.0",
     "grunt": "~0.4.2",
     "grunt-contrib-jasmine": "~0.6.3",
@@ -42,10 +46,10 @@
     "gulp-concat": "^2.6.0",
     "gulp-conventional-changelog": "^0.7.0",
     "gulp-git": "^1.6.0",
-    "gulp-header": "^1.7.1",
+    "gulp-header": "^1.8.12",
     "gulp-jshint": "^1.12.0",
     "gulp-load-plugins": "^1.0.0",
-    "gulp-rename": "^1.2.2",
+    "gulp-rename": "^1.2.3",
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "jshint-stylish": "^2.0.1",

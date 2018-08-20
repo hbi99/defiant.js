@@ -17,19 +17,55 @@
 
 <script type="text/javascript">
 
-var test = {
+var poc = {
 	init: function(data) {
-		var start = Date.now(),
-			found = JSON.search(data, '//file');
-
-		//console.log( Date.now() - start );
-		//console.log( found.length );
-	}
+		var self = this;
+		this.getfile('test.json', function(file) {
+			var data = data = JSON.parse(file),
+				tests = self.tests,
+				start,
+				found,
+				key;
+			
+			for (key in tests) {
+				start = Date.now();
+				found = tests[key](data);
+				console.log('Found '+ found.length +' items, in '+ (Date.now() - start) +'ms');
+			}
+		});
+	},
+	getfile: function(url, callback) {
+		var xobj = new XMLHttpRequest();
+		xobj.overrideMimeType("application/json");
+		xobj.open('GET', url, true);
+		xobj.onreadystatechange = function () {
+			if (xobj.readyState == 4 && xobj.status == "200") {
+				// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+				callback(xobj.responseText);
+			}
+		};
+		xobj.send(null);
+	},
+	tests: [
+		function(data) {
+			var xpath = xpath = '//*[@size >= 10 and @size <= 20 and contains(@name, "7077498")]';
+			return JSON.search(data, xpath);
+		},
+		function(data) {
+			var matches = [];
+			data.file.map(function(item) {
+				if (item['@size'] >= 10 && item['@size'] <= 20 && item['@name'].indexOf('7077498') > -1) {
+					matches.push(item);
+				}
+			});
+			return matches;
+		}
+	]
 };
 
+window.onload = poc.init.bind(poc);
+
 </script>
-<!-- Load JSON structure -->
-<script type="text/javascript" src="/defiant.js/demo/tmp.js"></script>
 
 </body>
 </html>

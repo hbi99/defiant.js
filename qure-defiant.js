@@ -25,6 +25,15 @@ module.exports = {
 			return str;
 		}, name, data);
 	},
+	defiant_render_xml: function(name, xstr) {
+		return this.page.evaluate(async (name, xstr) => {
+			var that = Defiant,
+				data = that.xmlFromString(xstr),
+				str = that.render_xml(name, data);
+			str = str.replace(/ (xmlns\:xlink|xmlns:d)=".*?"/ig, '');
+			return str;
+		}, name, xstr);
+	},
 	register_template: function(str) {
 		return this.page.evaluate(async (str) => {
 			var that = Defiant;

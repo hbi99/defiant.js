@@ -21,6 +21,12 @@ var defiant = {
 					.then(result => resolve(result));
 			});
 		},
+		render_xml: function(name, xstr) {
+			return new Promise(function(resolve, reject) {
+				qure.run('defiant_render_xml', name, xstr)
+					.then(result => resolve(result));
+			});
+		},
 		search: async function(data, xpath) {
 			return new Promise(function(resolve, reject) {
 				qure.run('defiant_search', data, xpath)

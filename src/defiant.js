@@ -9,6 +9,21 @@
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
+		render_xml: function(template, data) {
+			var processor = new XSLTProcessor(),
+				span      = document.createElement('span'),
+				tmpltXpath = '//xsl:template[@name="'+ template +'"]',
+				temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath),
+				temp;
+
+			temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
+			temp.setAttribute('match', '/');
+			processor.importStylesheet(this.xsl_template);
+			span.appendChild(processor.transformToFragment(data, document));
+			temp.removeAttribute('match');
+
+			return span.innerHTML;
+		},
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),

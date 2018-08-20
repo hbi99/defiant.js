@@ -13,8 +13,7 @@
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
 				tmpltXpath = '//xsl:template[@name="'+ template +'"]',
-				temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath),
-				temp;
+				temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
 
 			temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
 			temp.setAttribute('match', '/');

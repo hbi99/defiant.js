@@ -1,8 +1,8 @@
 /*
- * defiant.js.js [v1.4.5]
+ * defiant.js.js [v2.0.2-alpha]
  * http://www.defiantjs.com 
- * Copyright (c) 2013-2017, Hakan Bilgin <hbi@longscript.com> 
- * Licensed under the MIT License
+ * Copyright (c) 2013-2018, Hakan Bilgin <hbi@longscript.com> 
+ * Licensed under the GNU AGPLv3 License
  */
 /* 
  * x10.js v0.1.3 
@@ -163,6 +163,20 @@
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
+		render_xml: function(template, data) {
+			var processor = new XSLTProcessor(),
+				span      = document.createElement('span'),
+				tmpltXpath = '//xsl:template[@name="'+ template +'"]',
+				temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
+
+			temp = this.node.selectSingleNode(this.xsl_template, tmpltXpath);
+			temp.setAttribute('match', '/');
+			processor.importStylesheet(this.xsl_template);
+			span.appendChild(processor.transformToFragment(data, document));
+			temp.removeAttribute('match');
+
+			return span.innerHTML;
+		},
 		render: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),

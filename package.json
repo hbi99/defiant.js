@@ -13,14 +13,12 @@
   "keywords": [
     "search",
     "javascript",
-    "js",
-    "clientside",
-    "client-side",
     "query",
     "json",
     "xpath",
     "xslt",
-    "browser"
+    "browser",
+    "node"
   ],
   "license": "GNU AGPLv3",
   "repository": {

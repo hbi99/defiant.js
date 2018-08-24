@@ -1,5 +1,5 @@
 /*
- * defiant.js.js [v2.0.2-alpha]
+ * defiant.js.js [v2.0.4]
  * http://www.defiantjs.com 
  * Copyright (c) 2013-2018, Hakan Bilgin <hbi@longscript.com> 
  * Licensed under the GNU AGPLv3 License

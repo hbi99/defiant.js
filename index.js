@@ -19,7 +19,7 @@ const defiant = {
 				})
 		})
 	},
-	defiant_render: async (name, data) => {
+	render: async (name, data) => {
 		if (!defiant.page) await defiant.init()
 		
 		return defiant.page.evaluate(async (name, data) => {
@@ -29,7 +29,7 @@ const defiant = {
 		}, name, data);
 		
 	},
-	defiant_render_xml: async (name, xstr) => {
+	render_xml: async (name, xstr) => {
 		if (!defiant.page) await defiant.init()
 		
 		return defiant.page.evaluate(async (name, xstr) => {

@@ -22,6 +22,7 @@ const defiant = {
 	render: async (name, data) => {
 		if (!defiant.page) await defiant.init()
 		
+		data = data || {};
 		return defiant.page.evaluate(async (name, data) => {
 			var str = Defiant.render(name, data);
 			str = str.replace(/ (xmlns\:xlink|xmlns:d)=".*?"/ig, '');

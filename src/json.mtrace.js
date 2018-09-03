@@ -1,57 +1,53 @@
 
 if (!JSON.mtrace) {
-	JSON.mtrace = function(root, hits, xres) {
+	JSON.mtrace = (root, hits, xres) => {
 		'use strict';
-
-		var win       = window,
-			stringify = JSON.stringify,
-			sroot     = stringify( root, null, '\t' ).replace(/\t/g, ''),
-			trace     = [],
-			i         = 0,
-			il        = xres.length,
-			od        = il ? xres[i].ownerDocument.documentElement : false,
-			map       = this.search.map,
-			hstr,
-			cConstr,
+		var trace = [],
 			fIndex = 0,
-			mIndex,
-			lStart,
-			lEnd;
-
-		for (; i<il; i++) {
-			switch (xres[i].nodeType) {
+			win = window,
+			toJson = Defiant.node.toJSON,
+			stringify = (data) => JSON.stringify(data, null, '\t').replace(/\t/g, ''),
+			jsonStr = stringify(root);
+		xres.map((item, index) => {
+			var constr,
+				pJson,
+				pStr,
+				hit,
+				hstr,
+				pIdx,
+				lines,
+				len = 0;
+			switch (item.nodeType) {
 				case 2:
-					cConstr = xres[i].ownerElement ? xres[i].ownerElement.getAttribute('d:'+ xres[i].nodeName) : 'String';
-					hstr    = '"@'+ xres[i].nodeName +'": '+ win[ cConstr ]( hits[i] );
-					mIndex  = sroot.indexOf(hstr);
-					lEnd    = 0;
+					constr = xres[index].ownerElement ? xres[index].ownerElement.getAttribute('d:'+ xres[index].nodeName) : 'String';
+					hit = win[constr](hits[index]);
+					hstr = '"@'+ xres[index].nodeName +'": '+ hit;
+					pIdx = jsonStr.indexOf(hstr, fIndex);
 					break;
 				case 3:
-					cConstr = xres[i].parentNode.getAttribute('d:constr');
-					hstr    = win[ cConstr ]( hits[i] );
-					hstr    = '"'+ xres[i].parentNode.nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
-					mIndex  = sroot.indexOf(hstr);
-					lEnd    = 0;
+					constr = xres[index].parentNode.getAttribute('d:constr');
+					hit = win[constr](hits[index]);
+					hstr = '"'+ xres[index].parentNode.nodeName +'": '+ (hstr === 'Number' ? hit : '"'+ hit +'"');
+					pIdx = jsonStr.indexOf(hstr, fIndex);
 					break;
 				default:
-					if (xres[i] === od) continue;
-					if (xres[i].getAttribute('d:constr') === 'String' || xres[i].getAttribute('d:constr') === 'Number') {
-						cConstr = xres[i].getAttribute('d:constr');
-						hstr    = win[ cConstr ]( hits[i] );
-						mIndex  = sroot.indexOf(hstr, fIndex);
-						hstr    = '"'+ xres[i].nodeName +'": '+ (cConstr === 'Number' ? hstr : '"'+ hstr +'"');
-						lEnd    = 0;
-						fIndex  = mIndex + 1;
+					constr = item.getAttribute('d:constr');
+					if (['String', 'Number'].indexOf(constr) > -1) {
+						pJson = toJson(xres[index].parentNode);
+						pStr = stringify(pJson);
+						hit = win[constr](hits[index]);
+						hstr = '"'+ xres[index].nodeName +'": '+ (constr === 'Number' ? hit : '"'+ hit +'"');
+						pIdx = jsonStr.indexOf(pStr, fIndex) + pStr.indexOf(hstr);
 					} else {
-						hstr   = stringify( hits[i], null, '\t' ).replace(/\t/g, '');
-						mIndex = sroot.indexOf(hstr);
-						lEnd   = hstr.match(/\n/g).length;
+						hstr = stringify( hits[index] );
+						pIdx = jsonStr.indexOf(hstr);
+						len = hstr.split('\n').length - 1;
 					}
 			}
-			lStart = sroot.substring(0,mIndex).match(/\n/g).length+1;
-			trace.push([lStart, lEnd]);
-		}
-
+			fIndex = pIdx + 1;
+			lines = jsonStr.slice(0, pIdx).split('\n').length;
+			trace.push([lines, len]);
+		});
 		return trace;
 	};
 }

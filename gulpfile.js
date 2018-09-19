@@ -6,7 +6,6 @@ var gulp                       = require('gulp'),
 	gutil                      = require('gulp-util'),
 	colors                     = require('colors'),
 	fs                         = require('fs'),
-	stylish                    = require('jshint-stylish'),
 	runSequence                = require('run-sequence'),
 	conventionalChangelog      = require('gulp-conventional-changelog'),
 	conventionalGithubReleaser = require('conventional-github-releaser');
@@ -75,7 +74,6 @@ gulp.task('minify', function() {
 	return gulp.src(SRC)
 				.pipe($.concat('defiant.js'))
 				.pipe($.jshint())
-				.pipe($.jshint.reporter('jshint-stylish'))
 				.pipe($.header(banner, PKG))
 				.pipe(gulp.dest(DEST))
 				.pipe($.uglify())

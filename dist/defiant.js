@@ -1,158 +1,9 @@
 /*
- * defiant.js.js [v2.0.4]
- * http://www.defiantjs.com 
- * Copyright (c) 2013-2018, Hakan Bilgin <hbi@longscript.com> 
- * Licensed under the GNU AGPLv3 License
+ * defiant.js [v2.0.9]
+ * http://www.defiantjs.com
+ * Copyright (c) 2013-2018 Hakan Bilgin <hbi@longscript.com>
+ * License GNU AGPLv3
  */
-/* 
- * x10.js v0.1.3 
- * Web worker wrapper with simple interface 
- * 
- * Copyright (c) 2013-2015, Hakan Bilgin <hbi@longscript.com> 
- * Licensed under the MIT License 
- */ 
-
-(function(window, undefined) {
-	//'use strict';
-
-	var x10 = {
-		init: function() {
-			return this;
-		},
-		work_handler: function(event) {
-			var args = Array.prototype.slice.call(event.data, 1),
-				func = event.data[0],
-				ret  = tree[func].apply(tree, args);
-
-			// return process finish
-			postMessage([func, ret]);
-		},
-		setup: function(tree) {
-			var url    = window.URL || window.webkitURL,
-				script = 'var tree = {'+ this.parse(tree).join(',') +'};',
-				blob   = new Blob([script + 'self.addEventListener("message", '+ this.work_handler.toString() +', false);'],
-									{type: 'text/javascript'}),
-				worker = new Worker(url.createObjectURL(blob));
-			
-			// thread pipe
-			worker.onmessage = function(event) {
-				var args = Array.prototype.slice.call(event.data, 1),
-					func = event.data[0];
-				x10.observer.emit('x10:'+ func, args);
-			};
-
-			return worker;
-		},
-		call_handler: function(func, worker) {
-			return function() {
-				var args = Array.prototype.slice.call(arguments, 0, -1),
-					callback = arguments[arguments.length-1];
-
-				// add method name
-				args.unshift(func);
-
-				// listen for 'done'
-				x10.observer.on('x10:'+ func, function(event) {
-					callback(event.detail[0]);
-				});
-
-				// start worker
-				worker.postMessage(args);
-			};
-		},
-		compile: function(hash) {
-			var worker = this.setup(typeof(hash) === 'function' ? {func: hash} : hash),
-				obj    = {},
-				fn;
-			// create return object
-			if (typeof(hash) === 'function') {
-				obj.func = this.call_handler('func', worker);
-				return obj.func;
-			} else {
-				for (fn in hash) {
-					obj[fn] = this.call_handler(fn, worker);
-				}
-				return obj;
-			}
-		},
-		parse: function(tree, isArray) {
-			var hash = [],
-				key,
-				val,
-				v;
-
-			for (key in tree) {
-				v = tree[key];
-				// handle null
-				if (v === null) {
-					hash.push(key +':null');
-					continue;
-				}
-				// handle undefined
-				if (v === undefined) {
-					hash.push(key +':undefined');
-					continue;
-				}
-				switch (v.constructor) {
-					case Date:     val = 'new Date('+ v.valueOf() +')';           break;
-					case Object:   val = '{'+ this.parse(v).join(',') +'}';       break;
-					case Array:    val = '['+ this.parse(v, true).join(',') +']'; break;
-					case String:   val = '"'+ v.replace(/"/g, '\\"') +'"';        break;
-					case RegExp:
-					case Function: val = v.toString();                            break;
-					default:       val = v;
-				}
-				if (isArray) hash.push(val);
-				else hash.push(key +':'+ val);
-			}
-			return hash;
-		},
-		// simple event emitter
-		observer: (function() {
-			var stack = {};
-
-			return {
-				on: function(type, fn) {
-					if (!stack[type]) {
-						stack[type] = [];
-					}
-					stack[type].unshift(fn);
-				},
-				off: function(type, fn) {
-					if (!stack[type]) return;
-					var i = stack[type].indexOf(fn);
-					stack[type].splice(i,1);
-				},
-				emit: function(type, detail) {
-					if (!stack[type]) return;
-					var event = {
-							type         : type,
-							detail       : detail,
-							isCanceled   : false,
-							cancelBubble : function() {
-								this.isCanceled = true;
-							}
-						},
-						len = stack[type].length;
-					while(len--) {
-						if (event.isCanceled) return;
-						stack[type][len](event);
-					}
-				}
-			};
-		})()
-	};
-
-	if (typeof module === "undefined") {
-		// publish x10
-		window.x10 = x10.init();
-	} else {
-		module.exports = x10.init();
-	}
-
-})(this);
-
-
 (function(window, module, undefined) {
 	'use strict';
 
@@ -163,6 +14,7 @@
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
+		snapshots : {},
 		render_xml: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -237,6 +89,14 @@
 		getSnapshot: function(data, callback) {
 			return JSON.toXML(data, callback || true);
 		},
+		createSnapshot: function(data, callback) {
+			var that = this,
+				snapshotId = 'snapshot_'+ Date.now();
+			JSON.toXML(data, function(snapshot) {
+				that.snapshots[snapshotId] = snapshot;
+				callback(snapshotId);
+			});
+		},
 		xmlFromString: function(str) {
 			var parser,
 				doc;
@@ -270,15 +130,143 @@
 		node: {}
 	};
 
-	// Export
-	window.Defiant = module.exports = Defiant;
+	/* 
+ * x10.js v0.1.3 
+ * Web worker wrapper with simple interface 
+ * 
+ * Copyright (c) 2013-2015, Hakan Bilgin <hbi@longscript.com> 
+ * Licensed under the MIT License 
+ */ 
 
-})(
-	typeof window !== 'undefined' ? window : {},
-	typeof module !== 'undefined' ? module : {}
-);
+var x10 = {
+	work_handler: function(event) {
+		var args = Array.prototype.slice.call(event.data, 1),
+			func = event.data[0],
+			ret  = tree[func].apply(tree, args);
+
+		// return process finish
+		postMessage([func, ret]);
+	},
+	setup: function(tree) {
+		var url    = window.URL || window.webkitURL,
+			script = 'var tree = {'+ this.parse(tree).join(',') +'};',
+			blob   = new Blob([script + 'self.addEventListener("message", '+ this.work_handler.toString() +', false);'],
+								{type: 'text/javascript'}),
+			worker = new Worker(url.createObjectURL(blob));
+		
+		// thread pipe
+		worker.onmessage = function(event) {
+			var args = Array.prototype.slice.call(event.data, 1),
+				func = event.data[0];
+			x10.observer.emit('x10:'+ func, args);
+		};
+
+		return worker;
+	},
+	call_handler: function(func, worker) {
+		return function() {
+			var args = Array.prototype.slice.call(arguments, 0, -1),
+				callback = arguments[arguments.length-1];
+
+			// add method name
+			args.unshift(func);
+
+			// listen for 'done'
+			x10.observer.on('x10:'+ func, function(event) {
+				callback(event.detail[0]);
+			});
+
+			// start worker
+			worker.postMessage(args);
+		};
+	},
+	compile: function(hash) {
+		var worker = this.setup(typeof(hash) === 'function' ? {func: hash} : hash),
+			obj    = {},
+			fn;
+		// create return object
+		if (typeof(hash) === 'function') {
+			obj.func = this.call_handler('func', worker);
+			return obj.func;
+		} else {
+			for (fn in hash) {
+				obj[fn] = this.call_handler(fn, worker);
+			}
+			return obj;
+		}
+	},
+	parse: function(tree, isArray) {
+		var hash = [],
+			key,
+			val,
+			v;
+
+		for (key in tree) {
+			v = tree[key];
+			// handle null
+			if (v === null) {
+				hash.push(key +':null');
+				continue;
+			}
+			// handle undefined
+			if (v === undefined) {
+				hash.push(key +':undefined');
+				continue;
+			}
+			switch (v.constructor) {
+				case Date:     val = 'new Date('+ v.valueOf() +')';           break;
+				case Object:   val = '{'+ this.parse(v).join(',') +'}';       break;
+				case Array:    val = '['+ this.parse(v, true).join(',') +']'; break;
+				case String:   val = '"'+ v.replace(/"/g, '\\"') +'"';        break;
+				case RegExp:
+				case Function: val = v.toString();                            break;
+				default:       val = v;
+			}
+			if (isArray) hash.push(val);
+			else hash.push(key +':'+ val);
+		}
+		return hash;
+	},
+	// simple event emitter
+	observer: (function() {
+		var stack = {};
+
+		return {
+			on: function(type, fn) {
+				if (!stack[type]) {
+					stack[type] = [];
+				}
+				stack[type].unshift(fn);
+			},
+			off: function(type, fn) {
+				if (!stack[type]) return;
+				var i = stack[type].indexOf(fn);
+				stack[type].splice(i,1);
+			},
+			emit: function(type, detail) {
+				if (!stack[type]) return;
+				var event = {
+						type         : type,
+						detail       : detail,
+						isCanceled   : false,
+						cancelBubble : function() {
+							this.isCanceled = true;
+						}
+					},
+					len = stack[type].length;
+				while(len--) {
+					if (event.isCanceled) return;
+					stack[type][len](event);
+				}
+			}
+		};
+	})()
+};
 
 
+
+
+	
 if (typeof(XSLTProcessor) === 'undefined') {
 
 	// emulating XSLT Processor (enough to be used in defiant)
@@ -302,7 +290,7 @@ if (typeof(XSLTProcessor) === 'undefined') {
 
 }
 
-
+	
 // extending STRING
 if (!String.prototype.fill) {
 	String.prototype.fill = function(i,c) {
@@ -332,7 +320,7 @@ if (!String.prototype.xTransform) {
 	};
 }
 
-/* jshint ignore:start */
+	/* jshint ignore:start */
 if (typeof(JSON) === 'undefined') {
 	window.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
@@ -356,7 +344,7 @@ if (typeof(JSON) === 'undefined') {
 	};
 }
 /* jshint ignore:end */
-
+	
 if (!JSON.toXML) {
 	JSON.toXML = function(tree, callback) {
 		'use strict';
@@ -587,11 +575,15 @@ if (!JSON.toXML) {
 	};
 }
 
-
+	
 if (!JSON.search) {
 	JSON.search = function(tree, xpath, single) {
 		'use strict';
 		
+		if (tree.constructor === String && tree.slice(0, 9) === 'snapshot_' && Defiant.snapshots[tree]) {
+			tree = Defiant.snapshots[tree];
+		}
+
 		var isSnapshot = tree.doc && tree.doc.nodeType,
 			doc        = isSnapshot ? tree.doc : JSON.toXML(tree),
 			map        = isSnapshot ? tree.map : this.search.map,
@@ -626,64 +618,60 @@ if (!JSON.search) {
 		return ret;
 	};
 }
-
+	
 if (!JSON.mtrace) {
-	JSON.mtrace = function(root, hits, xres) {
+	JSON.mtrace = (root, hits, xres) => {
 		'use strict';
-
-		var win       = window,
-			stringify = JSON.stringify,
-			sroot     = stringify( root, null, '\t' ).replace(/\t/g, ''),
-			trace     = [],
-			i         = 0,
-			il        = xres.length,
-			od        = il ? xres[i].ownerDocument.documentElement : false,
-			map       = this.search.map,
-			hstr,
-			cConstr,
+		var trace = [],
 			fIndex = 0,
-			mIndex,
-			lStart,
-			lEnd;
-
-		for (; i<il; i++) {
-			switch (xres[i].nodeType) {
+			win = window,
+			toJson = Defiant.node.toJSON,
+			stringify = (data) => JSON.stringify(data, null, '\t').replace(/\t/g, ''),
+			jsonStr = stringify(root);
+		xres.map((item, index) => {
+			var constr,
+				pJson,
+				pStr,
+				hit,
+				hstr,
+				pIdx,
+				lines,
+				len = 0;
+			switch (item.nodeType) {
 				case 2:
-					cConstr = xres[i].ownerElement ? xres[i].ownerElement.getAttribute('d:'+ xres[i].nodeName) : 'String';
-					hstr    = '"@'+ xres[i].nodeName +'": '+ win[ cConstr ]( hits[i] );
-					mIndex  = sroot.indexOf(hstr);
-					lEnd    = 0;
+					constr = xres[index].ownerElement ? xres[index].ownerElement.getAttribute('d:'+ xres[index].nodeName) : 'String';
+					hit = win[constr](hits[index]);
+					hstr = '"@'+ xres[index].nodeName +'": '+ hit;
+					pIdx = jsonStr.indexOf(hstr, fIndex);
 					break;
 				case 3:
-					cConstr = xres[i].parentNode.getAttribute('d:constr');
-					hstr    = win[ cConstr ]( hits[i] );
-					hstr    = '"'+ xres[i].parentNode.nodeName +'": '+ (hstr === 'Number' ? hstr : '"'+ hstr +'"');
-					mIndex  = sroot.indexOf(hstr);
-					lEnd    = 0;
+					constr = xres[index].parentNode.getAttribute('d:constr');
+					hit = win[constr](hits[index]);
+					hstr = '"'+ xres[index].parentNode.nodeName +'": '+ (hstr === 'Number' ? hit : '"'+ hit +'"');
+					pIdx = jsonStr.indexOf(hstr, fIndex);
 					break;
 				default:
-					if (xres[i] === od) continue;
-					if (xres[i].getAttribute('d:constr') === 'String' || xres[i].getAttribute('d:constr') === 'Number') {
-						cConstr = xres[i].getAttribute('d:constr');
-						hstr    = win[ cConstr ]( hits[i] );
-						mIndex  = sroot.indexOf(hstr, fIndex);
-						hstr    = '"'+ xres[i].nodeName +'": '+ (cConstr === 'Number' ? hstr : '"'+ hstr +'"');
-						lEnd    = 0;
-						fIndex  = mIndex + 1;
+					constr = item.getAttribute('d:constr');
+					if (['String', 'Number'].indexOf(constr) > -1) {
+						pJson = toJson(xres[index].parentNode);
+						pStr = stringify(pJson);
+						hit = win[constr](hits[index]);
+						hstr = '"'+ xres[index].nodeName +'": '+ (constr === 'Number' ? hit : '"'+ hit +'"');
+						pIdx = jsonStr.indexOf(pStr, fIndex) + pStr.indexOf(hstr);
 					} else {
-						hstr   = stringify( hits[i], null, '\t' ).replace(/\t/g, '');
-						mIndex = sroot.indexOf(hstr);
-						lEnd   = hstr.match(/\n/g).length;
+						hstr = stringify( hits[index] );
+						pIdx = jsonStr.indexOf(hstr);
+						len = hstr.split('\n').length - 1;
 					}
 			}
-			lStart = sroot.substring(0,mIndex).match(/\n/g).length+1;
-			trace.push([lStart, lEnd]);
-		}
-
+			fIndex = pIdx + 1;
+			lines = jsonStr.slice(0, pIdx).split('\n').length;
+			trace.push([lines, len]);
+		});
 		return trace;
 	};
 }
-
+	
 Defiant.node.selectNodes = function(XNode, XPath) {
 	if (XNode.evaluate) {
 		var ns = XNode.createNSResolver(XNode.documentElement),
@@ -708,7 +696,7 @@ Defiant.node.selectSingleNode = function(XNode, XPath) {
 	}
 };
 
-
+	
 Defiant.node.prettyPrint = function(node) {
 	var root = Defiant,
 		tabs = root.tabsize,
@@ -746,7 +734,7 @@ Defiant.node.prettyPrint = function(node) {
 	return lines.join('\n').replace(/\t/g, String().fill(tabs, ' '));
 };
 
-
+	
 Defiant.node.toJSON = function(xnode, stringify) {
 	'use strict';
 
@@ -881,7 +869,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 	return stringify ? JSON.stringify(ret, null, stringify) : ret;
 };
 
-
+	
 // check if jQuery is present
 if (typeof(jQuery) !== 'undefined') {
 	(function ( $ ) {
@@ -894,3 +882,12 @@ if (typeof(jQuery) !== 'undefined') {
 
 	}(jQuery));
 }
+
+
+	// Export
+	window.Defiant = module.exports = Defiant;
+
+})(
+	typeof window !== 'undefined' ? window : {},
+	typeof module !== 'undefined' ? module : {}
+);

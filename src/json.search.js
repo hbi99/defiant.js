@@ -3,6 +3,10 @@ if (!JSON.search) {
 	JSON.search = function(tree, xpath, single) {
 		'use strict';
 		
+		if (tree.constructor === String && tree.slice(0, 9) === 'snapshot_' && Defiant.snapshots[tree]) {
+			tree = Defiant.snapshots[tree];
+		}
+
 		var isSnapshot = tree.doc && tree.doc.nodeType,
 			doc        = isSnapshot ? tree.doc : JSON.toXML(tree),
 			map        = isSnapshot ? tree.map : this.search.map,

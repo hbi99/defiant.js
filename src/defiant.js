@@ -9,6 +9,7 @@
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
+		snapshots : {},
 		render_xml: function(template, data) {
 			var processor = new XSLTProcessor(),
 				span      = document.createElement('span'),
@@ -83,6 +84,14 @@
 		getSnapshot: function(data, callback) {
 			return JSON.toXML(data, callback || true);
 		},
+		createSnapshot: function(data, callback) {
+			var that = this,
+				snapshotId = 'snapshot_'+ Date.now();
+			JSON.toXML(data, function(snapshot) {
+				that.snapshots[snapshotId] = snapshot;
+				callback(snapshotId);
+			});
+		},
 		xmlFromString: function(str) {
 			var parser,
 				doc;
@@ -115,6 +124,18 @@
 		},
 		node: {}
 	};
+
+	@@include('./x10.js')
+	@@include('./ie.polyfill.js')
+	@@include('./string.js')
+	@@include('./json.js')
+	@@include('./json.toXML.js')
+	@@include('./json.search.js')
+	@@include('./json.mtrace.js')
+	@@include('./node.select.js')
+	@@include('./node.serialize.js')
+	@@include('./node.toJSON.js')
+	@@include('./jquery-plugin.js')
 
 	// Export
 	window.Defiant = module.exports = Defiant;

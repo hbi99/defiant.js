@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<title>Defiant.js</title>
+<title>Defiant.js - create snapshot</title>
 <script type="text/javascript" src="/defiant.js/dist/defiant.js"></script>
 </head>
 <body>
@@ -12,10 +12,10 @@
 var test = {
 	init: function(data) {
 		// get the snapshot with a callback function
-		Defiant.getSnapshot(data, function(snapshot) {
-			
+		Defiant.createSnapshot(data, function(snapshotId) {
+			console.log(snapshotId);
 			// searching on snapshot created with web worker
-			var found = JSON.search(snapshot, '//price');
+			var found = JSON.search(snapshotId, '//price');
 
 			// found
 			console.log( found );

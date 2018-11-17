@@ -41,7 +41,10 @@ var defiant = require('../index.js');
      }
   }
 
-  const test = await defiant.search(data, '//book[position() <= 2]')
+  const snapshot_id = await defiant.create_snapshot(data)
+  console.log(snapshot_id)
+  
+  const test = await defiant.search(snapshot_id, '//book[position() <= 2]')
   console.log(test)
 
 })()

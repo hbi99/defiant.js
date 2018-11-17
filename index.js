@@ -49,6 +49,17 @@ const defiant = {
 			that.xsl_template = that.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" '+ that.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		}, str);
 	},
+	create_snapshot: async (data, callback) => {
+		if (!defiant.page) await defiant.init()
+
+		return defiant.page.evaluate(async (data, callback) => {
+			return new Promise((resolve, reject) => {
+				Defiant.createSnapshot(data, function(snapshotId) {
+					resolve(snapshotId)
+				})
+			})
+		}, data, callback)
+	},
 	search: async (data, xpath) => {
 		if (!defiant.page) await defiant.init()
 

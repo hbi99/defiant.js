@@ -267,30 +267,6 @@ var x10 = {
 
 
 	
-if (typeof(XSLTProcessor) === 'undefined') {
-
-	// emulating XSLT Processor (enough to be used in defiant)
-	var XSLTProcessor = function() {};
-	XSLTProcessor.prototype = {
-		importStylesheet: function(xsldoc) {
-			this.xsldoc = xsldoc;
-		},
-		transformToFragment: function(data, doc) {
-			var str = data.transformNode(this.xsldoc),
-				span = document.createElement('span');
-			span.innerHTML = str;
-			return span;
-		}
-	};
-
-} else if (typeof(XSLTProcessor) !== 'function' && !XSLTProcessor) {
-	
-	// throw error
-	throw 'XSLTProcessor transformNode not implemented';
-
-}
-
-	
 // extending STRING
 if (!String.prototype.fill) {
 	String.prototype.fill = function(i,c) {
@@ -891,3 +867,28 @@ if (typeof(jQuery) !== 'undefined') {
 	typeof window !== 'undefined' ? window : {},
 	typeof module !== 'undefined' ? module : {}
 );
+
+
+if (typeof(XSLTProcessor) === 'undefined') {
+
+	// emulating XSLT Processor (enough to be used in defiant)
+	var XSLTProcessor = function() {};
+	XSLTProcessor.prototype = {
+		importStylesheet: function(xsldoc) {
+			this.xsldoc = xsldoc;
+		},
+		transformToFragment: function(data, doc) {
+			var str = data.transformNode(this.xsldoc),
+				span = document.createElement('span');
+			span.innerHTML = str;
+			return span;
+		}
+	};
+
+} else if (typeof(XSLTProcessor) !== 'function' && !XSLTProcessor) {
+	
+	// throw error
+	throw 'XSLTProcessor transformNode not implemented';
+
+}
+

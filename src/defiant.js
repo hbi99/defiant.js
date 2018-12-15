@@ -126,7 +126,6 @@
 	};
 
 	@@include('./x10.js')
-	@@include('./ie.polyfill.js')
 	@@include('./string.js')
 	@@include('./json.js')
 	@@include('./json.toXML.js')
@@ -144,3 +143,5 @@
 	typeof window !== 'undefined' ? window : {},
 	typeof module !== 'undefined' ? module : {}
 );
+
+@@include('./ie.polyfill.js')

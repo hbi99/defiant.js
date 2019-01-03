@@ -1,7 +1,7 @@
 /*
- * defiant.js [v2.1.2]
+ * defiant.js [v2.1.4]
  * http://www.defiantjs.com
- * Copyright (c) 2013-2018 Hakan Bilgin <hbi@longscript.com>
+ * Copyright (c) 2013-2019 Hakan Bilgin <hbi@longscript.com>
  * License GNU AGPLv3
  */
 (function(window, module, undefined) {
@@ -508,7 +508,8 @@ if (!JSON.toXML) {
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},
 				escape_xml: function(text) {
-					return String(text) .replace(/</g, '&lt;')
+					return String(text) .replace(/&/g, '&amp;')
+										.replace(/</g, '&lt;')
 										.replace(/>/g, '&gt;')
 										.replace(/"/g, '&quot;')
 										.replace(/&nbsp;/g, '&#160;');

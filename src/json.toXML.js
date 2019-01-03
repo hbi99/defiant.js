@@ -186,7 +186,8 @@ if (!JSON.toXML) {
 					return (name === '#text') ? this.escape_xml(val) : '<'+ name + attr +'>'+ text +'</'+ name +'>';
 				},
 				escape_xml: function(text) {
-					return String(text) .replace(/</g, '&lt;')
+					return String(text) .replace(/&/g, '&amp;')
+										.replace(/</g, '&lt;')
 										.replace(/>/g, '&gt;')
 										.replace(/"/g, '&quot;')
 										.replace(/&nbsp;/g, '&#160;');

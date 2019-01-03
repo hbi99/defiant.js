@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <title>Defiant.js</title>
-<script type="text/javascript" src="/defiant.js/dist/defiant.js"></script>
+<script type="text/javascript" src="../dist/defiant.js"></script>
 </head>
 <body>
 
@@ -11,15 +11,30 @@
 
 var test = {
 	init: function(data) {
-		// get the snapshot with a callback function
-		Defiant.getSnapshot(data, function(snapshot) {
-			
-			// searching on snapshot created with web worker
-			var found = JSON.search(snapshot, '//price');
-
-			// found
-			console.log( found );
-		});
+		var data = {
+			   "170048": {
+			      "@attribute_clr": "Black",
+			      "id": 170048
+			   },
+			   "170049": {
+			      "@attribute_clr": "BlacRed",
+			      "id": 170049
+			   },
+			   "170050": {
+			      "@attribute_clr": "Black & Grey",
+			      "id": 170050
+			   },
+			   "170051": {
+			      "@attribute_clr": "Black & Blue",
+			      "id": 170051
+			   },
+			   "170052": {
+			      "@attribute_clr": "Black & Beige",
+			      "id": 170052
+			   }
+			};
+		var found = JSON.search(data, '//@attribute_clr');
+		console.log(found);
 	}
 };
 

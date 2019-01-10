@@ -3,15 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Defiant.js</title>
-<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
-<script type="text/javascript" src="/defiant.js/src/string.js"></script>
-<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+<script type="text/javascript" src="../dist/defiant.min.js"></script>
 </head>
 <body>
 
@@ -20,16 +12,16 @@
 var test = {
 	init: function(data) {
 		var start = Date.now(),
-			found = JSON.toXML(data);
+			xdoc = defiant.json.toXML(data);
 
 		console.log( Date.now() - start );
-		//console.log( found.length );
+		console.log( defiant.node.prettyPrint(xdoc) );
 	}
 };
 
 </script>
 <!-- Load JSON structure -->
-<script type="text/javascript" src="/defiant.js/demo/tmp.js"></script>
+<script type="text/javascript" src="./tmp.js"></script>
 
 </body>
 </html>

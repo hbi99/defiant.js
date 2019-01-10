@@ -78,15 +78,7 @@ pre {
 }
 
 </style>
-<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
-<script type="text/javascript" src="/defiant.js/src/string.js"></script>
-<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+<script type="text/javascript" src="../dist/defiant.min.js"></script>
 </head>
 <body>
 
@@ -102,7 +94,7 @@ pre {
 <script type="text/javascript">
 
 // development flag
-Defiant.env = 'development';
+defiant.env = 'development';
 
 var s = ''+
 		'<?xml version="1.0" encoding="UTF-8"?>'+
@@ -112,8 +104,8 @@ var s = ''+
 '    <subDirectoryF d:constr="String" d:mi="2">b</subDirectoryF>'+
 '</d:data>',
 
-	doc = Defiant.xmlFromString(s)
-	, json = Defiant.node.toJSON(doc)
+	doc = defiant.xmlFromString(s)
+	, json = defiant.node.toJSON(doc)
 	, d2
 	, j2
 	, str;
@@ -124,21 +116,21 @@ var xEl     = document.getElementById('x-output'),
 	rxEl    = document.getElementById('rx-output'),
 	rjEl    = document.getElementById('rj-output');
 
-str = Defiant.node.prettyPrint(doc);
+str = defiant.node.prettyPrint(doc);
 xEl.innerHTML  = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
 jEl.innerHTML  = JSON.stringify( json, null, '\t' )
-					.replace(/\t/g, String().fill(Defiant.tabsize));
+					.replace(/\t/g, String().fill(defiant.tabsize));
 /**/
-d2 = JSON.toXML(json);
+d2 = defiant.json.toXML(json);
 
-str = Defiant.node.prettyPrint(d2);
+str = defiant.node.prettyPrint(d2);
 rxEl.innerHTML = str.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;');
 
-rjEl.innerHTML = JSON.stringify( Defiant.node.toJSON(d2), null, '\t' )
-					.replace(/\t/g, String().fill(Defiant.tabsize));
+rjEl.innerHTML = JSON.stringify( defiant.node.toJSON(d2), null, '\t' )
+					.replace(/\t/g, String().fill(defiant.tabsize));
 
 </script>
 

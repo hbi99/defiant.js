@@ -3,15 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Defiant.js</title>
-<script type="text/javascript" src="/defiant.js/src/defiant.js"></script>
-<script type="text/javascript" src="/defiant.js/src/string.js"></script>
-<script type="text/javascript" src="/defiant.js/src/ie.polyfill.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.search.js"></script>
-<script type="text/javascript" src="/defiant.js/src/json.toXML.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.toJSON.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.select.js"></script>
-<script type="text/javascript" src="/defiant.js/src/node.serialize.js"></script>
+<script type="text/javascript" src="../dist/defiant.min.js"></script>
 </head>
 <body>
 
@@ -49,7 +41,7 @@ var poc = {
 	tests: [
 		function(data) {
 			var xpath = xpath = '//*[@size >= 10 and @size <= 20 and contains(@name, "7077498")]';
-			return JSON.search(data, xpath);
+			return defiant.json.search(data, xpath);
 		},
 		function(data) {
 			var matches = [];

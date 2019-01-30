@@ -1,5 +1,5 @@
 /*
- * defiant.js [v2.2.0]
+ * defiant.js [v2.2.1]
  * http://www.defiantjs.com
  * Copyright (c) 2013-2019 Hakan Bilgin <hbi@longscript.com>
  * License GNU AGPLv3
@@ -610,17 +610,16 @@
 			},
 			toXML: function(tree, callback) {
 				var interpreter = defiant.json.interpreter,
+					compiled,
 					processed,
 					doc,
 					task;
+
 				// depending on request
 				switch (typeof callback) {
 					case 'function':
-						// compile interpreter with 'x10.js'
-						task = x10.compile(interpreter);
-
 						// parse in a dedicated thread			
-						task.to_xml_str(tree, function(processed) {
+						defiant.compiled.to_xml_str(tree, function(processed) {
 							// snapshot distinctly improves performance
 							callback({
 								doc: defiant.xmlFromString(processed.str),
@@ -744,16 +743,18 @@
 	 * Licensed under the MIT License 
 	 */
 	var x10 = {
+		id: 1,
 		work_handler: function(event) {
 			var args = Array.prototype.slice.call(event.data, 1),
 				func = event.data[0],
+				taskId = event.data[1],
 				ret  = tree[func].apply(tree, args);
 
 			// make sure map is pure json
 			ret.map = JSON.parse(JSON.stringify(ret.map));
 			
 			// return process finish
-			postMessage([func, ret]);
+			postMessage([taskId, func, ret]);
 		},
 		setup: function(tree) {
 			var url    = window.URL || window.webkitURL,
@@ -764,9 +765,12 @@
 			
 			// thread pipe
 			worker.onmessage = function(event) {
-				var args = Array.prototype.slice.call(event.data, 1),
-					func = event.data[0];
-				x10.observer.emit('x10:'+ func, args);
+				var args = Array.prototype.slice.call(event.data, 2),
+					taskId = event.data[0],
+					func = event.data[1];
+				
+				x10.observer.emit('x10:'+ func + taskId, args);
+				x10.observer.off('x10:'+ func + taskId);
 			};
 
 			return worker;
@@ -774,13 +778,17 @@
 		call_handler: function(func, worker) {
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0, -1),
-					callback = arguments[arguments.length-1];
+					callback = arguments[arguments.length-1],
+					taskId = x10.id++;
+
+				// add task id
+				args.unshift(taskId);
 
 				// add method name
 				args.unshift(func);
 
 				// listen for 'done'
-				x10.observer.on('x10:'+ func, function(event) {
+				x10.observer.on('x10:'+ func + taskId, function(event) {
 					callback(event.detail[0]);
 				});
 
@@ -790,7 +798,7 @@
 		},
 		compile: function(hash) {
 			var worker = this.setup(typeof(hash) === 'function' ? {func: hash} : hash),
-				obj    = {},
+				obj = {},
 				fn;
 			// create return object
 			if (typeof(hash) === 'function') {
@@ -925,6 +933,8 @@
 	}
 	/* jshint ignore:end */
 
+	// compile interpreter with 'x10.js'
+	defiant.compiled = x10.compile(defiant.json.interpreter);
 	defiant.search = defiant.json.search;
 	defiant.x10 = x10;
 

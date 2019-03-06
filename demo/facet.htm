@@ -1,0 +1,539 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js - Facet demo</title>
+<script type="text/javascript" src="../src/defiant.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var data = [
+  {
+    "_id": "5c2651c3954dcf4010afad54",
+    "age": 23,
+    "eyeColor": "green",
+    "name": {
+      "first": "Dana",
+      "last": "James"
+    },
+    "company": "TSUNAMIA",
+    "email": "dana.james@tsunamia.name",
+    "latitude": "-39.438378",
+    "longitude": "53.51688",
+    "tags": [
+      "irure",
+      "ipsum",
+      "ullamco",
+      "dolore"
+    ],
+    "favoriteFruit": "melon"
+  },
+  {
+    "_id": "5c2651c3e1eb4bb61ed17d64",
+    "age": 39,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Chen",
+      "last": "Carson"
+    },
+    "company": "NAMEBOX",
+    "email": "chen.carson@namebox.biz",
+    "latitude": "89.288548",
+    "longitude": "110.634445",
+    "tags": [
+      "esse",
+      "nostrud",
+      "ea"
+    ],
+    "favoriteFruit": "orange"
+  },
+  {
+    "_id": "5c2651c32eb08456d79abfb0",
+    "age": 39,
+    "eyeColor": "green",
+    "name": {
+      "first": "Deanne",
+      "last": "Parker"
+    },
+    "company": "KATAKANA",
+    "email": "deanne.parker@katakana.ca",
+    "latitude": "-55.731132",
+    "longitude": "-51.638684",
+    "tags": [
+      "esse",
+      "exercitation",
+      "proident",
+      "cupidatat",
+      "aute",
+      "labore"
+    ],
+    "favoriteFruit": "melon"
+  },
+  {
+    "_id": "5c2651c3bc34e6b97cec2cec",
+    "age": 40,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Paul",
+      "last": "Blevins"
+    },
+    "company": "UTARA",
+    "email": "paul.blevins@utara.com",
+    "latitude": "73.199564",
+    "longitude": "28.514002",
+    "tags": [
+      "dolore",
+      "mollit",
+      "ut",
+      "esse",
+      "velit"
+    ],
+    "favoriteFruit": "strawberry"
+  },
+  {
+    "_id": "5c2651c36805baa592b1d769",
+    "age": 20,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Knight",
+      "last": "Nguyen"
+    },
+    "company": "ROCKLOGIC",
+    "email": "knight.nguyen@rocklogic.co.uk",
+    "latitude": "-78.661453",
+    "longitude": "22.155334",
+    "tags": [
+      "tempor",
+      "anim",
+      "Lorem",
+      "cillum",
+      "eu"
+    ],
+    "favoriteFruit": "strawberry"
+  },
+  {
+    "_id": "5c2651c33732fb6384e51e79",
+    "age": 30,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Margery",
+      "last": "Ware"
+    },
+    "company": "ENERSOL",
+    "email": "margery.ware@enersol.info",
+    "latitude": "-48.934837",
+    "longitude": "-46.971908",
+    "tags": [
+      "ea",
+      "qui",
+      "sint",
+      "Lorem",
+      "est"
+    ],
+    "favoriteFruit": "melon"
+  },
+  {
+    "_id": "5c2651c39905ba18fdae8fcc",
+    "age": 39,
+    "eyeColor": "green",
+    "name": {
+      "first": "Lottie",
+      "last": "Miller"
+    },
+    "company": "HOMETOWN",
+    "email": "lottie.miller@hometown.io",
+    "latitude": "-35.756383",
+    "longitude": "-123.877074",
+    "tags": [
+      "reprehenderit",
+      "labore",
+      "aliqua",
+      "mollit",
+      "pariatur",
+      "amet"
+    ],
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c2651c39319c88d6d198b4b",
+    "age": 36,
+    "eyeColor": "green",
+    "name": {
+      "first": "Rich",
+      "last": "Kirkland"
+    },
+    "company": "FUTURIS",
+    "email": "rich.kirkland@futuris.us",
+    "latitude": "68.392035",
+    "longitude": "-88.816579",
+    "tags": [
+      "nisi",
+      "officia",
+      "deserunt",
+      "esse"
+    ],
+    "favoriteFruit": "orange"
+  },
+  {
+    "_id": "5c2651c3ffcd27a991903655",
+    "age": 38,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Harrison",
+      "last": "Richards"
+    },
+    "company": "KINETICA",
+    "email": "harrison.richards@kinetica.org",
+    "latitude": "23.412895",
+    "longitude": "169.083764",
+    "tags": [
+      "dolor",
+      "nostrud",
+      "in"
+    ],
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c2651c33cec1078dc462289",
+    "age": 23,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Matthews",
+      "last": "Blankenship"
+    },
+    "company": "AUTOGRATE",
+    "email": "matthews.blankenship@autograte.net",
+    "latitude": "85.549097",
+    "longitude": "-164.718745",
+    "tags": [
+      "culpa",
+      "irure",
+      "in",
+      "nisi",
+      "qui"
+    ],
+    "favoriteFruit": "mango"
+  },
+  {
+    "_id": "5c2651c3b3121a0cc303ffe0",
+    "age": 31,
+    "eyeColor": "green",
+    "name": {
+      "first": "Gibson",
+      "last": "Rollins"
+    },
+    "company": "PURIA",
+    "email": "gibson.rollins@puria.me",
+    "latitude": "11.268794",
+    "longitude": "-124.563025",
+    "tags": [
+      "commodo",
+      "qui",
+      "irure",
+      "amet",
+      "elit",
+      "pariatur"
+    ],
+    "favoriteFruit": "strawberry"
+  },
+  {
+    "_id": "5c2651c30ce9b7a9196c9ec4",
+    "age": 38,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Tyson",
+      "last": "Thornton"
+    },
+    "company": "ZYPLE",
+    "email": "tyson.thornton@zyple.tv",
+    "latitude": "-34.400172",
+    "longitude": "109.697882",
+    "tags": [
+      "in",
+      "non",
+      "ea"
+    ],
+    "favoriteFruit": "orange"
+  },
+  {
+    "_id": "5c2651c35dac96d84b797f78",
+    "age": 27,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Rowe",
+      "last": "Macias"
+    },
+    "company": "ENERVATE",
+    "email": "rowe.macias@enervate.name",
+    "latitude": "-48.314477",
+    "longitude": "10.003276",
+    "tags": [
+      "proident",
+      "tempor",
+      "et",
+      "sunt",
+      "eu"
+    ],
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c2651c3f3dc7d23d26854ec",
+    "age": 36,
+    "eyeColor": "green",
+    "name": {
+      "first": "Keller",
+      "last": "Hickman"
+    },
+    "company": "ACCEL",
+    "email": "keller.hickman@accel.biz",
+    "latitude": "66.226718",
+    "longitude": "57.525085",
+    "tags": [
+      "eu",
+      "excepteur",
+      "ad",
+      "et",
+      "voluptate",
+      "culpa"
+    ],
+    "favoriteFruit": "mango"
+  },
+  {
+    "_id": "5c2651c3cf04fd3d2295091a",
+    "age": 32,
+    "eyeColor": "green",
+    "name": {
+      "first": "Cassie",
+      "last": "Mullen"
+    },
+    "company": "HANDSHAKE",
+    "email": "cassie.mullen@handshake.ca",
+    "latitude": "-37.581052",
+    "longitude": "81.875207",
+    "tags": [
+      "amet",
+      "laboris",
+      "cillum"
+    ],
+    "favoriteFruit": "banana"
+  },
+  {
+    "_id": "5c2651c3d89a3411c157ee01",
+    "age": 30,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Katy",
+      "last": "Mccoy"
+    },
+    "company": "MANUFACT",
+    "email": "katy.mccoy@manufact.com",
+    "latitude": "-6.271254",
+    "longitude": "123.528736",
+    "tags": [
+      "aliqua",
+      "Lorem",
+      "nostrud",
+      "culpa",
+      "esse",
+      "ipsum"
+    ],
+    "favoriteFruit": "banana"
+  },
+  {
+    "_id": "5c2651c36abe6061daad8cc7",
+    "age": 33,
+    "eyeColor": "green",
+    "name": {
+      "first": "Teresa",
+      "last": "Burch"
+    },
+    "company": "LYRICHORD",
+    "email": "teresa.burch@lyrichord.co.uk",
+    "latitude": "-76.403764",
+    "longitude": "-165.04196",
+    "tags": [
+      "nostrud",
+      "aute",
+      "incididunt"
+    ],
+    "favoriteFruit": "orange"
+  },
+  {
+    "_id": "5c2651c37a62a4c889582e3e",
+    "age": 27,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Blanche",
+      "last": "Mathews"
+    },
+    "company": "PEARLESEX",
+    "email": "blanche.mathews@pearlesex.info",
+    "latitude": "-77.033814",
+    "longitude": "-82.970615",
+    "tags": [
+      "aute",
+      "est",
+      "nostrud"
+    ],
+    "favoriteFruit": "melon"
+  },
+  {
+    "_id": "5c2651c30031960c94d02c6d",
+    "age": 21,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Concepcion",
+      "last": "Nicholson"
+    },
+    "company": "ISOTRONIC",
+    "email": "concepcion.nicholson@isotronic.io",
+    "latitude": "-11.268126",
+    "longitude": "14.769265",
+    "tags": [
+      "veniam",
+      "id",
+      "eiusmod"
+    ],
+    "favoriteFruit": "melon"
+  },
+  {
+    "_id": "5c2651c3545bf97423b38f00",
+    "age": 37,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Stanley",
+      "last": "Mccarthy"
+    },
+    "company": "IZZBY",
+    "email": "stanley.mccarthy@izzby.us",
+    "latitude": "73.356621",
+    "longitude": "-133.099198",
+    "tags": [
+      "enim",
+      "mollit",
+      "sunt",
+      "non",
+      "cillum"
+    ],
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c2651c3af28a15f41478a7e",
+    "age": 24,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Reva",
+      "last": "Nichols"
+    },
+    "company": "MONDICIL",
+    "email": "reva.nichols@mondicil.org",
+    "latitude": "23.450695",
+    "longitude": "51.59648",
+    "tags": [
+      "consequat",
+      "proident",
+      "officia",
+      "incididunt",
+      "id",
+      "et"
+    ],
+    "favoriteFruit": "banana"
+  },
+  {
+    "_id": "5c2651c3ed71c0b4bcde3d83",
+    "age": 24,
+    "eyeColor": "green",
+    "name": {
+      "first": "Mamie",
+      "last": "Merritt"
+    },
+    "company": "SEALOUD",
+    "email": "mamie.merritt@sealoud.net",
+    "latitude": "-43.449817",
+    "longitude": "47.642554",
+    "tags": [
+      "nulla",
+      "culpa",
+      "fugiat"
+    ],
+    "favoriteFruit": "mango"
+  },
+  {
+    "_id": "5c2651c3f633476c8ac298fd",
+    "age": 39,
+    "eyeColor": "blue",
+    "name": {
+      "first": "Charity",
+      "last": "Mcclure"
+    },
+    "company": "EVENTAGE",
+    "email": "charity.mcclure@eventage.me",
+    "latitude": "-68.256876",
+    "longitude": "-83.387402",
+    "tags": [
+      "sint",
+      "nulla",
+      "elit"
+    ],
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "5c2651c37f989a7911d6b430",
+    "age": 32,
+    "eyeColor": "green",
+    "name": {
+      "first": "Waller",
+      "last": "Miranda"
+    },
+    "company": "HYDROCOM",
+    "email": "waller.miranda@hydrocom.tv",
+    "latitude": "38.170622",
+    "longitude": "161.818646",
+    "tags": [
+      "ex",
+      "esse",
+      "pariatur",
+      "nostrud"
+    ],
+    "favoriteFruit": "strawberry"
+  },
+  {
+    "_id": "5c2651c3b9db2496ec471aee",
+    "age": 31,
+    "eyeColor": "brown",
+    "name": {
+      "first": "Marylou",
+      "last": "Kerr"
+    },
+    "company": "KRAGGLE",
+    "email": "marylou.kerr@kraggle.name",
+    "latitude": "-60.387186",
+    "longitude": "169.355878",
+    "tags": [
+      "excepteur",
+      "culpa",
+      "ipsum",
+      "Lorem",
+      "minim"
+    ],
+    "favoriteFruit": "apple"
+  }
+];
+
+
+defiant.createSnapshot(data, function(snapshot) {
+  var data = defiant.snapshots[snapshot].doc;
+	var facets = defiant.getFacets(snapshot, {
+	    'eyeColors':      {group: '*', key: 'eyeColor'},
+	    'favoriteFruits': {group: '*', key: 'favoriteFruit'}
+	  });
+
+	console.table(facets.eyeColors);
+});
+  
+</script>
+
+</body>
+</html>

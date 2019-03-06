@@ -1,5 +1,5 @@
 /*
- * defiant.js [v2.2.1]
+ * defiant.js [v2.2.3]
  * http://www.defiantjs.com
  * Copyright (c) 2013-2019 Hakan Bilgin <hbi@longscript.com>
  * License GNU AGPLv3
@@ -118,7 +118,7 @@
 					var len = leaf.childNodes.length;
 					switch (leaf.nodeType) {
 						case 1:
-							if (len > weight) {
+							if (len >= weight) {
 								weight = len;
 								heaviest = leaf;
 							}
@@ -745,7 +745,7 @@
 	var x10 = {
 		id: 1,
 		work_handler: function(event) {
-			var args = Array.prototype.slice.call(event.data, 1),
+			var args = Array.prototype.slice.call(event.data, 2),
 				func = event.data[0],
 				taskId = event.data[1],
 				ret  = tree[func].apply(tree, args);

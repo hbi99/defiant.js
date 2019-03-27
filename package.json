@@ -1,6 +1,6 @@
 {
   "name": "defiant.js",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Search JSON structures plus smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",

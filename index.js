@@ -13,6 +13,7 @@ const defiant = {
 					page.on('console', msg => console.log(msg.text()))
 					await page.setContent('<script>'+ script +'</script>')
 
+					defiant.browser = browser
 					defiant.page = page
 					if (page) resolve(page)
 					else reject()
@@ -24,7 +25,7 @@ const defiant = {
 		
 		data = data || {};
 		return defiant.page.evaluate(async (name, data) => {
-			var str = Defiant.render(name, data);
+			var str = defiant.render(name, data);
 			str = str.replace(/ (xmlns\:xlink|xmlns:d)=".*?"/ig, '');
 			return str;
 		}, name, data);
@@ -34,7 +35,7 @@ const defiant = {
 		if (!defiant.page) await defiant.init()
 		
 		return defiant.page.evaluate(async (name, xstr) => {
-			var that = Defiant,
+			var that = defiant,
 				data = that.xmlFromString(xstr),
 				str = that.render_xml(name, data);
 			str = str.replace(/ (xmlns\:xlink|xmlns:d)=".*?"/ig, '');
@@ -45,7 +46,7 @@ const defiant = {
 		if (!defiant.page) await defiant.init()
 		
 		return defiant.page.evaluate(async (str) => {
-			var that = Defiant;
+			var that = defiant;
 			that.xsl_template = that.xmlFromString('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" '+ that.namespace +'>'+ str.replace(/defiant:(\w+)/g, '$1') +'</xsl:stylesheet>');
 		}, str);
 	},
@@ -54,18 +55,22 @@ const defiant = {
 
 		return defiant.page.evaluate(async (data, callback) => {
 			return new Promise((resolve, reject) => {
-				Defiant.createSnapshot(data, function(snapshotId) {
+				defiant.createSnapshot(data, function(snapshotId) {
 					resolve(snapshotId)
 				})
 			})
 		}, data, callback)
 	},
-	search: async (data, xpath) => {
+	search: async (data, xpath, persist) => {
 		if (!defiant.page) await defiant.init()
 
-		return defiant.page.evaluate(async (data, xpath) => {
-			return JSON.search(data, xpath)
+		const result = await defiant.page.evaluate(async (data, xpath) => {
+			return defiant.search(data, xpath)
 		}, data, xpath)
+
+		if (!persist) defiant.browser.close()
+
+		return result
 	}
 }
 

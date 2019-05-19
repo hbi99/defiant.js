@@ -15,7 +15,6 @@
 		namespace : 'xmlns:d="defiant-namespace"',
 		tabsize   : 4,
 		snapshots : {},
-		node      : {},
 		renderXml: function(template, data) {
 			var processor = new window.XSLTProcessor(),
 				span      = document.createElement('span'),

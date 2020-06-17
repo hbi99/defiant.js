@@ -1,13 +1,13 @@
 
 const defiant = {
-	init: async () => {
+	init: async (puppeteerOpts) => {
 		const puppeteer = require('puppeteer')
 		const fs = require('fs')
 		const script = fs.readFileSync(__dirname +'/dist/defiant.min.js', 'utf8')
 
 		return new Promise((resolve, reject) => {
 			puppeteer
-				.launch()
+				.launch(puppeteerOpts)
 				.then(async browser => {
 					const page = await browser.newPage()
 					page.on('console', msg => console.log(msg.text()))

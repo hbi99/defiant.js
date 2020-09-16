@@ -1,6 +1,6 @@
 {
   "name": "defiant.js",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "Search JSON structures plus smart templating with XSLT and XPath.",
   "author": {
     "name": "Hakan Bilgin",
@@ -9,6 +9,10 @@
   },
   "engines": {
     "node": ">=7.10.1"
+  },
+  "scripts": {
+    "watch": "gulp watch",
+    "build": "gulp build"
   },
   "keywords": [
     "search",

@@ -653,7 +653,7 @@
 					mapIndex,
 					i;
 
-				if (single) xres = [xres];
+				if (single) xres = (xres == null) ? [] : [xres];
 				i = xres.length;
 
 				while (i--) {
